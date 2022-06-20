@@ -59,6 +59,7 @@ void GraphicalInterface::test()
             vkGetPhysicalDeviceProperties(device, &prop);
             std::cout << prop.deviceName << std::endl;
         }
+        //test
     }
     else {
         std::cerr << "aled" << std::endl;
