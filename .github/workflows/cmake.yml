@@ -36,7 +36,7 @@ jobs:
 
     - name: Install Xinerama on linux
       if: ${{ contains(matrix.os, 'ubuntu') }}
-      run: sudo apt-get install -y libxinerama-dev
+      run: sudo apt-get install -y xorg-dev
 
     - name: Setup Cpp
       uses: aminya/setup-cpp@v1
