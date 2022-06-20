@@ -10,15 +10,16 @@
 #include "InputKey.hpp"
 
 class Inputs {
+private:
+    std::unordered_map<std::string, std::vector<InputKey>> eventKey;
+    std::unordered_map<std::string, std::unique_ptr<Command0>> eventAction;
+
 public:
+    Inputs();
     void handleInputs();
     void loadInputs(std::unordered_map<std::string, std::vector<InputKey>> inputs);
     void changeInput(std::string event, std::vector<InputKey> inputs);
-    void addAction(std::string event, std::unique_ptr<Command> action);
-    void addAction(std::string event, std::vector<std::unique_ptr<Command>> actions);
-
-private:
-    std::unordered_map<std::string, std::vector<InputKey>> eventKey;
-    std::unordered_map<std::string, std::unique_ptr<Command>> eventAction;
+    void addAction(std::string event, std::unique_ptr<Command0> action);
+    void addAction(std::string event, std::vector<std::unique_ptr<Command0>> actions);
 };
 #endif //JEUDELESPACE_INPUTS_HPP

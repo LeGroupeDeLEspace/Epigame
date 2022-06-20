@@ -6,7 +6,11 @@
 #define JEUDELESPACE_INPUTEVENT_HPP
 
 enum InputEvent {
-
+    Move,
+    Look,
+    Accelerate,
+    Decelerate,
+    //TODO: Add more ?
 };
 
 #endif //JEUDELESPACE_INPUTEVENT_HPP
