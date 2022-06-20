@@ -6,5 +6,6 @@ add_library(graphRender)
 target_include_directories(graphRender PUBLIC include)
 add_subdirectory(src)
 
+find_package(Vulkan REQUIRED FATAL_ERROR)
 
-target_link_libraries(graphRender PUBLIC glfw)
+target_link_libraries(graphRender PUBLIC glfw vulkan)

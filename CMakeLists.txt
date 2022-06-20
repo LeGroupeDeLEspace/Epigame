@@ -8,4 +8,4 @@ add_subdirectory(src)
 
 add_subdirectory(lib)
 
-target_link_libraries(bonjourmonde graphRender glfw)
+target_link_libraries(bonjourmonde graphRender glfw vulkan)
