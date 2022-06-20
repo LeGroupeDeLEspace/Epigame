@@ -12,14 +12,26 @@
 class Inputs {
 private:
     std::unordered_map<std::string, std::vector<InputKey>> eventKey;
-    std::unordered_map<std::string, std::unique_ptr<Command0>> eventAction;
+    std::unordered_map<std::string, Command0&> eventAction;
 
-public:
+    static void keyCallbackStatic(GLFWwindow* window, int key, int scancode, int action, int mods);
     Inputs();
-    void handleInputs();
+public:
+    ~Inputs();
+
+    void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static Inputs& instance()
+    {
+        static auto *instance = new Inputs();
+        return *instance;
+    }
+
+    // The functions for the rest of the
     void loadInputs(std::unordered_map<std::string, std::vector<InputKey>> inputs);
     void changeInput(std::string event, std::vector<InputKey> inputs);
-    void addAction(std::string event, std::unique_ptr<Command0> action);
-    void addAction(std::string event, std::vector<std::unique_ptr<Command0>> actions);
+    void addAction(std::string event, Command0& action);
+    void addAction(std::string event, std::vector<Command0> actions);
+    void removeAction(std::string event, Command0& action);
+    void removeAction(std::string event, std::vector<Command0&> actions);
 };
 #endif //JEUDELESPACE_INPUTS_HPP

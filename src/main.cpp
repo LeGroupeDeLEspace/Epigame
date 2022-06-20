@@ -1,8 +1,13 @@
-#include <graphRender.hpp>
-
+#include "TestWindow.hpp"
+#include "inputs.hpp"
+#include "iostream"
 int main()
 {
-    GraphicalInterface graph;
-    graph.test();
-    return 0;
+    std::cout << "Begin of the project" << std::endl;
+    bool result;
+    TestWindow testWindow = TestWindow::instance();
+    Inputs input = Inputs::instance();
+    do {
+        result = testWindow.update();
+    } while (result);
 }
