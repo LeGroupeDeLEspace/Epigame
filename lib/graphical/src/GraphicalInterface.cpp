@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "graphRender.hpp"
 
 const int WIDTH = 600;
@@ -59,11 +61,16 @@ void GraphicalInterface::test()
             vkGetPhysicalDeviceProperties(device, &prop);
             std::cout << prop.deviceName << std::endl;
         }
-        //test
     }
     else {
         std::cerr << "aled" << std::endl;
     }
+
+    glm::vec4 Position = glm::vec4(glm::vec3(0.0f), 1.0f);
+    glm::mat4 Model = glm::translate(
+            glm::mat4(1.0f), glm::vec3(1.0f));
+    glm::vec4 Transformed = Model * Position;
+    std::cout << Transformed.x << ", " << Transformed.y << ", " << Transformed.z << std::endl;
 
 
     while (!glfwWindowShouldClose(this->window)) {
