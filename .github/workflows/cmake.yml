@@ -34,7 +34,7 @@ jobs:
         vulkan-query-version: latest
         vulkan-components: Vulkan-Headers, Vulkan-Loader
 
-    - name: Install Xinerama on linux
+    - name: Install X11 dependencies on Unix-like system
       if: ${{ contains(matrix.os, 'ubuntu') }}
       run: sudo apt-get install -y xorg-dev
 
