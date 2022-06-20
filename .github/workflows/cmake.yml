@@ -34,6 +34,10 @@ jobs:
         vulkan-query-version: latest
         vulkan-components: Vulkan-Headers, Vulkan-Loader
 
+    - name: Install Xinerama on linux
+      if: ${{ contains(matrix.os, 'ubuntu') }}
+      run: sudo apt-get install -y libxinerama-dev
+
     - name: Setup Cpp
       uses: aminya/setup-cpp@v1
       with:
