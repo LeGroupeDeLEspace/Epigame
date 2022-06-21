@@ -1,4 +1,5 @@
 #include "Logger.hpp"
+#include "System.hpp"
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -13,15 +14,19 @@ Logger::~Logger()
 {
 }
 
-bool Logger::writeInFiles(std::string str)
+bool Logger::log(MESSAGE type, std::string message, std::string location)
 {
     std::fstream fs;
-    std::string path = getDate();
+    std::string path = System::resolvePath(std::vector<std::string> {
+        getDate()
+    });
+    getDate();
 
     fs.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
 
     fs << getTime() << std::endl;
-    fs << str << std::endl;
+    fs << getType(type) << ": " << message << std::endl;
+    fs << location << std::endl;
     fs << std::endl;
 
     fs.close();
@@ -56,4 +61,18 @@ std::string Logger::getTime()
     res.append(":");
     res.append(std::to_string(local_time->tm_min));
     return(res);
+}
+
+std::string Logger::getType(MESSAGE type)
+{
+    if (type == VERBOSE)
+        return ("VERBOSE");
+    else if (type == INFO)
+        return ("INFO");
+    else if (type == WARNING)
+        return("WARNING");
+    else if (type == ERROR)
+        return("ERROR");
+    else
+        return(nullptr);
 }
