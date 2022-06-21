@@ -1,5 +1,5 @@
 #include "TestWindow.hpp"
-#include "inputs.hpp"
+#include "Inputs/Inputs.hpp"
 #include "iostream"
 int main()
 {
