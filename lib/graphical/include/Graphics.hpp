@@ -1,8 +1,8 @@
 #ifndef GR_GRAPHICS_HPP_
 #define GR_GRAHPICS_HPP_
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include "WindowHandler.hpp"
+#include "VulkanInstance.hpp"
 
 namespace gr {
     class Graphics {
@@ -12,7 +12,9 @@ namespace gr {
 
             GLFWwindow *getWindow();
         private:
+            void free();
             GLFWwindow *window;
+            VulkanInstance *instance;
     };
 }
 

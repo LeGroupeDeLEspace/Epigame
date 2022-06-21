@@ -6,7 +6,7 @@
 namespace gr {
     class ValidationLayer {
         public:
-            static void ValidationLayer::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+            static void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     };
 }
 

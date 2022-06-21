@@ -1,4 +1,4 @@
-#define G
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include "VulkanInstance.hpp"
@@ -21,6 +21,7 @@ static VkApplicationInfo createAppInfo()
 
 VulkanInstance::VulkanInstance()
 {
+    this->instance = nullptr;
     VkApplicationInfo appInfo = createAppInfo();
 
     VkInstanceCreateInfo createInfo{};
@@ -44,16 +45,24 @@ VulkanInstance::VulkanInstance()
         createInfo.enabledLayerCount = 0;
     }
 
-    if (vkCreateInstance(&createInfo, nullptr, &this->instance)) {
+    this->instance = new VkInstance;
+    if (vkCreateInstance(&createInfo, nullptr, this->instance)) {
         throw std::runtime_error("failed to create instance");
     }
 }
 
 VulkanInstance::~VulkanInstance()
 {
-
+    if (this->instance != nullptr) {
+        vkDestroyInstance(*this->instance, nullptr);
+        delete this->instance;
+    }
 }
 
+const VkInstance &VulkanInstance::getInstance() const
+{
+    return *this->instance;
+}
 
 std::vector<const char *> VulkanInstance::getRequiredExtensions()
 {

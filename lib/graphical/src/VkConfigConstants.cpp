@@ -1,6 +1,9 @@
 #include <vulkan/vulkan.hpp>
 #include "VkConfigConstants.hpp"
 
+namespace gr {
+namespace config {
+
 const char* applicationName = "jeudelespace";
 
 const std::vector<const char*> validationLayers = {
@@ -11,3 +14,5 @@ const std::vector<const char*> deviceExtensions = {
 };
 const bool enableValidationLayers = true;
 
+}
+}

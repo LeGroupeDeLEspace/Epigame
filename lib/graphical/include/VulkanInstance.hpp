@@ -10,10 +10,9 @@ namespace gr {
             ~VulkanInstance();
 
             static std::vector<const char *> getRequiredExtensions();
-
+            const VkInstance &getInstance() const;
         private:
-
-            VkInstance instance;
+            VkInstance *instance;
     };
 }
 
