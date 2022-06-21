@@ -26,8 +26,8 @@ private:
     static void cursorPositionCallbackStatic(GLFWwindow* window, double xpos, double ypos);
     void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
 
-    static void mouseButtonCallbackStatic(GLFWwindow* window, int button, int action, int mods);
-    void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void mouseButtonCallbackStatic(GLFWwindow* window, MouseButton button, InputState action, InputModifier mods);
+    void mouseButtonCallback(GLFWwindow* window, MouseButton button, InputState action, InputModifier mods);
 
     static void scrollCallbackStatic(GLFWwindow* window, double xoffset, double yoffset);
     void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);

@@ -1,6 +1,7 @@
 #include "Inputs/Inputs.hpp"
-#include "iostream"
+#include <iostream>
 #include "TestWindow.hpp"
+#include <glm/gtx/string_cast.hpp>
 
 class DebugCommand0 : public Command0 {
 public:
@@ -27,7 +28,7 @@ Inputs::Inputs() : keyboardEvent(), eventAction() {
 
     // Initializing the mouse buttons
     std::cout << "Initializing the mouse buttons" << std::endl;
-    glfwSetMouseButtonCallback(window, Inputs::mouseButtonCallbackStatic);
+    glfwSetMouseButtonCallback(window, (GLFWmousebuttonfun)Inputs::mouseButtonCallbackStatic);
 
     // Initializing the mouse position
     std::cout << "Initializing the mouse positions" << std::endl;
@@ -110,33 +111,76 @@ void Inputs::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputSta
 }
 
 void Inputs::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, double ypos) {
-
+    Inputs::instance().cursorPositionCallback(window, xpos, ypos);
 }
 
 void Inputs::cursorPositionCallback(GLFWwindow *window, double xpos, double ypos) {
-
+    this->mousePosition = glm::dvec2 {xpos, ypos};
+    std::cout << "MousePosition: " << glm::to_string(this->mousePosition) << std::endl;
 }
 
-void Inputs::mouseButtonCallbackStatic(GLFWwindow *window, int button, int action, int mods) {
-
+void Inputs::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
+    Inputs::instance().mouseButtonCallback(window,button,action,mods);
 }
 
-void Inputs::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+void Inputs::mouseButtonCallback(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
 
+    std::cout << "---------------------------------" << std::endl;
+    std::cout << "window = " << window << std::endl;
+    switch (action) {
+        case InputState::Press :
+            std::cout << "Pressing ";
+            break;
+        case InputState::Hold :
+            std::cout << "Holding ";
+            break;
+        case InputState::Release :
+            std::cout << "Releasing ";
+            break;
+    }
+
+    std::cout << "the mouse button " << button << " ";
+
+    if (mods & InputModifier::Alt) {
+        std::cout << "with Alt ";
+    }
+    if (mods & InputModifier::CapsLock) {
+        std::cout << "with CapsLock ";
+    }
+    if (mods & InputModifier::Ctrl) {
+        std::cout << "with Control ";
+    }
+    if (mods & InputModifier::NumLock) {
+        std::cout << "with NumLock ";
+    }
+    if (mods & InputModifier::Shift) {
+        std::cout << "with Shift ";
+    }
+    if (mods & InputModifier::Super) {
+        std::cout << "with Super ";
+    }
+
+    std::cout << std::endl;
+    std::cout << "---------------------------------" << std::endl;
 }
 
 void Inputs::scrollCallbackStatic(GLFWwindow *window, double xoffset, double yoffset) {
-
+    Inputs::instance().scrollCallback(window, xoffset, yoffset);
 }
 
 void Inputs::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
-
+    this->scrolling = glm::dvec2 {xoffset, yoffset};
+    std::cout << "Scrolling of " << glm::to_string(this->scrolling) << std::endl;
 }
 
 void Inputs::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entered) {
-
+    Inputs::instance().mouseEnterWindowCallback(window, entered);
 }
 
 void Inputs::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
-
+    if (entered) {
+        std::cout << "The cursor is inside the application window." << std::endl;
+    } else {
+        std::cout << "The cursor is outside the application window." << std::endl;
+    }
 }
