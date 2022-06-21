@@ -58,10 +58,43 @@ void Inputs::keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, In
 void Inputs::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
     std::cout << "---------------------------------" << std::endl;
     std::cout << "window = " << window << std::endl;
-    std::cout << "key = " << key << std::endl;
-    std::cout << "scancode = " << scancode << std::endl;
-    std::cout << "action = " << action << std::endl;
-    std::cout << "mods = " << mods << std::endl;
+    switch (action) {
+        case InputState::Press :
+            std::cout << "Pressing ";
+            break;
+        case InputState::Hold :
+            std::cout << "Holding ";
+            break;
+        case InputState::Release :
+            std::cout << "Releasing ";
+            break;
+    }
+    auto keyName = glfwGetKeyName((int)key, scancode);
+    if (keyName != nullptr) {
+        std::cout << "the key " << keyName << " ";
+    } else {
+        std::cout << "an unknown key of code " << key << " ";
+    }
+
+    if (mods & InputModifier::Alt) {
+        std::cout << "with Alt ";
+    }
+    if (mods & InputModifier::CapsLock) {
+        std::cout << "with CapsLock ";
+    }
+    if (mods & InputModifier::Ctrl) {
+        std::cout << "with Control ";
+    }
+    if (mods & InputModifier::NumLock) {
+        std::cout << "with NumLock ";
+    }
+    if (mods & InputModifier::Shift) {
+        std::cout << "with Shift ";
+    }
+    if (mods & InputModifier::Super) {
+        std::cout << "with Super ";
+    }
+
     std::cout << std::endl;
 
     if (keyboardEvent.count(key) == 0) {
@@ -73,7 +106,6 @@ void Inputs::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputSta
             std::cout << "Ending the event " << event << std::endl;
         }
     }
-    std::cout << std::endl;
     std::cout << "---------------------------------" << std::endl;
 }
 

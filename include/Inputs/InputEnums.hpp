@@ -156,6 +156,9 @@ enum class InputModifier : int {
     CapsLock = GLFW_MOD_CAPS_LOCK,
     NumLock = GLFW_MOD_NUM_LOCK,
 };
+bool operator& (int input, InputModifier other);
+bool operator& (InputModifier input, int other);
+bool operator& (InputModifier input, InputModifier other);
 std::ostream& operator<< (std::ostream& out, const InputModifier& inputModifier);
 
 enum class MouseButton : int {

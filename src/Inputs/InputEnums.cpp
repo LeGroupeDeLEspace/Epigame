@@ -12,6 +12,18 @@ std::ostream& operator<< (std::ostream& out, const KeyCode& keycode) {
     return out << ((int)keycode);
 }
 
+bool operator& (int input, InputModifier other){
+    return input & (int)other;
+}
+
+bool operator& (InputModifier input, int other){
+    return (int)input & other;
+}
+
+bool operator& (InputModifier input, InputModifier other){
+    return (int)input & (int)other;
+}
+
 std::ostream& operator<< (std::ostream& out, const InputModifier& inputModifier) {
     return out << ((int)inputModifier);
 }
