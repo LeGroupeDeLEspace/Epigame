@@ -16,6 +16,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         compiler: [llvm, gcc]
+# Excluding the combination of gcc and macos as there is some problem from gcc to compile Objective-C
+# https://github.com/glfw/glfw/issues/1743
+        exclude:
+          - os: macos-latest
+            compiler: gcc
 
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
