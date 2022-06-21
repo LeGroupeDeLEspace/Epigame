@@ -44,7 +44,7 @@ Inputs::Inputs() : keyboardEvent(), eventAction() {
     // Creating some test events
     // TODO: Delete this tests
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<std::string>>(KeyCode::Space,std::vector<std::string>(1,"hello")));
-    this->eventAction.insert(std::make_pair<std::string, Command0*>("hello", new DebugCommand0));
+    this->eventAction.insert(std::make_pair<std::string, Command0*>("hello", new DebugCommand0{"Hello, you press the Space Bar"}));
 }
 
 Inputs::~Inputs(){
@@ -70,7 +70,7 @@ void Inputs::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputSta
         for (auto & event : keyboardEvent[key]) {
             std::cout << "Starting the event " << event << std::endl;
             eventAction[event]->execute();
-            std::cout << "Enfing the event " << event << std::endl;
+            std::cout << "Ending the event " << event << std::endl;
         }
     }
     std::cout << std::endl;
