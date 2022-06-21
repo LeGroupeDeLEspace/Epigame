@@ -2,6 +2,7 @@
 #include <iostream>
 #include "TestWindow.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include <algorithm>
 
 class DebugCommand0 : public Command0 {
 public:
@@ -18,7 +19,7 @@ public:
     }
 };
 
-Inputs::Inputs() : keyboardEvent(), eventAction() {
+Inputs::Inputs() : keyboardEvent(), eventAction(), joystickConnected() {
     //Get the windows
     GLFWwindow* window = TestWindow::getCurrentWindow();
 
@@ -42,6 +43,7 @@ Inputs::Inputs() : keyboardEvent(), eventAction() {
     std::cout << "Initializing the mouse focus" << std::endl;
     glfwSetCursorEnterCallback(window, Inputs::mouseEnterWindowCallbackStatic);
 
+    glfwSetJoystickCallback((GLFWjoystickfun)Inputs::joystickCallbackStatic);
     // Creating some test events
     // TODO: Delete this tests
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<std::string>>(KeyCode::Space,std::vector<std::string>(1,"hello")));
@@ -183,4 +185,40 @@ void Inputs::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
     } else {
         std::cout << "The cursor is outside the application window." << std::endl;
     }
+}
+
+void Inputs::joystickCallbackStatic(Joystick joystickId, int event) {
+    Inputs::instance().joystickCallback(joystickId, event);
+}
+
+void Inputs::joystickCallback(Joystick jid, int event) {
+    const char* joystickName = glfwGetJoystickName((int)jid);
+    std::string name;
+    if (joystickName != nullptr) {
+        name = std::string {joystickName};
+    } else {
+        name = &"Joystick_"[(int)jid];
+    }
+    if (event == GLFW_CONNECTED)
+    {
+        // The joystick was connected
+        this->joystickConnected.push_back(jid);
+        std::cout << name << " has been connected." << std::endl;
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        // The joystick was disconnected
+        std::cout << name << " has been disconnected." << std::endl;
+        auto index = std::find(this->joystickConnected.begin(), this->joystickConnected.end(),jid);
+        if (index != this->joystickConnected.end()) {
+            this->joystickConnected.erase(index);
+        } else {
+            std::cout << "The joystick " << name << " hasn't been connected";
+        }
+    }
+}
+
+// Updating the joystick
+void update() {
+
 }

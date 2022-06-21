@@ -15,6 +15,7 @@ private:
     bool cursorInsideApplicationWindows;
     glm::dvec2 mousePosition;
     glm::dvec2 scrolling;
+    std::vector<Joystick> joystickConnected;
 
     // Events
     std::unordered_map<KeyCode, std::vector<std::string>> keyboardEvent;
@@ -35,6 +36,10 @@ private:
     static void mouseEnterWindowCallbackStatic(GLFWwindow* window, int entered);
     void mouseEnterWindowCallback(GLFWwindow* window, int entered);
 
+    static void joystickCallbackStatic(Joystick joystickId, int event);
+    void joystickCallback(Joystick joystickId, int event);
+
+
 
     Inputs();
 public:
@@ -45,6 +50,7 @@ public:
         return *instance;
     }
 
+    void update();
     // The functions for the rest of the
     void loadInputs(std::unordered_map<int, std::vector<std::string>> inputs);
     void changeInput(int oldInput, int newInput, std::string event);
