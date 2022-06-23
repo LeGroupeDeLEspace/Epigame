@@ -19,7 +19,7 @@ private:
 
     // Events
     std::unordered_map<KeyCode, std::vector<std::string>> keyboardEvent;
-    std::unordered_map<std::string, Command0*> eventAction;
+//    std::unordered_map<std::string, Command0*> eventAction;
 
     static void keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
     void keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);

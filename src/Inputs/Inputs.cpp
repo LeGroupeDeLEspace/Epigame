@@ -4,6 +4,10 @@
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
 
+#define LOG(s) std::cout << s << std::endl
+
+#define WRITE(s) std::cout << s
+
 class DebugCommand0 : public Command0 {
 public:
     DebugCommand0() {
@@ -19,7 +23,7 @@ public:
     }
 };
 
-Inputs::Inputs() : keyboardEvent(), eventAction(), joystickConnected() {
+Inputs::Inputs() : keyboardEvent(), /*eventAction(),*/ joystickConnected() {
     //Get the windows
     GLFWwindow* window = TestWindow::getCurrentWindow();
 
@@ -47,7 +51,7 @@ Inputs::Inputs() : keyboardEvent(), eventAction(), joystickConnected() {
     // Creating some test events
     // TODO: Delete this tests
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<std::string>>(KeyCode::Space,std::vector<std::string>(1,"hello")));
-    this->eventAction.insert(std::make_pair<std::string, Command0*>("hello", new DebugCommand0{"Hello, you press the Space Bar"}));
+//    this->eventAction.insert(std::make_pair<std::string, Command0*>("hello", new DebugCommand0{"Hello, you press the Space Bar"}));
 }
 
 Inputs::~Inputs(){
@@ -59,57 +63,55 @@ void Inputs::keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, In
 }
 
 void Inputs::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
-    std::cout << "---------------------------------" << std::endl;
-    std::cout << "window = " << window << std::endl;
+    LOG("---------------------------------");
+    LOG ("window = " << window);
     switch (action) {
         case InputState::Press :
-            std::cout << "Pressing ";
+            WRITE("Pressing ");
             break;
         case InputState::Hold :
-            std::cout << "Holding ";
+            WRITE("Holding ");
             break;
         case InputState::Release :
-            std::cout << "Releasing ";
+            WRITE("Releasing ");
             break;
     }
     auto keyName = glfwGetKeyName((int)key, scancode);
     if (keyName != nullptr) {
-        std::cout << "the key " << keyName << " ";
+        WRITE("the key " << keyName << " ");
     } else {
-        std::cout << "an unknown key of code " << key << " ";
+        WRITE("an unknown key of code " << key << " ");
     }
 
     if (mods & InputModifier::Alt) {
-        std::cout << "with Alt ";
+        WRITE("with Alt ");
     }
     if (mods & InputModifier::CapsLock) {
-        std::cout << "with CapsLock ";
+        WRITE("with CapsLock ");
     }
     if (mods & InputModifier::Ctrl) {
-        std::cout << "with Control ";
+        WRITE("with Control ");
     }
     if (mods & InputModifier::NumLock) {
-        std::cout << "with NumLock ";
+        WRITE("with NumLock ");
     }
     if (mods & InputModifier::Shift) {
-        std::cout << "with Shift ";
+        WRITE("with Shift ");
     }
     if (mods & InputModifier::Super) {
-        std::cout << "with Super ";
+        WRITE("with Super ");
     }
 
-    std::cout << std::endl;
+    WRITE("");
 
     if (keyboardEvent.count(key) == 0) {
-        std::cout << "No event found..." << std::endl;
+        LOG("No event found...");
     } else {
         for (auto & event : keyboardEvent[key]) {
-            std::cout << "Starting the event " << event << std::endl;
-            eventAction[event]->execute();
-            std::cout << "Ending the event " << event << std::endl;
+            std::cout << "Suppose to start the event " << event << std::endl;
         }
     }
-    std::cout << "---------------------------------" << std::endl;
+    WRITE("---------------------------------");
 }
 
 void Inputs::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, double ypos) {
@@ -118,7 +120,7 @@ void Inputs::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, doubl
 
 void Inputs::cursorPositionCallback(GLFWwindow *window, double xpos, double ypos) {
     this->mousePosition = glm::dvec2 {xpos, ypos};
-    std::cout << "MousePosition: " << glm::to_string(this->mousePosition) << std::endl;
+    LOG("MousePosition: " << glm::to_string(this->mousePosition));
 }
 
 void Inputs::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
@@ -127,43 +129,43 @@ void Inputs::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, I
 
 void Inputs::mouseButtonCallback(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
 
-    std::cout << "---------------------------------" << std::endl;
-    std::cout << "window = " << window << std::endl;
+    LOG("---------------------------------");
+    LOG("window = " << window);
     switch (action) {
         case InputState::Press :
-            std::cout << "Pressing ";
+            WRITE("Pressing ");
             break;
         case InputState::Hold :
-            std::cout << "Holding ";
+            WRITE("Holding ");
             break;
         case InputState::Release :
-            std::cout << "Releasing ";
+            WRITE("Releasing ");
             break;
     }
 
     std::cout << "the mouse button " << button << " ";
 
     if (mods & InputModifier::Alt) {
-        std::cout << "with Alt ";
+        WRITE("witt Alt");
     }
     if (mods & InputModifier::CapsLock) {
-        std::cout << "with CapsLock ";
+        WRITE("with CapsLock ");
     }
     if (mods & InputModifier::Ctrl) {
-        std::cout << "with Control ";
+        WRITE("with Control ");
     }
     if (mods & InputModifier::NumLock) {
-        std::cout << "with NumLock ";
+        WRITE("with NumLock ");
     }
     if (mods & InputModifier::Shift) {
-        std::cout << "with Shift ";
+        WRITE("with Shift ");
     }
     if (mods & InputModifier::Super) {
-        std::cout << "with Super ";
+        WRITE("with Super ");
     }
 
-    std::cout << std::endl;
-    std::cout << "---------------------------------" << std::endl;
+    LOG("");
+    LOG("---------------------------------");
 }
 
 void Inputs::scrollCallbackStatic(GLFWwindow *window, double xoffset, double yoffset) {
@@ -172,7 +174,7 @@ void Inputs::scrollCallbackStatic(GLFWwindow *window, double xoffset, double yof
 
 void Inputs::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
     this->scrolling = glm::dvec2 {xoffset, yoffset};
-    std::cout << "Scrolling of " << glm::to_string(this->scrolling) << std::endl;
+    LOG("Scrolling of " << glm::to_string(this->scrolling));
 }
 
 void Inputs::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entered) {
@@ -181,9 +183,9 @@ void Inputs::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entered) {
 
 void Inputs::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
     if (entered) {
-        std::cout << "The cursor is inside the application window." << std::endl;
+        LOG("The cursor is inside the application window.");
     } else {
-        std::cout << "The cursor is outside the application window." << std::endl;
+        LOG("The cursor is outside the application window.");
     }
 }
 
@@ -203,22 +205,50 @@ void Inputs::joystickCallback(Joystick jid, int event) {
     {
         // The joystick was connected
         this->joystickConnected.push_back(jid);
-        std::cout << name << " has been connected." << std::endl;
+        LOG(name << " has been connected.");
+        LOG("There is now " << joystickConnected.size() << " joystick connected.");
     }
     else if (event == GLFW_DISCONNECTED)
     {
         // The joystick was disconnected
-        std::cout << name << " has been disconnected." << std::endl;
+        LOG(name << " has been disconnected.");
         auto index = std::find(this->joystickConnected.begin(), this->joystickConnected.end(),jid);
         if (index != this->joystickConnected.end()) {
             this->joystickConnected.erase(index);
+            LOG("There is now " << joystickConnected.size() << " joystick connected.");
         } else {
-            std::cout << "The joystick " << name << " hasn't been connected";
+            LOG("The joystick " << name << " hasn't been connected");
         }
     }
 }
 
 // Updating the joystick
-void update() {
+void Inputs::update() {
+//    LOG("There is " << this->joystickConnected.size() << "Joystick connected.");
+    for (auto & joystick : this->joystickConnected) {
+        int jid = (int)joystick;
+        LOG("---------------------------------");
+        const char* alias = glfwGetJoystickName(jid);
+        LOG("Joystick " << jid << " alias " << alias);
 
+        // GUID:
+        const char* guid = glfwGetJoystickGUID(jid);
+        LOG("GUID = " << guid);
+
+        // Logging the different axis
+        int axisCount;
+        const float* axes = glfwGetJoystickAxes(jid, &axisCount);
+        for (int i = 0; i < axisCount; ++i) {
+            LOG("Axis " << i << " = " << axes[i]);
+        }
+
+        // Logging the different buttons
+        int buttonCount;
+        const unsigned char* buttons = glfwGetJoystickButtons(jid, &buttonCount);
+        for (int i = 0; i < buttonCount; ++i) {
+            LOG("Button " << i << " = " << buttons[i]);
+        }
+        LOG("---------------------------------");
+
+    }
 }

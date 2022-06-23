@@ -9,5 +9,6 @@ int main()
     Inputs input = Inputs::instance();
     do {
         result = testWindow.update();
+        input.update();
     } while (result);
 }
