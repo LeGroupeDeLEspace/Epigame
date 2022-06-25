@@ -6,9 +6,20 @@
 
 namespace gr {
 
-class WindowHandler {
+    class WindowHandler {
+        public:
+            //WindowHandler(size_t width, size_t height, const std::string &winName);  //TODO
+            WindowHandler();
+            ~WindowHandler();
+        
+            GLFWwindow * getWindow();
 
-};
+            //void resize(size_t width, size_t height);
+        private:
+            GLFWwindow *windowptr;
+            size_t windowWidth;
+            size_t windowHeight;
+    };
 
 }
 #endif

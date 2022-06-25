@@ -6,22 +6,23 @@ Graphics::Graphics() :
 instance(nullptr)
 {
     try {
+        this->windowHandler = new WindowHandler;
         this->instance = new VulkanInstance;
     }
     catch (const std::exception &exception) {
-        this->free();
+        this->~Graphics();
         throw exception;
     }
 }
 
 Graphics::~Graphics()
 {
-
+    delete this->instance;
 }
 
-void Graphics::free()
+GLFWwindow *Graphics::getWindow()
 {
-    delete this->instance;
+    return this->windowHandler->getWindow();
 }
 
 }

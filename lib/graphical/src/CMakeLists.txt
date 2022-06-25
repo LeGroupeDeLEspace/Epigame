@@ -5,4 +5,5 @@ target_sources(graphRender PRIVATE
     VulkanInstance.cpp
     VkConfigConstants.cpp
     ValidationLayer.cpp
+    WindowHandler.cpp
 )
