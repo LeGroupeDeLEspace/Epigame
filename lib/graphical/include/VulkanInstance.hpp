@@ -16,7 +16,6 @@ namespace gr {
             const VkSurfaceKHR &getSurface() const;
         private:
             void createInstance();
-            void createValidationLayer();
             void createSurface(GLFWwindow *window);
 
             VkInstance instance;

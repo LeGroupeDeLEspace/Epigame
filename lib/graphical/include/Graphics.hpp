@@ -12,8 +12,8 @@ namespace gr {
 
             GLFWwindow *getWindow();
         private:
-            WindowHandler *windowHandler;
-            VulkanInstance *instance;
+            WindowHandler windowHandler;
+            VulkanInstance instance;
     };
 }
 

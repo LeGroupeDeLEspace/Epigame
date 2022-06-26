@@ -3,28 +3,18 @@
 namespace gr {
 
 Graphics::Graphics() :
-windowHandler(nullptr),
-instance(nullptr)
+windowHandler(),
+instance(this->windowHandler.getWindow())
 {
-    try {
-        this->windowHandler = new WindowHandler;
-        this->instance = new VulkanInstance(this->windowHandler->getWindow());
-    }
-    catch (const std::exception &exception) {
-        this->~Graphics();
-        throw exception;
-    }
 }
 
 Graphics::~Graphics()
 {
-    delete this->instance;
-    delete this->windowHandler;
 }
 
 GLFWwindow *Graphics::getWindow()
 {
-    return this->windowHandler->getWindow();
+    return this->windowHandler.getWindow();
 }
 
 }
