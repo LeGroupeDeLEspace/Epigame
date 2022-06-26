@@ -6,7 +6,23 @@
 namespace gr {
     class ValidationLayer {
         public:
+            ValidationLayer(VkInstance instance);
+            ~ValidationLayer();
             static void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+        private:
+
+            VkResult CreateDebugUtilsMessengerEXT(
+                VkInstance instance,
+                const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+                const VkAllocationCallbacks* pAllocator,
+                VkDebugUtilsMessengerEXT * pDebugMessenger);
+            void DestroyDebugUtilsMessengerEXT(
+                VkInstance instance,
+                VkDebugUtilsMessengerEXT debugMessenger,
+                const VkAllocationCallbacks* pAllocator);
+
+            const VkInstance instance;
+            VkDebugUtilsMessengerEXT messenger;
     };
 }
 

@@ -19,9 +19,8 @@ static VkApplicationInfo createAppInfo()
     return appInfo;
 }
 
-VulkanInstance::VulkanInstance()
+void VulkanInstance::createInstance()
 {
-    this->instance = nullptr;
     VkApplicationInfo appInfo = createAppInfo();
 
     VkInstanceCreateInfo createInfo{};
@@ -45,23 +44,40 @@ VulkanInstance::VulkanInstance()
         createInfo.enabledLayerCount = 0;
     }
 
-    this->instance = new VkInstance;
-    if (vkCreateInstance(&createInfo, nullptr, this->instance)) {
+    if (vkCreateInstance(&createInfo, nullptr, &instance)) {
         throw std::runtime_error("failed to create instance");
     }
 }
 
+void VulkanInstance::createSurface(GLFWwindow *window)
+{
+    if (glfwCreateWindowSurface(this->instance, window, nullptr, &this->surface) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create window surface");
+    }
+}
+
+VulkanInstance::VulkanInstance(GLFWwindow *window) : validationLayer(nullptr)
+{
+    this->createInstance();
+    this->validationLayer = new ValidationLayer(this->instance);
+    this->createSurface(window);
+}
+
 VulkanInstance::~VulkanInstance()
 {
-    if (this->instance != nullptr) {
-        vkDestroyInstance(*this->instance, nullptr);
-        delete this->instance;
-    }
+    vkDestroySurfaceKHR(this->instance, this->surface, nullptr);
+    delete this->validationLayer;
+    vkDestroyInstance(this->instance, nullptr);
 }
 
 const VkInstance &VulkanInstance::getInstance() const
 {
-    return *this->instance;
+    return this->instance;
+}
+
+const VkSurfaceKHR &VulkanInstance::getSurface() const
+{
+    return this->surface;
 }
 
 std::vector<const char *> VulkanInstance::getRequiredExtensions()

@@ -25,6 +25,20 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 
 namespace gr {
 
+ValidationLayer::ValidationLayer(VkInstance instance) : instance(instance)
+{
+    VkDebugUtilsMessengerCreateInfoEXT createInfo{};
+    populateDebugMessengerCreateInfo(createInfo);
+    if (this->CreateDebugUtilsMessengerEXT(instance, &createInfo, nullptr, &this->messenger) != VK_SUCCESS) {
+        throw std::runtime_error("failed to setup debug message");
+    }
+}
+
+ValidationLayer::~ValidationLayer()
+{
+    DestroyDebugUtilsMessengerEXT(this->instance, this->messenger, nullptr);
+}
+
 void ValidationLayer::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)
 {
     createInfo = {};
@@ -39,6 +53,36 @@ void ValidationLayer::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCrea
         VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
     createInfo.pfnUserCallback = debugCallback;
     createInfo.pUserData = nullptr;
+}
+
+
+VkResult ValidationLayer::CreateDebugUtilsMessengerEXT(
+    VkInstance instance,
+    const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
+    const VkAllocationCallbacks* pAllocator,
+    VkDebugUtilsMessengerEXT * pDebugMessenger)
+{
+    auto func = (PFN_vkCreateDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkCreateDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        return func(instance, pCreateInfo, pAllocator, pDebugMessenger);
+    } else {
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
+void ValidationLayer::DestroyDebugUtilsMessengerEXT(
+    VkInstance instance,
+    VkDebugUtilsMessengerEXT debugMessenger,
+    const VkAllocationCallbacks* pAllocator)
+{
+    auto func = (PFN_vkDestroyDebugUtilsMessengerEXT) vkGetInstanceProcAddr(instance, "vkDestroyDebugUtilsMessengerEXT");
+    if (func != nullptr) {
+        func(instance, debugMessenger, pAllocator);
+    }
+    else {
+        // log
+        std::cerr << "vkDestroyDebugUtilsMessengerEXT not found" << std::endl;
+    }
 }
 
 }
