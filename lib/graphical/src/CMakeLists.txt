@@ -6,4 +6,7 @@ target_sources(graphRender PRIVATE
     VkConfigConstants.cpp
     ValidationLayer.cpp
     WindowHandler.cpp
+    PhysicalDevice.cpp
+    QueueFamilyIndices.cpp
+    SwapChainSupportDetails.cpp
 )
