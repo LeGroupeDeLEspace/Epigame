@@ -5,7 +5,8 @@ namespace gr {
 Graphics::Graphics() :
 windowHandler(),
 instance(this->windowHandler.getWindow()),
-physicalDevice(this->instance)
+physicalDevice(this->instance),
+device(this->physicalDevice)
 {
 }
 

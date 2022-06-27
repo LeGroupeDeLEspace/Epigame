@@ -31,6 +31,8 @@ PhysicalDevice::PhysicalDevice(const VulkanInstance &instance)
     }
     
     this->device = physicalDevice;
+    this->familyIndices = findQueueFamilies(this->device, surface);
+    this->swapChainSupportDetails = querySwapChainSupport(this->device, surface);
 }
 
 bool PhysicalDevice::queueFamilyPresentSupport(VkPhysicalDevice device, uint32_t i, const VkSurfaceKHR &surface)
@@ -132,5 +134,19 @@ SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice d
     return details;
 }
 
+QueueFamilyIndices PhysicalDevice::getFamilyQueues() const
+{
+    return this->familyIndices;
+}
+
+SwapChainSupportDetails PhysicalDevice::getSwapChainSupport() const
+{
+    return this->swapChainSupportDetails;
+}
+
+const VkPhysicalDevice &PhysicalDevice::getDevice() const
+{
+    return this->device;
+}
 
 }

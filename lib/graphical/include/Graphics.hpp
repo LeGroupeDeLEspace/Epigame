@@ -4,6 +4,7 @@
 #include "WindowHandler.hpp"
 #include "VulkanInstance.hpp"
 #include "PhysicalDevice.hpp"
+#include "LogicalDevice.hpp"
 
 namespace gr {
     class Graphics {
@@ -16,6 +17,7 @@ namespace gr {
             WindowHandler windowHandler;
             VulkanInstance instance;
             PhysicalDevice physicalDevice;
+            LogicalDevice device;
     };
 }
 

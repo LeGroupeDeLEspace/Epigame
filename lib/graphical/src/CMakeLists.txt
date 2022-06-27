@@ -9,4 +9,5 @@ target_sources(graphRender PRIVATE
     PhysicalDevice.cpp
     QueueFamilyIndices.cpp
     SwapChainSupportDetails.cpp
+    LogicalDevice.cpp
 )
