@@ -6,7 +6,8 @@ Graphics::Graphics() :
 windowHandler(),
 instance(this->windowHandler.getWindow()),
 physicalDevice(this->instance),
-device(this->physicalDevice)
+device(this->physicalDevice),
+swapChain(this->device.getDevice(), this->physicalDevice, this->instance, this->windowHandler.getWidth(), this->windowHandler.getHeight())
 {
 }
 

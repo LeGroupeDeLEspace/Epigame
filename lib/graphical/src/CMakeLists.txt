@@ -10,4 +10,5 @@ target_sources(graphRender PRIVATE
     QueueFamilyIndices.cpp
     SwapChainSupportDetails.cpp
     LogicalDevice.cpp
+    SwapChain.cpp
 )

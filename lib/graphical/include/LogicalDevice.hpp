@@ -9,6 +9,7 @@ namespace gr {
         public:
             LogicalDevice(const PhysicalDevice &physicalDevice);
             ~LogicalDevice();
+            const VkDevice &getDevice() const;
         private:
             VkDevice device;
 

@@ -56,4 +56,9 @@ LogicalDevice::~LogicalDevice()
     vkDestroyDevice(this->device, nullptr);
 }
 
+const VkDevice &LogicalDevice::getDevice() const
+{
+    return this->device;
+}
+
 }

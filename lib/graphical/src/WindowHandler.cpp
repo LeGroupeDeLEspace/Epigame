@@ -22,4 +22,12 @@ GLFWwindow *WindowHandler::getWindow() {
     return this->windowptr;
 }
 
+size_t WindowHandler::getWidth() const {
+    return this->windowWidth;
+}
+
+size_t WindowHandler::getHeight() const {
+    return this->windowHeight;
+}
+
 }

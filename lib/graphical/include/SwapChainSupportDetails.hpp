@@ -11,6 +11,9 @@ namespace gr {
         std::vector<VkPresentModeKHR> presentModes;
 
         bool isComplete() const;
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat() const;
+        VkPresentModeKHR chooseSwapPresentMode() const;
+        VkExtent2D chooseSwapExtent(uint32_t width, uint32_t height) const;
     };
 
 }

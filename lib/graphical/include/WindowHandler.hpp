@@ -13,6 +13,8 @@ namespace gr {
             ~WindowHandler();
         
             GLFWwindow * getWindow();
+            size_t getWidth() const;
+            size_t getHeight() const;
 
             //void resize(size_t width, size_t height);
         private:

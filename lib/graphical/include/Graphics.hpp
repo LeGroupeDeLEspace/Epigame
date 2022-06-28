@@ -5,6 +5,7 @@
 #include "VulkanInstance.hpp"
 #include "PhysicalDevice.hpp"
 #include "LogicalDevice.hpp"
+#include "SwapChain.hpp"
 
 namespace gr {
     class Graphics {
@@ -18,6 +19,7 @@ namespace gr {
             VulkanInstance instance;
             PhysicalDevice physicalDevice;
             LogicalDevice device;
+            SwapChain swapChain;
     };
 }
 
