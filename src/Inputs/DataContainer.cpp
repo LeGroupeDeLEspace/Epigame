@@ -4,6 +4,7 @@
 
 #include "Inputs/DataContainer.hpp"
 #include <stdexcept>
+#include <algorithm>
 
 // Helper
 size_t DataTypeHelper::getDataTypeSize(DataType type) {
@@ -63,13 +64,101 @@ std::string DataTypeHelper::toString(DataType type) {
 
 
 // Constructor / Destructor
-DataContainer::DataContainer(DataType type): size(DataTypeHelper::getDataTypeSize(type)), type(type) {
+DataContainer::DataContainer(DataType type): type(type), size(DataTypeHelper::getDataTypeSize(type)), events() {
     this->data = operator new(size);
 
     // Initializing my data
     unsigned char *ptr = (unsigned char *)this->data;
     size_t len = this->size;
     while (len-- > 0) *ptr++ = 0;
+}
+
+DataContainer::DataContainer(bool value):type(DataType::Bool), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    *((bool*)this->data) = value;
+}
+DataContainer::DataContainer(int value):type(DataType::Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    *((int*)this->data) = value;
+}
+DataContainer::DataContainer(float value):type(DataType::Float), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    *((float*)this->data) = value;}
+
+DataContainer::DataContainer(const glm::ivec2 & value):type(DataType::Vec2Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((int*)this->data)[0] = value.x;
+    ((int*)this->data)[1] = value.y;
+}
+DataContainer::DataContainer(int x, int y):type(DataType::Vec2Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((int*)this->data)[0] = x;
+    ((int*)this->data)[1] = y;
+}
+DataContainer::DataContainer(const glm::vec2 & value):type(DataType::Vec2), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((float*)this->data)[0] = value.x;
+    ((float*)this->data)[1] = value.y;
+}
+DataContainer::DataContainer(float x, float y):type(DataType::Vec2), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((float*)this->data)[0] = x;
+    ((float*)this->data)[1] = y;
+}
+
+DataContainer::DataContainer(const glm::ivec3 & value):type(DataType::Vec3Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((int*)this->data)[0] = value.x;
+    ((int*)this->data)[1] = value.y;
+    ((int*)this->data)[2] = value.z;
+}
+DataContainer::DataContainer(int x, int y, int z):type(DataType::Vec3Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((int*)this->data)[0] = x;
+    ((int*)this->data)[1] = y;
+    ((int*)this->data)[2] = z;
+}
+DataContainer::DataContainer(const glm::vec3 & value):type(DataType::Vec3), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((float*)this->data)[0] = value.x;
+    ((float*)this->data)[1] = value.y;
+    ((float*)this->data)[2] = value.z;
+}
+DataContainer::DataContainer(float x, float y, float z):type(DataType::Vec3), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+
+    ((float*)this->data)[0] = x;
+    ((float*)this->data)[1] = y;
+    ((float*)this->data)[2] = z;
+}
+
+DataContainer::DataContainer(const glm::ivec4 & value):type(DataType::Vec4Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((int*)this->data)[0] = value.x;
+    ((int*)this->data)[1] = value.y;
+    ((int*)this->data)[2] = value.z;
+    ((int*)this->data)[3] = value.w;
+}
+DataContainer::DataContainer(int x, int y, int z, int w):type(DataType::Vec4Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((int*)this->data)[0] = x;
+    ((int*)this->data)[1] = y;
+    ((int*)this->data)[2] = z;
+    ((int*)this->data)[3] = w;
+}
+DataContainer::DataContainer(const glm::vec4 & value):type(DataType::Vec4), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((float*)this->data)[0] = value.x;
+    ((float*)this->data)[1] = value.y;
+    ((float*)this->data)[2] = value.z;
+    ((float*)this->data)[3] = value.w;
+}
+DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::Vec4), size(DataTypeHelper::getDataTypeSize(type)),  events() {
+    this->data = operator new(size);
+    ((float*)this->data)[0] = x;
+    ((float*)this->data)[1] = y;
+    ((float*)this->data)[2] = z;
+    ((float*)this->data)[3] = w;
 }
 
 DataContainer::~DataContainer() {
@@ -84,6 +173,8 @@ void DataContainer::setData(bool value) {
     }
 
     *((bool*)this->data) = value;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setData(int value) {
@@ -92,6 +183,8 @@ void DataContainer::setData(int value) {
     }
 
     *((int*)this->data) = value;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setData(float value) {
@@ -100,6 +193,8 @@ void DataContainer::setData(float value) {
     }
 
     *((float*)this->data) = value;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setData(int x, int y) {
@@ -109,9 +204,11 @@ void DataContainer::setData(int x, int y) {
 
     ((int*)this->data)[0] = x;
     ((int*)this->data)[1] = y;
+
+    this->triggerEvents();
 }
 
-void DataContainer::setData(glm::ivec2 value) {
+void DataContainer::setData(const glm::ivec2 & value) {
     this->setData(value.x, value.y);
 }
 
@@ -122,9 +219,11 @@ void DataContainer::setData(float x, float y) {
 
     ((float*)this->data)[0] = x;
     ((float*)this->data)[1] = y;
+
+    this->triggerEvents();
 }
 
-void DataContainer::setData(glm::vec2 value) {
+void DataContainer::setData(const glm::vec2 & value) {
     this->setData(value.x, value.y);
 }
 
@@ -136,9 +235,11 @@ void DataContainer::setData(int x, int y, int z) {
     ((int*)this->data)[0] = x;
     ((int*)this->data)[1] = y;
     ((int*)this->data)[2] = z;
+
+    this->triggerEvents();
 }
 
-void DataContainer::setData(glm::ivec3 value) {
+void DataContainer::setData(const glm::ivec3 & value) {
     this->setData(value.x, value.y, value.z);
 }
 
@@ -150,9 +251,11 @@ void DataContainer::setData(float x, float y, float z) {
     ((float*)this->data)[0] = x;
     ((float*)this->data)[1] = y;
     ((float*)this->data)[2] = z;
+
+    this->triggerEvents();
 }
 
-void DataContainer::setData(glm::vec3 value) {
+void DataContainer::setData(const glm::vec3 & value) {
     this->setData(value.x, value.y, value.z);
 }
 
@@ -165,9 +268,11 @@ void DataContainer::setData(int x, int y, int z, int w) {
     ((int*)this->data)[1] = y;
     ((int*)this->data)[2] = z;
     ((int*)this->data)[3] = w;
+
+    this->triggerEvents();
 }
 
-void DataContainer::setData(glm::ivec4 value) {
+void DataContainer::setData(const glm::ivec4 & value) {
     this->setData(value.x, value.y, value.z, value.w);
 }
 
@@ -180,9 +285,11 @@ void DataContainer::setData(float x, float y, float z, float w) {
     ((float*)this->data)[1] = y;
     ((float*)this->data)[2] = z;
     ((float*)this->data)[3] = w;
+
+    this->triggerEvents();
 }
 
-void DataContainer::setData(glm::vec4 value) {
+void DataContainer::setData(const glm::vec4 & value) {
     this->setData(value.x, value.y, value.z, value.w);
 }
 
@@ -193,6 +300,8 @@ void DataContainer::setX(int x) {
     }
 
     ((int*)this->data)[0] = x;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setX(float x) {
@@ -201,6 +310,8 @@ void DataContainer::setX(float x) {
     }
 
     ((float*)this->data)[0] = x;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setY(int y) {
@@ -209,6 +320,8 @@ void DataContainer::setY(int y) {
     }
 
     ((int*)this->data)[1] = y;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setY(float y) {
@@ -217,6 +330,8 @@ void DataContainer::setY(float y) {
     }
 
     ((float*)this->data)[1] = y;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setZ(int z) {
@@ -225,6 +340,8 @@ void DataContainer::setZ(int z) {
     }
 
     ((int*)this->data)[2] = z;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setZ(float z) {
@@ -233,6 +350,8 @@ void DataContainer::setZ(float z) {
     }
 
     ((float*)this->data)[2] = z;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setW(int w) {
@@ -241,6 +360,8 @@ void DataContainer::setW(int w) {
     }
 
     ((int*)this->data)[3] = w;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setW(float w) {
@@ -249,6 +370,8 @@ void DataContainer::setW(float w) {
     }
 
     ((float*)this->data)[3] = w;
+
+    this->triggerEvents();
 }
 
 
@@ -324,4 +447,47 @@ glm::vec4 DataContainer::getVec4() {
     }
 
     return {((float*)this->data)[0], ((float*)this->data)[1], ((float*)this->data)[2], ((float*)this->data)[3]};
+}
+
+bool DataContainer::addEvent(DataContainerEvent event) {
+    //TODO: check "event" is not a nullptr
+    auto it = std::find(events.begin(), events.end(), event);
+    if (it == events.end()) {
+        events.push_back(event);
+        return true;
+    }
+
+    // TODO: Log the given events has already been passed.
+    return false;
+}
+
+bool DataContainer::operator+=(DataContainerEvent event) {
+    return this->addEvent(event);
+}
+
+bool DataContainer::removeEvent(DataContainerEvent event) {
+    //TODO: check "event" is not a nullptr
+    auto it = std::find(events.begin(), events.end(), event);
+    if (it != events.end()) {
+        events.erase(it);
+        return true;
+    }
+
+    // TODO: Log the given event has never been stored.
+    return false;
+}
+
+bool DataContainer::operator-=(DataContainerEvent event) {
+    return this->removeEvent(event);
+}
+
+void DataContainer::triggerEvents() {
+    for (DataContainerEvent event: events) {
+        if(event == nullptr) {
+            // TODO: Log the fact that a null pointer have been sent to the evetns
+            continue;
+        }
+
+        event(this);
+    }
 }

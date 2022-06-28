@@ -5,8 +5,9 @@
 #ifndef JEUDELESPACE_DATACONTAINER_HPP
 #define JEUDELESPACE_DATACONTAINER_HPP
 
-#include "stdint.h"
+#include <cstdint>
 #include <string>
+#include <vector>
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
@@ -28,26 +29,46 @@ namespace DataTypeHelper {
     static size_t getDataTypeSize(DataType type);
 }
 
+
+class DataContainer;
+
+using DataContainerEvent = void (*)(DataContainer*);
+
 class DataContainer {
 public:
     DataContainer(DataType type);
+    explicit DataContainer(bool value);
+    explicit DataContainer(int value);
+    explicit DataContainer(float value);
+    explicit DataContainer(int x, int y);
+    explicit DataContainer(const glm::ivec2 & value);
+    explicit DataContainer(float x, float y);
+    explicit DataContainer(const glm::vec2 & value);
+    explicit DataContainer(int x, int y, int z);
+    explicit DataContainer(const glm::ivec3 & value);
+    explicit DataContainer(float x, float y, float z);
+    explicit DataContainer(const glm::vec3 & value);
+    explicit DataContainer(int x, int y, int z, int w);
+    explicit DataContainer(const glm::ivec4 & value);
+    explicit DataContainer(float x, float y, float z, float w);
+    explicit DataContainer(const glm::vec4 & value);
     ~DataContainer();
 
     void setData(bool value);
     void setData(int value);
     void setData(float value);
     void setData(int x, int y);
-    void setData(glm::ivec2 value);
+    void setData(const glm::ivec2 & value);
     void setData(float x, float y);
-    void setData(glm::vec2 value);
+    void setData(const glm::vec2 & value);
     void setData(int x, int y, int z);
-    void setData(glm::ivec3 value);
+    void setData(const glm::ivec3 & value);
     void setData(float x, float y, float z);
-    void setData(glm::vec3 value);
+    void setData(const glm::vec3 & value);
     void setData(int x, int y, int z, int w);
-    void setData(glm::ivec4 value);
+    void setData(const glm::ivec4 & value);
     void setData(float x, float y, float z, float w);
-    void setData(glm::vec4 value);
+    void setData(const glm::vec4 & value);
 
     void setX(int x);
     void setX(float x);
@@ -67,10 +88,19 @@ public:
     glm::vec3 getVec3();
     glm::ivec4 getVec4Int();
     glm::vec4 getVec4();
-private:
-    void * data;
+
+    bool addEvent(DataContainerEvent event);
+    bool removeEvent(DataContainerEvent event);
+    bool operator +=(DataContainerEvent event);
+    bool operator -=(DataContainerEvent event);
+
     const DataType type;
+
+private:
     const size_t size;
+    std::vector<DataContainerEvent> events;
+    void * data;
+    void triggerEvents();
 };
 
 #endif //JEUDELESPACE_DATACONTAINER_HPP
