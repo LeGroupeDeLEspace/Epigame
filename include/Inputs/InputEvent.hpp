@@ -23,21 +23,7 @@ enum InputAction {
     Count,
 };
 
-const char* InputActionName[InputAction::Count] {
-        // Move Action
-        "MoveForward",
-        "MoveBackward",
-        "MoveRight",
-        "MoveLeft",
-        "MoveUp",
-        "MoveDown",
-        // LookAction
-        "LookRight",
-        "LookLeft",
-        "LookUp",
-        "LookDown",
-};
-
+extern const char* InputActionName[InputAction::Count];
 
 namespace InputActionHelper {
     InputAction GetInputAction(const char* action);

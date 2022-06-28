@@ -3,15 +3,19 @@
 #include <algorithm>
 #include "TestWindow.hpp"
 #include "Inputs/InputEvent.hpp"
-#include "Inputs/InputsManager.hpp"
+#include "Inputs/InputManager.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 
 #define WRITE(s) std::cout << s
 
-InputEventAction::InputEventAction(DataContainer& container, DataProps props, bool positive): container(container), props(props), positive(positive) {}
+InputEventAction::InputEventAction(DataContainer& container, Axis props, bool positive): container(container), axis(props), positive(positive) {}
 
-InputsManager::InputsManager() :
+void onMove(DataContainer* container){
+    LOG("The current movement is " << glm::to_string(container->getVec3()));
+}
+
+InputManager::InputManager() :
     joystickConnected(),
     keyboardEvent(),
 
@@ -22,18 +26,18 @@ InputsManager::InputsManager() :
 
     inputEvents({
         //Move Events
-        {InputAction::MoveForward, InputEventAction(events.at(InputEvent::Move),DataProps::Z, true)},
-        {InputAction::MoveBackward, InputEventAction(events.at(InputEvent::Move),DataProps::Z, false)},
-        {InputAction::MoveRight, InputEventAction(events.at(InputEvent::Move),DataProps::X, true)},
-        {InputAction::MoveLeft, InputEventAction(events.at(InputEvent::Move),DataProps::X, false)},
-        {InputAction::MoveUp, InputEventAction(events.at(InputEvent::Move),DataProps::Y, true)},
-        {InputAction::MoveDown, InputEventAction(events.at(InputEvent::Move),DataProps::Y, false)},
+        {InputAction::MoveForward, InputEventAction(events.at(InputEvent::Move), Axis::Z, true)},
+        {InputAction::MoveBackward, InputEventAction(events.at(InputEvent::Move), Axis::Z, false)},
+        {InputAction::MoveRight, InputEventAction(events.at(InputEvent::Move), Axis::X, true)},
+        {InputAction::MoveLeft, InputEventAction(events.at(InputEvent::Move), Axis::X, false)},
+        {InputAction::MoveUp, InputEventAction(events.at(InputEvent::Move), Axis::Y, true)},
+        {InputAction::MoveDown, InputEventAction(events.at(InputEvent::Move), Axis::Y, false)},
 
         //Look Event
-        {InputAction::LookUp, InputEventAction(events.at(InputEvent::Look),DataProps::Y, true)},
-        {InputAction::LookDown, InputEventAction(events.at(InputEvent::Look),DataProps::Y, false)},
-        {InputAction::LookRight, InputEventAction(events.at(InputEvent::Look),DataProps::X, true)},
-        {InputAction::LookLeft, InputEventAction(events.at(InputEvent::Look),DataProps::X, false)},
+        {InputAction::LookUp, InputEventAction(events.at(InputEvent::Look), Axis::Y, true)},
+        {InputAction::LookDown, InputEventAction(events.at(InputEvent::Look), Axis::Y, false)},
+        {InputAction::LookRight, InputEventAction(events.at(InputEvent::Look), Axis::X, true)},
+        {InputAction::LookLeft, InputEventAction(events.at(InputEvent::Look), Axis::X, false)},
     })
 {
     //Get the windows
@@ -41,42 +45,43 @@ InputsManager::InputsManager() :
 
     // Initializing the keyboards inputs
     std::cout << "Initializing the keyboard inputs" << std::endl;
-    glfwSetKeyCallback(window, (GLFWkeyfun)(InputsManager::keyCallbackStatic));
+    glfwSetKeyCallback(window, (GLFWkeyfun)(InputManager::keyCallbackStatic));
 
     // Initializing the mouse buttons
     std::cout << "Initializing the mouse buttons" << std::endl;
-    glfwSetMouseButtonCallback(window, (GLFWmousebuttonfun)InputsManager::mouseButtonCallbackStatic);
+    glfwSetMouseButtonCallback(window, (GLFWmousebuttonfun)InputManager::mouseButtonCallbackStatic);
 
     // Initializing the mouse position
     std::cout << "Initializing the mouse positions" << std::endl;
-    glfwSetCursorPosCallback(window, InputsManager::cursorPositionCallbackStatic);
+    glfwSetCursorPosCallback(window, InputManager::cursorPositionCallbackStatic);
 
     // Initializing the scrolling
     std::cout << "Initializing the mouse buttons" << std::endl;
-    glfwSetScrollCallback(window, InputsManager::scrollCallbackStatic);
+    glfwSetScrollCallback(window, InputManager::scrollCallbackStatic);
 
     // Initializing the mouse focus
     std::cout << "Initializing the mouse focus" << std::endl;
-    glfwSetCursorEnterCallback(window, InputsManager::mouseEnterWindowCallbackStatic);
+    glfwSetCursorEnterCallback(window, InputManager::mouseEnterWindowCallbackStatic);
 
-    glfwSetJoystickCallback((GLFWjoystickfun)InputsManager::joystickCallbackStatic);
+    glfwSetJoystickCallback((GLFWjoystickfun)InputManager::joystickCallbackStatic);
     // Creating some test events
     // TODO: Delete this tests
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Z,std::vector<InputAction>(InputAction::MoveForward)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>(InputAction::MoveBackward)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>(InputAction::MoveLeft)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::D,std::vector<InputAction>(InputAction::MoveRight)));
+    this->events.at(InputEvent::Move).addEvent(onMove);
 }
 
-InputsManager::~InputsManager(){
+InputManager::~InputManager(){
 
 }
 
-void InputsManager::keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
+void InputManager::keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
     instance().keyCallback(window, key, scancode, action, mods);
 }
 
-void InputsManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
+void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
     // Don't wanna use the repeat action
     if(action == InputState::Repeat) return;
     LOG("---------------------------------");
@@ -125,9 +130,22 @@ void InputsManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, I
     } else {
         for (auto & event : keyboardEvent[key]) {
             auto & input = inputEvents.at(event);
-            float direction = input.positive ? 1.0f : -1.0f;
-            float final = input.container.getFloat(input.props) + (action == InputState::Press ? direction*1.0f : direction * -1.0f);
-            input.container.setValue(final, input.props);
+            auto containerType = input.container.type;
+
+            if (containerType == DataType::Bool) {
+                input.container.setData(action == InputState::Press);
+            }
+            else if (containerType % 2 == 0) {
+                float direction = input.positive ? 1.0f : -1.0f;
+                float final = input.container.getFloat(input.axis) +
+                              (action == InputState::Press ? direction * 1.0f : direction * -1.0f);
+                input.container.setValue(final, input.axis);
+            } else { // is implicitly "containerType % 2 == 0"
+                int direction = input.positive ? 1 : -1;
+                int final = input.container.getInt(input.axis) +
+                            (action == InputState::Press ? direction * 1 : direction * -1);
+                input.container.setValue(final, input.axis);
+            }
         }
     }
     WRITE("---------------------------------");
@@ -136,20 +154,20 @@ void InputsManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, I
 
 }
 
-void InputsManager::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, double ypos) {
-    InputsManager::instance().cursorPositionCallback(window, xpos, ypos);
+void InputManager::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, double ypos) {
+    InputManager::instance().cursorPositionCallback(window, xpos, ypos);
 }
 
-void InputsManager::cursorPositionCallback(GLFWwindow *window, double xpos, double ypos) {
+void InputManager::cursorPositionCallback(GLFWwindow *window, double xpos, double ypos) {
     this->mousePosition = glm::dvec2 {xpos, ypos};
 //    LOG("MousePosition: " << glm::to_string(this->mousePosition));
 }
 
-void InputsManager::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
-    InputsManager::instance().mouseButtonCallback(window, button, action, mods);
+void InputManager::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
+    InputManager::instance().mouseButtonCallback(window, button, action, mods);
 }
 
-void InputsManager::mouseButtonCallback(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
+void InputManager::mouseButtonCallback(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
     // Don't wanna use the repeat action
     if(action == InputState::Repeat) return;
 
@@ -192,20 +210,20 @@ void InputsManager::mouseButtonCallback(GLFWwindow *window, MouseButton button, 
     LOG("---------------------------------");
 }
 
-void InputsManager::scrollCallbackStatic(GLFWwindow *window, double xoffset, double yoffset) {
-    InputsManager::instance().scrollCallback(window, xoffset, yoffset);
+void InputManager::scrollCallbackStatic(GLFWwindow *window, double xoffset, double yoffset) {
+    InputManager::instance().scrollCallback(window, xoffset, yoffset);
 }
 
-void InputsManager::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
+void InputManager::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
     this->scrolling = glm::dvec2 {xoffset, yoffset};
     LOG("Scrolling of " << glm::to_string(this->scrolling));
 }
 
-void InputsManager::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entered) {
-    InputsManager::instance().mouseEnterWindowCallback(window, entered);
+void InputManager::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entered) {
+    InputManager::instance().mouseEnterWindowCallback(window, entered);
 }
 
-void InputsManager::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
+void InputManager::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
     if (entered) {
         LOG("The cursor is inside the application window.");
     } else {
@@ -213,11 +231,11 @@ void InputsManager::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
     }
 }
 
-void InputsManager::joystickCallbackStatic(Joystick joystickId, int event) {
-    InputsManager::instance().joystickCallback(joystickId, event);
+void InputManager::joystickCallbackStatic(Joystick joystickId, int event) {
+    InputManager::instance().joystickCallback(joystickId, event);
 }
 
-void InputsManager::joystickCallback(Joystick jid, int event) {
+void InputManager::joystickCallback(Joystick jid, int event) {
     const char* joystickName = glfwGetJoystickName((int)jid);
     std::string name;
     if (joystickName != nullptr) {
@@ -247,7 +265,7 @@ void InputsManager::joystickCallback(Joystick jid, int event) {
 }
 
 // Updating the joystick
-void InputsManager::update() {
+void InputManager::update() {
 //    LOG("There is " << this->joystickConnected.size() << "Joystick connected.");
     for (auto & joystick : this->joystickConnected) {
         int jid = (int)joystick;

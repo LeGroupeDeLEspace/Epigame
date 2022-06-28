@@ -62,6 +62,22 @@ std::string DataTypeHelper::toString(DataType type) {
     }
 }
 
+std::string DataPropsHelper::toString(Axis props) {
+    switch (props) {
+        case Axis::None:
+            return "None";
+        case Axis::X:
+            return "X";
+        case Axis::Y:
+            return "Y";
+        case Axis::Z:
+            return "Z";
+        case Axis::W:
+            return "W";
+    }
+    throw std::runtime_error(std::string("The axis ").append(std::to_string(props)).append(" is not implemented"));
+}
+
 
 // Constructor / Destructor
 DataContainer::DataContainer(DataType type): type(type), size(DataTypeHelper::getDataTypeSize(type)), events() {
@@ -87,78 +103,78 @@ DataContainer::DataContainer(float value):type(DataType::Float), size(DataTypeHe
 
 DataContainer::DataContainer(const glm::ivec2 & value):type(DataType::Vec2Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((int*)this->data)[0] = value.x;
-    ((int*)this->data)[1] = value.y;
+    ((int*)this->data)[Axis::X] = value.x;
+    ((int*)this->data)[Axis::Y] = value.y;
 }
 DataContainer::DataContainer(int x, int y):type(DataType::Vec2Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((int*)this->data)[0] = x;
-    ((int*)this->data)[1] = y;
+    ((int*)this->data)[Axis::X] = x;
+    ((int*)this->data)[Axis::Y] = y;
 }
 DataContainer::DataContainer(const glm::vec2 & value):type(DataType::Vec2), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((float*)this->data)[0] = value.x;
-    ((float*)this->data)[1] = value.y;
+    ((float*)this->data)[Axis::X] = value.x;
+    ((float*)this->data)[Axis::Y] = value.y;
 }
 DataContainer::DataContainer(float x, float y):type(DataType::Vec2), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((float*)this->data)[0] = x;
-    ((float*)this->data)[1] = y;
+    ((float*)this->data)[Axis::X] = x;
+    ((float*)this->data)[Axis::Y] = y;
 }
 
 DataContainer::DataContainer(const glm::ivec3 & value):type(DataType::Vec3Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((int*)this->data)[0] = value.x;
-    ((int*)this->data)[1] = value.y;
-    ((int*)this->data)[2] = value.z;
+    ((int*)this->data)[Axis::X] = value.x;
+    ((int*)this->data)[Axis::Y] = value.y;
+    ((int*)this->data)[Axis::Z] = value.z;
 }
 DataContainer::DataContainer(int x, int y, int z):type(DataType::Vec3Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((int*)this->data)[0] = x;
-    ((int*)this->data)[1] = y;
-    ((int*)this->data)[2] = z;
+    ((int*)this->data)[Axis::X] = x;
+    ((int*)this->data)[Axis::Y] = y;
+    ((int*)this->data)[Axis::Z] = z;
 }
 DataContainer::DataContainer(const glm::vec3 & value):type(DataType::Vec3), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((float*)this->data)[0] = value.x;
-    ((float*)this->data)[1] = value.y;
-    ((float*)this->data)[2] = value.z;
+    ((float*)this->data)[Axis::X] = value.x;
+    ((float*)this->data)[Axis::Y] = value.y;
+    ((float*)this->data)[Axis::Z] = value.z;
 }
 DataContainer::DataContainer(float x, float y, float z):type(DataType::Vec3), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
 
-    ((float*)this->data)[0] = x;
-    ((float*)this->data)[1] = y;
-    ((float*)this->data)[2] = z;
+    ((float*)this->data)[Axis::X] = x;
+    ((float*)this->data)[Axis::Y] = y;
+    ((float*)this->data)[Axis::Z] = z;
 }
 
 DataContainer::DataContainer(const glm::ivec4 & value):type(DataType::Vec4Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((int*)this->data)[0] = value.x;
-    ((int*)this->data)[1] = value.y;
-    ((int*)this->data)[2] = value.z;
-    ((int*)this->data)[3] = value.w;
+    ((int*)this->data)[Axis::X] = value.x;
+    ((int*)this->data)[Axis::Y] = value.y;
+    ((int*)this->data)[Axis::Z] = value.z;
+    ((int*)this->data)[Axis::W] = value.w;
 }
 DataContainer::DataContainer(int x, int y, int z, int w):type(DataType::Vec4Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((int*)this->data)[0] = x;
-    ((int*)this->data)[1] = y;
-    ((int*)this->data)[2] = z;
-    ((int*)this->data)[3] = w;
+    ((int*)this->data)[Axis::X] = x;
+    ((int*)this->data)[Axis::Y] = y;
+    ((int*)this->data)[Axis::Z] = z;
+    ((int*)this->data)[Axis::W] = w;
 }
 DataContainer::DataContainer(const glm::vec4 & value):type(DataType::Vec4), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((float*)this->data)[0] = value.x;
-    ((float*)this->data)[1] = value.y;
-    ((float*)this->data)[2] = value.z;
-    ((float*)this->data)[3] = value.w;
+    ((float*)this->data)[Axis::X] = value.x;
+    ((float*)this->data)[Axis::Y] = value.y;
+    ((float*)this->data)[Axis::Z] = value.z;
+    ((float*)this->data)[Axis::W] = value.w;
 }
 DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::Vec4), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new(size);
-    ((float*)this->data)[0] = x;
-    ((float*)this->data)[1] = y;
-    ((float*)this->data)[2] = z;
-    ((float*)this->data)[3] = w;
+    ((float*)this->data)[Axis::X] = x;
+    ((float*)this->data)[Axis::Y] = y;
+    ((float*)this->data)[Axis::Z] = z;
+    ((float*)this->data)[Axis::W] = w;
 }
 
 DataContainer::~DataContainer() {
@@ -202,8 +218,8 @@ void DataContainer::setData(int x, int y) {
         throw std::runtime_error("Cannot set the Vector2 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[0] = x;
-    ((int*)this->data)[1] = y;
+    ((int*)this->data)[Axis::X] = x;
+    ((int*)this->data)[Axis::Y] = y;
 
     this->triggerEvents();
 }
@@ -217,8 +233,8 @@ void DataContainer::setData(float x, float y) {
         throw std::runtime_error("Cannot set the Vector2 value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[0] = x;
-    ((float*)this->data)[1] = y;
+    ((float*)this->data)[Axis::X] = x;
+    ((float*)this->data)[Axis::Y] = y;
 
     this->triggerEvents();
 }
@@ -232,9 +248,9 @@ void DataContainer::setData(int x, int y, int z) {
         throw std::runtime_error("Cannot set the Vector3 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[0] = x;
-    ((int*)this->data)[1] = y;
-    ((int*)this->data)[2] = z;
+    ((int*)this->data)[Axis::X] = x;
+    ((int*)this->data)[Axis::Y] = y;
+    ((int*)this->data)[Axis::Z] = z;
 
     this->triggerEvents();
 }
@@ -248,9 +264,9 @@ void DataContainer::setData(float x, float y, float z) {
         throw std::runtime_error("Cannot set the Vector3 value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[0] = x;
-    ((float*)this->data)[1] = y;
-    ((float*)this->data)[2] = z;
+    ((float*)this->data)[Axis::X] = x;
+    ((float*)this->data)[Axis::Y] = y;
+    ((float*)this->data)[Axis::Z] = z;
 
     this->triggerEvents();
 }
@@ -264,10 +280,10 @@ void DataContainer::setData(int x, int y, int z, int w) {
         throw std::runtime_error("Cannot set the Vector4 int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[0] = x;
-    ((int*)this->data)[1] = y;
-    ((int*)this->data)[2] = z;
-    ((int*)this->data)[3] = w;
+    ((int*)this->data)[Axis::X] = x;
+    ((int*)this->data)[Axis::Y] = y;
+    ((int*)this->data)[Axis::Z] = z;
+    ((int*)this->data)[Axis::W] = w;
 
     this->triggerEvents();
 }
@@ -281,10 +297,10 @@ void DataContainer::setData(float x, float y, float z, float w) {
         throw std::runtime_error("Cannot set the Vector4 value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[0] = x;
-    ((float*)this->data)[1] = y;
-    ((float*)this->data)[2] = z;
-    ((float*)this->data)[3] = w;
+    ((float*)this->data)[Axis::X] = x;
+    ((float*)this->data)[Axis::Y] = y;
+    ((float*)this->data)[Axis::Z] = z;
+    ((float*)this->data)[Axis::W] = w;
 
     this->triggerEvents();
 }
@@ -299,7 +315,7 @@ void DataContainer::setX(int x) {
         throw std::runtime_error("Cannot set the Integer x value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[0] = x;
+    ((int*)this->data)[Axis::X] = x;
 
     this->triggerEvents();
 }
@@ -309,7 +325,7 @@ void DataContainer::setX(float x) {
         throw std::runtime_error("Cannot set the Float x value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[0] = x;
+    ((float*)this->data)[Axis::X] = x;
 
     this->triggerEvents();
 }
@@ -319,7 +335,7 @@ void DataContainer::setY(int y) {
         throw std::runtime_error("Cannot set the Integer Y value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[1] = y;
+    ((int*)this->data)[Axis::Y] = y;
 
     this->triggerEvents();
 }
@@ -329,7 +345,7 @@ void DataContainer::setY(float y) {
         throw std::runtime_error("Cannot set the Float Y value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[1] = y;
+    ((float*)this->data)[Axis::Y] = y;
 
     this->triggerEvents();
 }
@@ -339,7 +355,7 @@ void DataContainer::setZ(int z) {
         throw std::runtime_error("Cannot set the Integer Z value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[2] = z;
+    ((int*)this->data)[Axis::Z] = z;
 
     this->triggerEvents();
 }
@@ -349,7 +365,7 @@ void DataContainer::setZ(float z) {
         throw std::runtime_error("Cannot set the Float Z value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[2] = z;
+    ((float*)this->data)[Axis::Z] = z;
 
     this->triggerEvents();
 }
@@ -359,7 +375,7 @@ void DataContainer::setW(int w) {
         throw std::runtime_error("Cannot set the Integer W value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((int*)this->data)[3] = w;
+    ((int*)this->data)[Axis::W] = w;
 
     this->triggerEvents();
 }
@@ -369,16 +385,32 @@ void DataContainer::setW(float w) {
         throw std::runtime_error("Cannot set the Float w value as this object is a " + DataTypeHelper::toString(type));
     }
 
-    ((float*)this->data)[3] = w;
+    ((float*)this->data)[Axis::W] = w;
 
     this->triggerEvents();
 }
 
 
+void DataContainer::setValue(float value, Axis axe) {
+    if(axe == Axis::None || type == Bool || type % 2 != 0 || type / 2 < axe) {
+        throw std::runtime_error("Cannot get the Float " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    }
+
+    ((float*)this->data)[axe] = value;
+}
+
+void DataContainer::setValue(int value, Axis axe) {
+    if(axe == Axis::None || type == Bool || type % 2 != 1 || (type - 1) / 2 < axe) {
+        throw std::runtime_error("Cannot get the Integer " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    }
+
+    ((int*)this->data)[axe] = value;
+}
+
 // Getter
 bool DataContainer::getBool() {
     if(type != DataType::Bool) {
-        throw std::runtime_error("Cannot set the Boolean value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Boolean value as this object contain a " + DataTypeHelper::toString(type));
     }
 
     return *((bool*)this->data);
@@ -386,7 +418,7 @@ bool DataContainer::getBool() {
 
 int DataContainer::getInt() {
     if(type != DataType::Int) {
-        throw std::runtime_error("Cannot set the Integer value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Integer value as this object contain a " + DataTypeHelper::toString(type));
     }
 
     return *((int*)this->data);
@@ -394,7 +426,7 @@ int DataContainer::getInt() {
 
 float DataContainer::getFloat() {
     if(type != DataType::Float) {
-        throw std::runtime_error("Cannot set the Float value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Float value as this object contain a " + DataTypeHelper::toString(type));
     }
 
     return *((float*)this->data);
@@ -402,52 +434,69 @@ float DataContainer::getFloat() {
 
 glm::ivec2 DataContainer::getVec2Int() {
     if(type != DataType::Vec2Int) {
-        throw std::runtime_error("Cannot set the Vector2 Int value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Vector2 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    return {((int*)this->data)[0], ((int*)this->data)[1]};
+    return {((int*)this->data)[Axis::X], ((int*)this->data)[Axis::Y]};
 }
 
 glm::vec2 DataContainer::getVec2() {
     if(type != DataType::Vec2) {
-        throw std::runtime_error("Cannot set the Vector2 Int value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Vector2 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    return {((float*)this->data)[0], ((float*)this->data)[1]};
+    return {((float*)this->data)[Axis::X], ((float*)this->data)[Axis::Y]};
 }
 
 glm::ivec3 DataContainer::getVec3Int() {
     if(type != DataType::Vec3Int) {
-        throw std::runtime_error("Cannot set the Vector3 Int value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Vector3 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    return {((int*)this->data)[0], ((int*)this->data)[1], ((int*)this->data)[2]};
+    return {((int*)this->data)[Axis::X], ((int*)this->data)[Axis::Y], ((int*)this->data)[Axis::Z]};
 }
 
 glm::vec3 DataContainer::getVec3() {
     if(type != DataType::Vec3) {
-        throw std::runtime_error("Cannot set the Vector3 Int value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Vector3 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    return {((float*)this->data)[0], ((float*)this->data)[1], ((float*)this->data)[2]};
+    return {((float*)this->data)[Axis::X], ((float*)this->data)[Axis::Y], ((float*)this->data)[Axis::Z]};
 }
 
 
 glm::ivec4 DataContainer::getVec4Int() {
     if(type != DataType::Vec4Int) {
-        throw std::runtime_error("Cannot set the Vector4 Int value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Vector4 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    return {((int*)this->data)[0], ((int*)this->data)[1], ((int*)this->data)[2], ((int*)this->data)[3]};
+    return {((int*)this->data)[Axis::X], ((int*)this->data)[Axis::Y], ((int*)this->data)[Axis::Z], ((int*)this->data)[Axis::W]};
 }
 
 glm::vec4 DataContainer::getVec4() {
     if(type != DataType::Vec4) {
-        throw std::runtime_error("Cannot set the Vector4 Int value as this object contain a " + DataTypeHelper::toString(type));
+        throw std::runtime_error("Cannot get the Vector4 Int value as this object contain a " + DataTypeHelper::toString(type));
     }
 
-    return {((float*)this->data)[0], ((float*)this->data)[1], ((float*)this->data)[2], ((float*)this->data)[3]};
+    return {((float*)this->data)[Axis::X], ((float*)this->data)[Axis::Y], ((float*)this->data)[Axis::Z], ((float*)this->data)[Axis::W]};
 }
+
+float DataContainer::getFloat(Axis axe) {
+    if(axe == Axis::None || type == Bool || type % 2 != 0 || type / 2 < axe) {
+        throw std::runtime_error("Cannot get the Float " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    }
+
+    return ((float*)this->data)[axe];
+}
+
+int DataContainer::getInt(Axis axe) {
+    if(axe == Axis::None || type == Bool || type % 2 != 1 || (type - 1) / 2 < axe) {
+        throw std::runtime_error("Cannot get the Integer " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    }
+
+    return ((int*)this->data)[axe];
+}
+
 
 bool DataContainer::addEvent(DataContainerEvent event) {
     //TODO: check "event" is not a nullptr
@@ -490,12 +539,4 @@ void DataContainer::triggerEvents() {
 
         event(this);
     }
-}
-
-void DataContainer::setValue(int value, DataProps props) {
-
-}
-
-void DataContainer::setValue(float value, DataProps props) {
-
 }

@@ -24,17 +24,21 @@ enum DataType {
     Bool,
 };
 
-enum DataProps {
-    Value,
-    X,
-    Y,
-    Z,
-    W
+enum Axis {
+    None = -1,
+    X = 0,
+    Y = 1,
+    Z = 2,
+    W = 3,
 };
 
 namespace DataTypeHelper {
     static std::string toString(DataType type);
     static size_t getDataTypeSize(DataType type);
+}
+
+namespace DataPropsHelper {
+    static std::string toString(Axis);
 }
 
 
@@ -87,8 +91,8 @@ public:
     void setW(int z);
     void setW(float w);
 
-    void setValue(int value, DataProps props);
-    void setValue(float value, DataProps props);
+    void setValue(int value, Axis props);
+    void setValue(float value, Axis props);
 
     bool getBool();
     int getInt();
@@ -100,9 +104,8 @@ public:
     glm::ivec4 getVec4Int();
     glm::vec4 getVec4();
 
-    float getFloat(DataProps props);
-    bool getBool(DataProps props);
-    int getInt(DataProps props);
+    float getFloat(Axis axe);
+    int getInt(Axis axe);
 
     bool addEvent(DataContainerEvent event);
     bool removeEvent(DataContainerEvent event);

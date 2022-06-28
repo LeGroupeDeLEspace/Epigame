@@ -1,5 +1,5 @@
-#ifndef JEUDELESPACE_INPUTSMANAGER_HPP
-#define JEUDELESPACE_INPUTSMANAGER_HPP
+#ifndef JEUDELESPACE_INPUTMANAGER_HPP
+#define JEUDELESPACE_INPUTMANAGER_HPP
 
 #include <unordered_map>
 #include <vector>
@@ -10,17 +10,16 @@
 #include "Command.hpp"
 #include "InputEnums.hpp"
 #include "Utils/DataContainer.hpp"
-#include "InputEvent.hpp"
-
+#include "Inputs/InputEvent.hpp"
 
 struct InputEventAction {
     DataContainer& container;
-    const DataProps props;
+    const Axis axis;
     const bool positive;
-    InputEventAction(DataContainer& container, DataProps props, bool positive);
+    InputEventAction(DataContainer& container, Axis props, bool positive);
 };
 
-class InputsManager {
+class InputManager {
 private:
     bool cursorInsideApplicationWindows;
     glm::dvec2 mousePosition;
@@ -54,12 +53,12 @@ private:
 
 
 
-    InputsManager();
+    InputManager();
 public:
-    ~InputsManager();
-    static InputsManager& instance()
+    ~InputManager();
+    static InputManager& instance()
     {
-        static auto *instance = new InputsManager();
+        static auto *instance = new InputManager();
         return *instance;
     }
 
@@ -72,4 +71,4 @@ public:
     void removeAction(std::string event, Command0& action);
     void removeAction(std::string event, std::vector<Command0&> actions);
 };
-#endif //JEUDELESPACE_INPUTSMANAGER_HPP
+#endif //JEUDELESPACE_INPUTMANAGER_HPP
