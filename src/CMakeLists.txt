@@ -6,4 +6,5 @@ target_sources(bonjourmonde PRIVATE
     System.cpp
 )
 
+add_subdirectory(Utils)
 add_subdirectory(Inputs)
