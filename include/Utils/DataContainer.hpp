@@ -24,6 +24,14 @@ enum DataType {
     Bool,
 };
 
+enum DataProps {
+    Value,
+    X,
+    Y,
+    Z,
+    W
+};
+
 namespace DataTypeHelper {
     static std::string toString(DataType type);
     static size_t getDataTypeSize(DataType type);
@@ -79,6 +87,9 @@ public:
     void setW(int z);
     void setW(float w);
 
+    void setValue(int value, DataProps props);
+    void setValue(float value, DataProps props);
+
     bool getBool();
     int getInt();
     float getFloat();
@@ -88,6 +99,10 @@ public:
     glm::vec3 getVec3();
     glm::ivec4 getVec4Int();
     glm::vec4 getVec4();
+
+    float getFloat(DataProps props);
+    bool getBool(DataProps props);
+    int getInt(DataProps props);
 
     bool addEvent(DataContainerEvent event);
     bool removeEvent(DataContainerEvent event);

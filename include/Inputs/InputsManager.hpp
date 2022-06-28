@@ -1,16 +1,26 @@
-#ifndef JEUDELESPACE_INPUTS_HPP
-#define JEUDELESPACE_INPUTS_HPP
+#ifndef JEUDELESPACE_INPUTSMANAGER_HPP
+#define JEUDELESPACE_INPUTSMANAGER_HPP
 
-#include "Command.hpp"
-#include "GLFW/glfw3.h"
-#include "InputEnums.hpp"
 #include <unordered_map>
 #include <vector>
 #include <string>
 #include <memory>
 #include <glm/glm.hpp>
+#include "GLFW/glfw3.h"
+#include "Command.hpp"
+#include "InputEnums.hpp"
+#include "Utils/DataContainer.hpp"
+#include "InputEvent.hpp"
 
-class Inputs {
+
+struct InputEventAction {
+    DataContainer& container;
+    const DataProps props;
+    const bool positive;
+    InputEventAction(DataContainer& container, DataProps props, bool positive);
+};
+
+class InputsManager {
 private:
     bool cursorInsideApplicationWindows;
     glm::dvec2 mousePosition;
@@ -18,8 +28,11 @@ private:
     std::vector<Joystick> joystickConnected;
 
     // Events
-    std::unordered_map<KeyCode, std::vector<std::string>> keyboardEvent;
-//    std::unordered_map<std::string, Command0*> eventAction;
+    std::unordered_map<KeyCode, std::vector<InputAction>> keyboardEvent;
+
+    std::unordered_map<InputEvent, DataContainer> events;
+
+    std::unordered_map<InputAction, InputEventAction> inputEvents;
 
     static void keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
     void keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
@@ -41,12 +54,12 @@ private:
 
 
 
-    Inputs();
+    InputsManager();
 public:
-    ~Inputs();
-    static Inputs& instance()
+    ~InputsManager();
+    static InputsManager& instance()
     {
-        static auto *instance = new Inputs();
+        static auto *instance = new InputsManager();
         return *instance;
     }
 
@@ -59,4 +72,4 @@ public:
     void removeAction(std::string event, Command0& action);
     void removeAction(std::string event, std::vector<Command0&> actions);
 };
-#endif //JEUDELESPACE_INPUTS_HPP
+#endif //JEUDELESPACE_INPUTSMANAGER_HPP

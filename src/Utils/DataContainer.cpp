@@ -491,3 +491,11 @@ void DataContainer::triggerEvents() {
         event(this);
     }
 }
+
+void DataContainer::setValue(int value, DataProps props) {
+
+}
+
+void DataContainer::setValue(float value, DataProps props) {
+
+}

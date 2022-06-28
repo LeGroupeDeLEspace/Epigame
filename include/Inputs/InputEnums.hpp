@@ -9,7 +9,7 @@
 
 enum class InputState : int {
     Press = GLFW_PRESS,
-    Hold = GLFW_REPEAT,
+    Repeat = GLFW_REPEAT,
     Release = GLFW_RELEASE,
 };
 std::ostream& operator<< (std::ostream& out, const InputState& inputState);
