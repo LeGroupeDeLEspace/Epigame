@@ -1,5 +1,5 @@
 #ifndef GR_GRAPHICS_HPP_
-#define GR_GRAHPICS_HPP_
+#define GR_GRAPHICS_HPP_
 
 #include "WindowHandler.hpp"
 #include "VulkanInstance.hpp"
