@@ -2,7 +2,7 @@
 
 namespace gr {
 
-SwapChain::SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height)
+SwapChain::SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height) : device(device)
 {
     SwapChainSupportDetails swapChainSupport = physicalDevice.getSwapChainSupport();
     
@@ -57,11 +57,44 @@ SwapChain::SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, cons
 
     this->swapChainImageFormat = surfaceFormat.format;
     this->swapChainExtent = extent;
+
+    this->createImageViews();
 }
 
 SwapChain::~SwapChain()
 {
-
+    for (auto imageView : this->swapChainImageViews) {
+        vkDestroyImageView(this->device, imageView, nullptr);
+    }
+    vkDestroySwapchainKHR(this->device, this->swapChain, nullptr);
 }
+
+void SwapChain::createImageViews()
+{
+    this->swapChainImageViews.resize(this->swapChainImages.size());
+    
+    for (std::size_t i = 0; i < this->swapChainImageViews.size(); i++) {
+        VkImageViewCreateInfo createInfo{};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = this->swapChainImages[i];
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = swapChainImageFormat;
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+        if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create image views");
+        }
+    }
+}
+
+
 
 }
