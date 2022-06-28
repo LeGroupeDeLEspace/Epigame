@@ -1,8 +1,12 @@
-#include <graphRender.hpp>
+#include "Graphics.hpp"
 
 int main()
 {
-    GraphicalInterface graph;
-    graph.test();
+    gr::Graphics graph;
+    GLFWwindow *window = graph.getWindow();
+
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+    }
     return 0;
 }
