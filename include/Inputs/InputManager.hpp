@@ -1,11 +1,11 @@
 #ifndef JEUDELESPACE_INPUTMANAGER_HPP
 #define JEUDELESPACE_INPUTMANAGER_HPP
 
-#include <unordered_map>
 #include <vector>
 #include <string>
 #include <memory>
 #include <glm/glm.hpp>
+#include <map>
 #include "GLFW/glfw3.h"
 #include "Command.hpp"
 #include "InputEnums.hpp"
@@ -27,11 +27,11 @@ private:
     std::vector<Joystick> joystickConnected;
 
     // Events
-    std::unordered_map<KeyCode, std::vector<InputAction>> keyboardEvent;
+    std::map<KeyCode, std::vector<InputAction>> keyboardEvent;
 
-    std::unordered_map<InputEvent, DataContainer> events;
+    std::map<InputEvent, DataContainer> events;
 
-    std::unordered_map<InputAction, InputEventAction> inputEvents;
+    std::map<InputAction, InputEventAction> inputEvents;
 
     static void keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
     void keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
@@ -64,7 +64,7 @@ public:
 
     void update();
     // The functions for the rest of the
-    void loadInputs(std::unordered_map<int, std::vector<std::string>> inputs);
+    void loadInputs(std::map<int, std::vector<std::string>> inputs);
     void changeInput(int oldInput, int newInput, std::string event);
     void addAction(std::string event, Command0& action);
     void addAction(std::string event, std::vector<Command0> actions);
