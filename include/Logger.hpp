@@ -9,14 +9,13 @@ class Logger
 {
 
 public:
-    Logger(/* args */);
-    ~Logger();
-    bool log(MESSAGE type, std::string message, std::string location);
-    std::string getDate();
-    std::string getTime();
-    std::string getType(MESSAGE type);
+    Logger() = delete;
+    static bool log(MESSAGE type, std::string message, std::string location);
 
 private:
+    static std::string getDate();
+    static std::string getTime();
+    static std::string getType(MESSAGE type);
     
 };
 

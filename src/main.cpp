@@ -1,10 +1,9 @@
 #include "Logger.hpp"
-#include "System.hpp"
+#include "ErrorTracking.hpp"
 #include <iostream>
 
 int main()
 {
-    Logger log;
-    log.log(WARNING, "ici une erreur", "la macro de mon poto");
+    Logger::log(WARNING, "ici une erreur", ERR_LOCATION);
     return 0;
 }
