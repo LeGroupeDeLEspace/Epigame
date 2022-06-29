@@ -4,7 +4,7 @@ set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g")
 
 project(jeudelespace)
 
-add_executable(bonjourmonde src/Inputs/InputEvent.cpp)
+add_executable(bonjourmonde src/main.cpp)
 include_directories(bonjourmonde include)
 add_subdirectory(src)
 
