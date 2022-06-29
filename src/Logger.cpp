@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <fstream>
 #include <iomanip>
+#include <sstream>
 
 bool Logger::log(MESSAGE type, std::string message, std::string location)
 {
