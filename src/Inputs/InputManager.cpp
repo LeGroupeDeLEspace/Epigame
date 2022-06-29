@@ -66,11 +66,13 @@ InputManager::InputManager() :
     glfwSetJoystickCallback((GLFWjoystickfun)InputManager::joystickCallbackStatic);
     // Creating some test events
     // TODO: Delete this tests
+    this->events.at(InputEvent::Move).addEvent(onMove);
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Z,std::vector<InputAction>(InputAction::MoveForward)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>(InputAction::MoveBackward)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>(InputAction::MoveLeft)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::D,std::vector<InputAction>(InputAction::MoveRight)));
-    this->events.at(InputEvent::Move).addEvent(onMove);
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::E,std::vector<InputAction>(InputAction::MoveUp)));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::A,std::vector<InputAction>(InputAction::MoveDown)));
 }
 
 InputManager::~InputManager(){
@@ -123,11 +125,13 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
         WRITE("with Super ");
     }
 
-    WRITE("");
+    LOG("");
 
-    if (keyboardEvent.count(key) == 0) {
+    auto eventFound = keyboardEvent.count(key);
+    if (eventFound == 0) {
         LOG("No event found...");
     } else {
+        LOG("Found " << eventFound << " events");
         for (auto & event : keyboardEvent[key]) {
             auto & input = inputEvents.at(event);
             auto containerType = input.container.type;
@@ -135,23 +139,19 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
             if (containerType == DataType::Bool) {
                 input.container.setData(action == InputState::Press);
             }
-            else if (containerType % 2 == 0) {
+            else if (containerType % 2 == 0) { // Setting a float
                 float direction = input.positive ? 1.0f : -1.0f;
                 float final = input.container.getFloat(input.axis) +
                               (action == InputState::Press ? direction * 1.0f : direction * -1.0f);
                 input.container.setValue(final, input.axis);
-            } else { // is implicitly "containerType % 2 == 0"
+            } else { // is implicitly "containerType % 2 == 0" => setting an int
                 int direction = input.positive ? 1 : -1;
-                int final = input.container.getInt(input.axis) +
-                            (action == InputState::Press ? direction * 1 : direction * -1);
+                int final = input.container.getInt(input.axis) + (action == InputState::Press ? direction * 1 : direction * -1);
                 input.container.setValue(final, input.axis);
             }
         }
     }
     WRITE("---------------------------------");
-
-
-
 }
 
 void InputManager::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, double ypos) {

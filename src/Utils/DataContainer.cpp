@@ -402,6 +402,8 @@ void DataContainer::setValue(float value, Axis axe) {
     }
 
     ((float*)this->data)[axe] = value;
+
+    this->triggerEvents();
 }
 
 void DataContainer::setValue(int value, Axis axe) {
@@ -410,6 +412,8 @@ void DataContainer::setValue(int value, Axis axe) {
     }
 
     ((int*)this->data)[axe] = value;
+
+    this->triggerEvents();
 }
 
 // Getter
