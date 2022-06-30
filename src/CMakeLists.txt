@@ -4,6 +4,7 @@ target_sources(bonjourmonde PRIVATE
     main.cpp
     TestWindow.cpp
     System.cpp
+    Logger.cpp
 )
 
 add_subdirectory(Utils)
