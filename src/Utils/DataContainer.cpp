@@ -104,58 +104,58 @@ void DataContainer::setData(void * data) {
 }
 
 DataContainer::DataContainer(bool value):type(DataType::Bool), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     *((bool*)this->data) = value;
 }
 DataContainer::DataContainer(int value):type(DataType::Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     *((int*)this->data) = value;
 }
 DataContainer::DataContainer(float value):type(DataType::Float), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     *((float*)this->data) = value;}
 
 DataContainer::DataContainer(const glm::ivec2 & value):type(DataType::Vec2Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((int*)this->data)[Axis::X] = value.x;
     ((int*)this->data)[Axis::Y] = value.y;
 }
 DataContainer::DataContainer(int x, int y):type(DataType::Vec2Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((int*)this->data)[Axis::X] = x;
     ((int*)this->data)[Axis::Y] = y;
 }
 DataContainer::DataContainer(const glm::vec2 & value):type(DataType::Vec2), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((float*)this->data)[Axis::X] = value.x;
     ((float*)this->data)[Axis::Y] = value.y;
 }
 DataContainer::DataContainer(float x, float y):type(DataType::Vec2), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((float*)this->data)[Axis::X] = x;
     ((float*)this->data)[Axis::Y] = y;
 }
 
 DataContainer::DataContainer(const glm::ivec3 & value):type(DataType::Vec3Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((int*)this->data)[Axis::X] = value.x;
     ((int*)this->data)[Axis::Y] = value.y;
     ((int*)this->data)[Axis::Z] = value.z;
 }
 DataContainer::DataContainer(int x, int y, int z):type(DataType::Vec3Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((int*)this->data)[Axis::X] = x;
     ((int*)this->data)[Axis::Y] = y;
     ((int*)this->data)[Axis::Z] = z;
 }
 DataContainer::DataContainer(const glm::vec3 & value):type(DataType::Vec3), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((float*)this->data)[Axis::X] = value.x;
     ((float*)this->data)[Axis::Y] = value.y;
     ((float*)this->data)[Axis::Z] = value.z;
 }
 DataContainer::DataContainer(float x, float y, float z):type(DataType::Vec3), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
 
     ((float*)this->data)[Axis::X] = x;
     ((float*)this->data)[Axis::Y] = y;
@@ -163,28 +163,28 @@ DataContainer::DataContainer(float x, float y, float z):type(DataType::Vec3), si
 }
 
 DataContainer::DataContainer(const glm::ivec4 & value):type(DataType::Vec4Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((int*)this->data)[Axis::X] = value.x;
     ((int*)this->data)[Axis::Y] = value.y;
     ((int*)this->data)[Axis::Z] = value.z;
     ((int*)this->data)[Axis::W] = value.w;
 }
 DataContainer::DataContainer(int x, int y, int z, int w):type(DataType::Vec4Int), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((int*)this->data)[Axis::X] = x;
     ((int*)this->data)[Axis::Y] = y;
     ((int*)this->data)[Axis::Z] = z;
     ((int*)this->data)[Axis::W] = w;
 }
 DataContainer::DataContainer(const glm::vec4 & value):type(DataType::Vec4), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((float*)this->data)[Axis::X] = value.x;
     ((float*)this->data)[Axis::Y] = value.y;
     ((float*)this->data)[Axis::Z] = value.z;
     ((float*)this->data)[Axis::W] = value.w;
 }
 DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::Vec4), size(DataTypeHelper::getDataTypeSize(type)),  events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     ((float*)this->data)[Axis::X] = x;
     ((float*)this->data)[Axis::Y] = y;
     ((float*)this->data)[Axis::Z] = z;
