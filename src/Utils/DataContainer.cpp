@@ -87,7 +87,7 @@ std::string DataPropsHelper::toString(Axis props) {
 
 // Constructor / Destructor
 DataContainer::DataContainer(DataType type): type(type), size(DataTypeHelper::getDataTypeSize(type)), events() {
-    this->data = operator new (size);
+    this->data = malloc(size);
     // Initializing my data
     for (int i = 0; i < this->size/(sizeof(unsigned char)); ++i) {
         ((unsigned char *)(this->data))[i] = 0;
@@ -191,9 +191,7 @@ DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::
 }
 
 DataContainer::~DataContainer() {
-
-    operator delete (this->data);
-    events.clear();
+    free(this->data);
 }
 
 
