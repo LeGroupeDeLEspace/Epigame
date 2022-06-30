@@ -49,6 +49,7 @@ using DataContainerEvent = void (*)(DataContainer*);
 class DataContainer {
 public:
     DataContainer(DataType type);
+    DataContainer(const DataContainer & copy);
     explicit DataContainer(bool value);
     explicit DataContainer(int value);
     explicit DataContainer(float value);
@@ -118,6 +119,7 @@ private:
     const size_t size;
     std::vector<DataContainerEvent> events;
     void * data;
+    void setData(void* data);
     void triggerEvents();
 };
 

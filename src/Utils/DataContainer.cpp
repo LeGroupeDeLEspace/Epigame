@@ -93,6 +93,14 @@ DataContainer::DataContainer(DataType type): type(type), size(DataTypeHelper::ge
     }
 }
 
+DataContainer::DataContainer(const DataContainer & copy) : DataContainer(copy.type) {
+    setData(copy.data);
+}
+
+void DataContainer::setData(void * data) {
+    memcpy(this->data, data, this->size);
+}
+
 DataContainer::DataContainer(bool value):type(DataType::Bool), size(DataTypeHelper::getDataTypeSize(type)),  events() {
     this->data = operator new (size);
     *((bool*)this->data) = value;
