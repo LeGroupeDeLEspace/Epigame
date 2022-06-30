@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include <cstring>
 
 #define LOG(s) std::cout << s << std::endl
 
