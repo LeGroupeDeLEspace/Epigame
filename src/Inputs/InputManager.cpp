@@ -69,12 +69,12 @@ InputManager::InputManager() :
     // TODO: Delete this tests
     this->events.at(InputEvent::Move).addEvent(onMove);
     // The vector ain't kept
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Z,std::vector<InputAction>(InputAction::MoveForward)));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>(InputAction::MoveBackward)));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>(InputAction::MoveLeft)));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::D,std::vector<InputAction>(InputAction::MoveRight)));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::E,std::vector<InputAction>(InputAction::MoveUp)));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::A,std::vector<InputAction>(InputAction::MoveDown)));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::W,std::vector<InputAction>({InputAction::MoveForward})));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>({InputAction::MoveBackward})));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::A,std::vector<InputAction>({InputAction::MoveLeft})));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::D,std::vector<InputAction>({InputAction::MoveRight})));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>({InputAction::MoveUp})));
+    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::E,std::vector<InputAction>({InputAction::MoveDown})));
 }
 
 InputManager::~InputManager(){
@@ -101,12 +101,8 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
             WRITE("Releasing ");
             break;
     }
-    auto keyName = glfwGetKeyName((int)key, scancode);
-    if (keyName != nullptr) {
-        WRITE("the key " << keyName << " ");
-    } else {
-        WRITE("an unknown key of code " << key << " ");
-    }
+
+    WRITE("the key " << (char)key << " ");
 
     if (mods & InputModifier::Alt) {
         WRITE("with Alt ");
@@ -127,24 +123,6 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
         WRITE("with Super ");
     }
     WRITE(std::endl);
-
-    LOG("---");
-    LOG("All the keyboardEvent");
-    auto inputs = {KeyCode::Z, KeyCode::Q,KeyCode::S,KeyCode::D,KeyCode::A,KeyCode::E};
-    for (const auto & input : inputs) {
-        auto count = keyboardEvent.contains(input);
-        LOG("For " << (char)input << " " << "found " << count << " event.");
-        if(count) {
-            auto actions = keyboardEvent.at(key);
-            LOG("There is " << actions.size()<< " events :");
-            for (const auto & inputAction : actions) {
-                LOG("Event: \"" << InputActionName[inputAction] << "\"");
-            }
-            LOG("");
-        }
-    }
-    LOG("---");
-
 
     auto eventFound = keyboardEvent.count(key);
     if (eventFound == 0) {
