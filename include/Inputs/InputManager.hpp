@@ -51,10 +51,12 @@ private:
     static void joystickCallbackStatic(Joystick joystickId, int event);
     void joystickCallback(Joystick joystickId, int event);
 
-
-
     InputManager();
 public:
+
+    InputManager(const InputManager & copy) = delete;
+    InputManager& operator=(const InputManager & copy) = delete;
+
     ~InputManager();
     static InputManager& instance()
     {
