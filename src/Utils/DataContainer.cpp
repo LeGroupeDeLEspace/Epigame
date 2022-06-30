@@ -193,6 +193,7 @@ DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::
 DataContainer::~DataContainer() {
 
     operator delete (this->data);
+    events.clear();
 }
 
 
