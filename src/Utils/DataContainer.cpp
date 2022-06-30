@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 
 #define LOG(s) std::cout << s << std::endl
 
