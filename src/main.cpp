@@ -14,5 +14,7 @@ int main()
         result = testWindow.update();
         input.update();
     } while (result);
+
+    delete &input;
     return 0;
 }
