@@ -1,14 +1,14 @@
-#include "TestWindow.hpp"
-#include "Inputs/InputManager.hpp"
-#include "iostream"
+#include "Graphics.hpp"
+
 int main()
 {
-    std::cout << "Begin of the project" << std::endl;
-    bool result;
-    TestWindow testWindow = TestWindow::instance();
+    gr::Graphics graph;
+    GLFWwindow *window = graph.getWindow();
     InputManager input = InputManager::instance();
-    do {
-        result = testWindow.update();
+
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
         input.update();
-    } while (result);
+    }
+    return 0;
 }
