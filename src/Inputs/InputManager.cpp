@@ -1,9 +1,10 @@
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
-#include "TestWindow.hpp"
+#include <map>
 #include "Inputs/InputEvent.hpp"
 #include "Inputs/InputManager.hpp"
+#include "TestWindow.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 
@@ -67,6 +68,7 @@ InputManager::InputManager() :
     // Creating some test events
     // TODO: Delete this tests
     this->events.at(InputEvent::Move).addEvent(onMove);
+    // The vector ain't kept
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Z,std::vector<InputAction>(InputAction::MoveForward)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>(InputAction::MoveBackward)));
     this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>(InputAction::MoveLeft)));
@@ -124,27 +126,49 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
     if (mods & InputModifier::Super) {
         WRITE("with Super ");
     }
+    WRITE(std::endl);
 
-    LOG("");
+    LOG("---");
+    LOG("All the keyboardEvent");
+    auto inputs = {KeyCode::Z, KeyCode::Q,KeyCode::S,KeyCode::D,KeyCode::A,KeyCode::E};
+    for (const auto & input : inputs) {
+        auto count = keyboardEvent.contains(input);
+        LOG("For " << (char)input << " " << "found " << count << " event.");
+        if(count) {
+            auto actions = keyboardEvent.at(key);
+            LOG("There is " << actions.size()<< " events :");
+            for (const auto & inputAction : actions) {
+                LOG("Event: \"" << InputActionName[inputAction] << "\"");
+            }
+            LOG("");
+        }
+    }
+    LOG("---");
+
 
     auto eventFound = keyboardEvent.count(key);
     if (eventFound == 0) {
         LOG("No event found...");
     } else {
         LOG("Found " << eventFound << " events");
-        for (auto & event : keyboardEvent[key]) {
+        for (auto & event : keyboardEvent.at(key)) {
+            LOG("Updating the event " << InputActionName[event]);
+
             auto & input = inputEvents.at(event);
             auto containerType = input.container.type;
 
             if (containerType == DataType::Bool) {
+                LOG("We update a boolean value");
                 input.container.setData(action == InputState::Press);
             }
             else if (containerType % 2 == 0) { // Setting a float
+                LOG("We update a float value");
                 float direction = input.positive ? 1.0f : -1.0f;
                 float final = input.container.getFloat(input.axis) +
                               (action == InputState::Press ? direction * 1.0f : direction * -1.0f);
                 input.container.setValue(final, input.axis);
             } else { // is implicitly "containerType % 2 == 0" => setting an int
+                LOG("We update a int value");
                 int direction = input.positive ? 1 : -1;
                 int final = input.container.getInt(input.axis) + (action == InputState::Press ? direction * 1 : direction * -1);
                 input.container.setValue(final, input.axis);

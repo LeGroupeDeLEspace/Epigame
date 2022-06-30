@@ -5,8 +5,11 @@ set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g")
 project(jeudelespace)
 
 add_executable(bonjourmonde)
-target_compile_features(bonjourmonde PUBLIC cxx_std_17)
+
+target_compile_features(bonjourmonde PUBLIC cxx_std_20)
+
 include_directories(bonjourmonde include)
+
 add_subdirectory(src)
 
 add_subdirectory(lib)
