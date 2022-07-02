@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <map>
 #include "GLFW/glfw3.h"
-#include "Command.hpp"
+#include "Utils/Command.hpp"
 #include "InputEnums.hpp"
 #include "Utils/DataContainer.hpp"
 #include "Inputs/InputEvent.hpp"
