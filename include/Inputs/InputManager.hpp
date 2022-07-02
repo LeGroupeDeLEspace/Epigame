@@ -72,11 +72,9 @@ public:
 
     void update();
     // The functions for the rest of the
-    void loadInputs(std::map<int, std::vector<std::string>> inputs);
-    void changeInput(int oldInput, int newInput, std::string event);
-    void addAction(std::string event, Command0& action);
-    void addAction(std::string event, std::vector<Command0> actions);
-    void removeAction(std::string event, Command0& action);
-    void removeAction(std::string event, std::vector<Command0&> actions);
+    void loadInputs(std::map<int, std::vector<InputEvent>> inputs); //TODO: change the load
+    void changeInput(int oldInput, int newInput, InputEvent event); //TODO: change the changing
+    void addAction(InputEvent event, Command0 * action); // Only adding one at a time for simplicity first.
+    void removeAction(InputEvent event, Command0 * action); // Only removing one at a time for simplicity first.
 };
 #endif //JEUDELESPACE_INPUTMANAGER_HPP

@@ -191,8 +191,14 @@ DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::
 }
 
 DataContainer::~DataContainer() {
-
     operator delete (this->data);
+
+    // Deleting all the stored pointers
+    Command0 * pd;
+    for(auto & event : events) {
+        pd = event;
+        delete pd;
+    }
     events.clear();
 }
 
@@ -537,8 +543,8 @@ int DataContainer::getInt(Axis axe) {
 }
 
 
-bool DataContainer::addEvent(DataContainerEvent event) {
-    //TODO: check "event" is not a nullptr
+bool DataContainer::addEvent(Command0 * event) {
+    if(event == nullptr) return false;
     auto it = std::find(events.begin(), events.end(), event);
     if (it == events.end()) {
         events.push_back(event);
@@ -549,15 +555,18 @@ bool DataContainer::addEvent(DataContainerEvent event) {
     return false;
 }
 
-bool DataContainer::operator+=(DataContainerEvent event) {
+bool DataContainer::operator+=(Command0 * event) {
     return this->addEvent(event);
 }
 
-bool DataContainer::removeEvent(DataContainerEvent event) {
-    //TODO: check "event" is not a nullptr
+bool DataContainer::removeEvent(Command0 * event) {
+    if(event == nullptr) return false;
+
     auto it = std::find(events.begin(), events.end(), event);
     if (it != events.end()) {
+        // TODO IMPORTANT: handle the pointer
         events.erase(it);
+        delete event;
         return true;
     }
 
@@ -565,17 +574,16 @@ bool DataContainer::removeEvent(DataContainerEvent event) {
     return false;
 }
 
-bool DataContainer::operator-=(DataContainerEvent event) {
+bool DataContainer::operator-=(Command0 * event) {
     return this->removeEvent(event);
 }
 
 void DataContainer::triggerEvents() {
-    for (DataContainerEvent event: events) {
+    for (auto & event: events) {
         if(event == nullptr) {
-            // TODO: Log the fact that a null pointer have been sent to the evetns
             continue;
         }
 
-        event(this);
+        event->execute();
     }
 }

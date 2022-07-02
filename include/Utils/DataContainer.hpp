@@ -109,16 +109,16 @@ public:
     float getFloat(Axis axe);
     int getInt(Axis axe);
 
-    bool addEvent(DataContainerEvent event);
-    bool removeEvent(DataContainerEvent event);
-    bool operator +=(DataContainerEvent event);
-    bool operator -=(DataContainerEvent event);
+    bool addEvent(Command0 * event);
+    bool removeEvent(Command0 * event);
+    bool operator +=(Command0 * event);
+    bool operator -=(Command0 * event);
 
     const DataType type;
 
 private:
     const size_t size;
-    std::vector<DataContainerEvent> events;
+    std::vector<Command0 *> events;
     void * data;
     void setData(void* data);
     void triggerEvents();
