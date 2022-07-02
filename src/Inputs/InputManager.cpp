@@ -10,22 +10,20 @@
 
 #define WRITE(s) std::cout << s
 
-InputEventAction::InputEventAction(DataContainer& container, Axis props, bool positive): container(container), axis(props), positive(positive) {}
-
-void onMove(DataContainer* container){
-    LOG("The current movement is " << glm::to_string(container->getVec3()));
-}
+InputEventAction::InputEventAction(DataContainer& container, Axis props, bool positive): container(container), axis(props), positive(positive){}
+int InputEventAction::getSignInt() {return positive ? 1 : -1;}
+float InputEventAction::getSignFloat() {return positive ? 1 : -1;}
 
 InputManager::InputManager() :
-    joystickConnected(),
-    keyboardEvent(),
+        joystickConnected(),
+        keyboardEvents(),
 
-    events({
+        events({
        {InputEvent::Move, DataContainer(DataType::Vec3)},
        {InputEvent::Look, DataContainer(DataType::Vec2)},
     }),
 
-    inputEvents({
+        inputEvents({
         //Move Events
         {InputAction::MoveForward, InputEventAction(events.at(InputEvent::Move), Axis::Z, true)},
         {InputAction::MoveBackward, InputEventAction(events.at(InputEvent::Move), Axis::Z, false)},
@@ -65,19 +63,9 @@ InputManager::InputManager() :
     glfwSetCursorEnterCallback(window, InputManager::mouseEnterWindowCallbackStatic);
 
     glfwSetJoystickCallback((GLFWjoystickfun)InputManager::joystickCallbackStatic);
-    // Creating some test events
-    // TODO: Delete this tests
-    this->events.at(InputEvent::Move).addEvent(onMove);
-    // The vector ain't kept
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::W,std::vector<InputAction>({InputAction::MoveForward})));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>({InputAction::MoveBackward})));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::A,std::vector<InputAction>({InputAction::MoveLeft})));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::D,std::vector<InputAction>({InputAction::MoveRight})));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>({InputAction::MoveUp})));
-    this->keyboardEvent.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::E,std::vector<InputAction>({InputAction::MoveDown})));
 }
 
-InputManager::~InputManager(){
+InputManager::~InputManager() {
 
 }
 
@@ -86,50 +74,11 @@ void InputManager::keyCallbackStatic(GLFWwindow* window, KeyCode key, int scanco
 }
 
 void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
-    // Don't wanna use the repeat action
+    // Don't want to use the repeat action
     if(action == InputState::Repeat) return;
-    LOG("---------------------------------");
-    LOG ("window = " << window);
-    switch (action) {
-        case InputState::Press :
-            WRITE("Pressing ");
-            break;
-        case InputState::Repeat :
-            WRITE("Holding ");
-            break;
-        case InputState::Release :
-            WRITE("Releasing ");
-            break;
-    }
 
-    WRITE("the key " << (char)key << " ");
-
-    if (mods & InputModifier::Alt) {
-        WRITE("with Alt ");
-    }
-    if (mods & InputModifier::CapsLock) {
-        WRITE("with CapsLock ");
-    }
-    if (mods & InputModifier::Ctrl) {
-        WRITE("with Control ");
-    }
-    if (mods & InputModifier::NumLock) {
-        WRITE("with NumLock ");
-    }
-    if (mods & InputModifier::Shift) {
-        WRITE("with Shift ");
-    }
-    if (mods & InputModifier::Super) {
-        WRITE("with Super ");
-    }
-    WRITE(std::endl);
-
-    auto eventFound = keyboardEvent.count(key);
-    if (eventFound == 0) {
-        LOG("No event found...");
-    } else {
-        LOG("Found " << eventFound << " events");
-        for (auto & event : keyboardEvent.at(key)) {
+    if (keyboardEvents.contains(key)) {
+        for (auto & event : keyboardEvents.at(key)) {
             LOG("Updating the event " << InputActionName[event]);
 
             auto & input = inputEvents.at(event);
@@ -141,19 +90,16 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
             }
             else if (containerType % 2 == 0) { // Setting a float
                 LOG("We update a float value");
-                float direction = input.positive ? 1.0f : -1.0f;
-                float final = input.container.getFloat(input.axis) +
-                              (action == InputState::Press ? direction * 1.0f : direction * -1.0f);
+                float final = input.container.getFloat(input.axis) + (action == InputState::Press ? input.getSignFloat() : -input.getSignFloat());
                 input.container.setValue(final, input.axis);
-            } else { // is implicitly "containerType % 2 == 0" => setting an int
+            }
+            else { // is implicitly "containerType % 2 == 0" => setting an int
                 LOG("We update a int value");
-                int direction = input.positive ? 1 : -1;
-                int final = input.container.getInt(input.axis) + (action == InputState::Press ? direction * 1 : direction * -1);
+                int final = input.container.getInt(input.axis) + (action == InputState::Press ? input.getSignInt() : - input.getSignInt());
                 input.container.setValue(final, input.axis);
             }
         }
     }
-    WRITE("---------------------------------");
 }
 
 void InputManager::cursorPositionCallbackStatic(GLFWwindow *window, double xpos, double ypos) {
@@ -161,8 +107,20 @@ void InputManager::cursorPositionCallbackStatic(GLFWwindow *window, double xpos,
 }
 
 void InputManager::cursorPositionCallback(GLFWwindow *window, double xpos, double ypos) {
-    this->mousePosition = glm::dvec2 {xpos, ypos};
-//    LOG("MousePosition: " << glm::to_string(this->mousePosition));
+    auto previousMousePosition = this->mousePosition;
+    this->mousePosition = glm::vec2 {xpos, ypos};
+
+    if (this->mouseAxisEvents.contains(MouseAxisEvent::Position)) {
+        for (auto & inputAction : this->mouseAxisEvents[MouseAxisEvent::Position]) {
+            inputEvents.at(inputAction).container.setData(this->mousePosition);
+        }
+    }
+
+    if (this->mouseAxisEvents.contains(MouseAxisEvent::DeltaMovement)) {
+        for (auto & inputAction : this->mouseAxisEvents[MouseAxisEvent::DeltaMovement]) {
+            inputEvents.at(inputAction).container.setData(this->mousePosition - previousMousePosition);
+        }
+    }
 }
 
 void InputManager::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
@@ -170,46 +128,22 @@ void InputManager::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton but
 }
 
 void InputManager::mouseButtonCallback(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
-    // Don't wanna use the repeat action
+    // Don't want to use the repeat action
     if(action == InputState::Repeat) return;
 
-    LOG("---------------------------------");
-    LOG("window = " << window);
-    switch (action) {
-        case InputState::Press :
-            WRITE("Pressing ");
-            break;
-        case InputState::Repeat :
-            WRITE("Holding ");
-            break;
-        case InputState::Release :
-            WRITE("Releasing ");
-            break;
+    if (this->mouseButtonEvents.contains(button)) {
+        for (auto & inputAction : this->mouseButtonEvents[button]) {
+            auto & event = inputEvents.at(inputAction);
+            switch (event.axis) {
+                case None:
+                    event.container.setData(action == InputState::Press);
+                    break;
+                default:
+                    event.container.setData(action == InputState::Press ? 1.0f : 0.0f);
+                    break;
+            }
+        }
     }
-
-    std::cout << "the mouse button " << button << " ";
-
-    if (mods & InputModifier::Alt) {
-        WRITE("witt Alt");
-    }
-    if (mods & InputModifier::CapsLock) {
-        WRITE("with CapsLock ");
-    }
-    if (mods & InputModifier::Ctrl) {
-        WRITE("with Control ");
-    }
-    if (mods & InputModifier::NumLock) {
-        WRITE("with NumLock ");
-    }
-    if (mods & InputModifier::Shift) {
-        WRITE("with Shift ");
-    }
-    if (mods & InputModifier::Super) {
-        WRITE("with Super ");
-    }
-
-    LOG("");
-    LOG("---------------------------------");
 }
 
 void InputManager::scrollCallbackStatic(GLFWwindow *window, double xoffset, double yoffset) {
@@ -217,8 +151,13 @@ void InputManager::scrollCallbackStatic(GLFWwindow *window, double xoffset, doub
 }
 
 void InputManager::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
-    this->scrolling = glm::dvec2 {xoffset, yoffset};
-    LOG("Scrolling of " << glm::to_string(this->scrolling));
+    this->scrolling = glm::vec2 {xoffset, yoffset};
+
+    if (this->mouseAxisEvents.contains(MouseAxisEvent::DeltaScroll)) {
+        for (auto & inputAction : this->mouseAxisEvents[MouseAxisEvent::DeltaScroll]) {
+            inputEvents.at(inputAction).container.setData(this->scrolling);
+        }
+    }
 }
 
 void InputManager::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entered) {
@@ -226,6 +165,7 @@ void InputManager::mouseEnterWindowCallbackStatic(GLFWwindow *window, int entere
 }
 
 void InputManager::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
+    this->cursorInsideApplicationWindows = entered;
     if (entered) {
         LOG("The cursor is inside the application window.");
     } else {
@@ -271,28 +211,38 @@ void InputManager::update() {
 //    LOG("There is " << this->joystickConnected.size() << "Joystick connected.");
     for (auto & joystick : this->joystickConnected) {
         int jid = (int)joystick;
-        LOG("---------------------------------");
-        const char* alias = glfwGetJoystickName(jid);
-        LOG("Joystick " << jid << " alias " << alias);
-
-        // GUID:
-        const char* guid = glfwGetJoystickGUID(jid);
-        LOG("GUID = " << guid);
 
         // Logging the different axis
         int axisCount;
         const float* axes = glfwGetJoystickAxes(jid, &axisCount);
         for (int i = 0; i < axisCount; ++i) {
-            LOG("Axis " << i << " = " << axes[i]);
+            auto axis = (GamepadAxis)i;
+            if (gamepadAxisEvents.contains(axis)) {
+                for (auto & inputAction : gamepadAxisEvents[axis]) {
+                    auto & e = inputEvents.at(inputAction);
+                    e.container.setValue(axes[i] * e.getSignFloat(), e.axis);
+                }
+            }
         }
 
         // Logging the different buttons
         int buttonCount;
         const unsigned char* buttons = glfwGetJoystickButtons(jid, &buttonCount);
         for (int i = 0; i < buttonCount; ++i) {
-            LOG("Button " << i << " = " << buttons[i]);
+            auto button = (GamepadButton)i;
+            if (gamepadButtonsEvents.contains(button)) {
+                for (auto & inputAction : gamepadButtonsEvents[button]) {
+                    auto & e = inputEvents.at(inputAction);
+                    switch (e.axis) {
+                        case None:
+                            e.container.setData((buttons[i] == 1) == e.positive);
+                            break;
+                        default:
+                            e.container.setValue(buttons[i] * e.getSignInt(),e.axis);
+                            break;
+                    }
+                }
+            }
         }
-        LOG("---------------------------------");
-
     }
 }

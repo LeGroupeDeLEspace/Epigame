@@ -32,6 +32,10 @@ std::ostream& operator<< (std::ostream& out, const MouseButton& mouseButton) {
     return out << ((int)mouseButton);
 }
 
+std::ostream& operator<< (std::ostream& out, const MouseAxisEvent& mouseAxisEvent) {
+    return out << ((int)mouseAxisEvent);
+}
+
 std::ostream& operator<< (std::ostream& out, const Joystick& joystick) {
     return out << ((int)joystick);
 }

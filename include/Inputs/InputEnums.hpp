@@ -170,12 +170,19 @@ enum class MouseButton : int {
     M6 = GLFW_MOUSE_BUTTON_6,
     M7 = GLFW_MOUSE_BUTTON_7,
     M8 = GLFW_MOUSE_BUTTON_8,
-    Last = GLFW_MOUSE_BUTTON_LAST,
     Left = GLFW_MOUSE_BUTTON_LEFT,
     Right = GLFW_MOUSE_BUTTON_RIGHT,
     Middle = GLFW_MOUSE_BUTTON_MIDDLE,
+    Last = GLFW_MOUSE_BUTTON_LAST,
 };
 std::ostream& operator<< (std::ostream& out, const MouseButton& mouseButton);
+
+enum class MouseAxisEvent: int {
+    Position,
+    DeltaMovement,
+    DeltaScroll,
+};
+std::ostream& operator<< (std::ostream& out, const MouseAxisEvent& mouseAxisEvent);
 
 enum class Joystick : int {
     J1 = GLFW_JOYSTICK_1,

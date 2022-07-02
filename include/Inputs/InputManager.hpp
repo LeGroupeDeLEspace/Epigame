@@ -16,22 +16,28 @@ struct InputEventAction {
     DataContainer& container;
     const Axis axis;
     const bool positive;
+    int getSignInt();
+    float getSignFloat();
     InputEventAction(DataContainer& container, Axis props, bool positive);
 };
 
 class InputManager {
 private:
     bool cursorInsideApplicationWindows;
-    glm::dvec2 mousePosition;
-    glm::dvec2 scrolling;
+    glm::vec2 mousePosition;
+    glm::vec2 scrolling;
     std::vector<Joystick> joystickConnected;
 
     // Events
-    std::map<KeyCode, std::vector<InputAction>> keyboardEvent;
+    std::map<KeyCode, std::vector<InputAction>> keyboardEvents;
+    std::map<MouseAxisEvent, std::vector<InputAction>> mouseAxisEvents;
+    std::map<MouseButton, std::vector<InputAction>> mouseButtonEvents;
 
-    std::map<InputEvent, DataContainer> events;
+    std::map<GamepadButton, std::vector<InputAction>> gamepadButtonsEvents;
+    std::map<GamepadAxis, std::vector<InputAction>> gamepadAxisEvents;
 
     std::map<InputAction, InputEventAction> inputEvents;
+    std::map<InputEvent, DataContainer> events;
 
     static void keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
     void keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);

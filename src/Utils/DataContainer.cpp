@@ -407,8 +407,18 @@ void DataContainer::setW(float w) {
 
 
 void DataContainer::setValue(float value, Axis axe) {
-    if(axe == Axis::None || type == Bool || type % 2 != 0 || type / 2 < axe) {
-        throw std::runtime_error("Cannot get the Float " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    if(axe == Axis::None || type == Bool) {
+        throw std::runtime_error("Cannot get set a Float " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    }
+
+    // For practical reason, delegate the call to the right type
+    if(type % 2 == 1) { // Check if int
+        setValue((int)value,axe);
+        return;
+    }
+
+    if(type / 2 < axe){
+        throw std::runtime_error("Cannot get set a Float " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
     }
 
     ((float*)this->data)[axe] = value;
@@ -417,8 +427,18 @@ void DataContainer::setValue(float value, Axis axe) {
 }
 
 void DataContainer::setValue(int value, Axis axe) {
-    if(axe == Axis::None || type == Bool || type % 2 != 1 || (type - 1) / 2 < axe) {
-        throw std::runtime_error("Cannot get the Integer " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    if(axe == Axis::None || type == Bool ) {
+        throw std::runtime_error("Cannot set the Integer " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
+    }
+
+    // For practical reason, delegate the call to the right type
+    if(type % 2 == 0) { // Check if float
+        setValue((float)value, axe);
+        return;
+    }
+
+    if ((type - 1) / 2 < axe) {
+        throw std::runtime_error("Cannot set the Integer " + DataPropsHelper::toString(axe) + " as this object contain a " + DataTypeHelper::toString(type));
     }
 
     ((int*)this->data)[axe] = value;
