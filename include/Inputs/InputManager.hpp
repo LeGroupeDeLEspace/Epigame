@@ -36,8 +36,8 @@ private:
     std::map<GamepadButton, std::vector<InputAction>> gamepadButtonsEvents;
     std::map<GamepadAxis, std::vector<InputAction>> gamepadAxisEvents;
 
-    std::map<InputAction, InputEventAction> inputEvents;
     std::map<InputEvent, DataContainer> events;
+    std::map<InputAction, InputEventAction> inputEvents;
 
     static void keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
     void keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
@@ -76,6 +76,7 @@ public:
     void changeInput(int oldInput, int newInput, InputEvent event); //TODO: change the changing
     void addAction(InputEvent event, Command1<DataContainer *> * action); // Only adding one at a time for simplicity first.
     void removeAction(InputEvent event, Command1<DataContainer *> * action); // Only removing one at a time for simplicity first.
+    void clearAllEvents(InputEvent event);
 };
 
 #endif //JEUDELESPACE_INPUTMANAGER_HPP

@@ -34,12 +34,12 @@ enum Axis {
 };
 
 namespace DataTypeHelper {
-    static std::string toString(DataType type);
-    static size_t getDataTypeSize(DataType type);
+    std::string toString(DataType type);
+    size_t getDataTypeSize(DataType type);
 }
 
 namespace DataPropsHelper {
-    static std::string toString(Axis);
+    std::string toString(Axis);
 }
 
 
@@ -109,8 +109,10 @@ public:
     float getFloat(Axis axe);
     int getInt(Axis axe);
 
+    //TODO: make an ID system to store and retrieve the events
     bool addEvent(Command1<DataContainer *> * event);
     bool removeEvent(Command1<DataContainer *> * event);
+    bool clearAllEvents();
     bool operator +=(Command1<DataContainer *> * event);
     bool operator -=(Command1<DataContainer *> * event);
 

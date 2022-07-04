@@ -196,13 +196,7 @@ DataContainer::DataContainer(float x, float y, float z, float w):type(DataType::
 DataContainer::~DataContainer() {
     operator delete (this->data);
 
-    // Deleting all the stored pointers
-    Command1<DataContainer *> * pd;
-    for(auto & event : events) {
-        pd = event;
-        delete pd;
-    }
-    events.clear();
+    this->clearAllEvents();
 }
 
 
@@ -596,4 +590,14 @@ void DataContainer::triggerEvents() {
 
         event->execute(this);
     }
+}
+
+bool DataContainer::clearAllEvents() {
+    // Deleting all the stored pointers and their associated data.
+    Command1<DataContainer *> * pd;
+    for(auto & event : events) {
+        pd = event;
+        delete pd;
+    }
+    events.clear();
 }
