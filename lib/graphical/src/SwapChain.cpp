@@ -100,4 +100,9 @@ const VkFormat &SwapChain::getImageFormat() const
     return this->swapChainImageFormat;
 }
 
+const VkExtent2D &SwapChain::getExtent() const
+{
+    return this->swapChainExtent;
+}
+
 }

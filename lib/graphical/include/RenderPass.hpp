@@ -1,5 +1,5 @@
-#ifndef RENDER_PASS_HPP_
-#define RENDER_PASS_HPP_
+#ifndef GR_RENDER_PASS_HPP_
+#define GR_RENDER_PASS_HPP_
 
 #include "LogicalDevice.hpp"
 #include "SwapChain.hpp"
@@ -10,6 +10,7 @@ namespace gr {
             RenderPass(const LogicalDevice &device, const SwapChain &swapChain);
             ~RenderPass();
 
+            const VkRenderPass &getPass() const;
         private:
             VkRenderPass renderPass;
             const VkDevice device;

@@ -12,6 +12,7 @@ namespace gr {
             ~SwapChain();
 
             const VkFormat &getImageFormat() const;
+            const VkExtent2D &getExtent() const;
         private:
             void createImageViews();
 

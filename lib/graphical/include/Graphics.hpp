@@ -6,7 +6,7 @@
 #include "PhysicalDevice.hpp"
 #include "LogicalDevice.hpp"
 #include "SwapChain.hpp"
-#include "RenderPass.hpp"
+#include "Pipeline.hpp"
 
 namespace gr {
     class Graphics {
@@ -21,7 +21,7 @@ namespace gr {
             PhysicalDevice physicalDevice;
             LogicalDevice device;
             SwapChain swapChain;
-            RenderPass renderPass;
+            Pipeline pipeline;
     };
 }
 

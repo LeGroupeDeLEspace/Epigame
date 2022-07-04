@@ -12,4 +12,5 @@ target_sources(graphRender PRIVATE
     LogicalDevice.cpp
     SwapChain.cpp
     RenderPass.cpp
+    Pipeline.cpp
 )

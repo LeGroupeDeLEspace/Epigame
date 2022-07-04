@@ -40,4 +40,9 @@ RenderPass::~RenderPass()
     vkDestroyRenderPass(this->device, this->renderPass, nullptr);
 }
 
+const VkRenderPass &RenderPass::getPass() const
+{
+    return this->renderPass;
+}
+
 }
