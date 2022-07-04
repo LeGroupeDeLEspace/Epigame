@@ -1,5 +1,5 @@
 #include "Logger.hpp"
-#include "System.hpp"
+#include <System.hpp>
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -12,7 +12,7 @@ bool Logger::log(MESSAGE type, std::string message, std::string location)
 {
     std::fstream fs;
     // create log folder if it doesn't exist
-    std::string path = System::resolvePath(std::vector<std::string> {
+    std::string path = su::System::resolvePath(std::vector<std::string> {
         "log", getDate().append(".log")
     });
 
