@@ -95,6 +95,9 @@ void SwapChain::createImageViews()
     }
 }
 
-
+const VkFormat &SwapChain::getImageFormat() const
+{
+    return this->swapChainImageFormat;
+}
 
 }

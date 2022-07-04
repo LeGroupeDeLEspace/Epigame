@@ -7,7 +7,8 @@ windowHandler(),
 instance(this->windowHandler.getWindow()),
 physicalDevice(this->instance),
 device(this->physicalDevice),
-swapChain(this->device.getDevice(), this->physicalDevice, this->instance, this->windowHandler.getWidth(), this->windowHandler.getHeight())
+swapChain(this->device.getDevice(), this->physicalDevice, this->instance, this->windowHandler.getWidth(), this->windowHandler.getHeight()),
+renderPass(this->device, this->swapChain)
 {
 }
 
