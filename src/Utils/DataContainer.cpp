@@ -2,11 +2,14 @@
 // Created by Iannis on 27/06/2022.
 //
 
-#include "Utils/DataContainer.hpp"
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
 #include <cstring>
+#include "Utils/DataContainer.hpp"
+#include "Logger.hpp"
+#include "ErrorTracking.hpp"
+#include "Utils/StringHelper.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 
@@ -194,7 +197,7 @@ DataContainer::~DataContainer() {
     operator delete (this->data);
 
     // Deleting all the stored pointers
-    Command0 * pd;
+    Command1<DataContainer *> * pd;
     for(auto & event : events) {
         pd = event;
         delete pd;
@@ -543,7 +546,7 @@ int DataContainer::getInt(Axis axe) {
 }
 
 
-bool DataContainer::addEvent(Command0 * event) {
+bool DataContainer::addEvent(Command1<DataContainer *> * event) {
     if(event == nullptr) return false;
     auto it = std::find(events.begin(), events.end(), event);
     if (it == events.end()) {
@@ -555,17 +558,24 @@ bool DataContainer::addEvent(Command0 * event) {
     return false;
 }
 
-bool DataContainer::operator+=(Command0 * event) {
+bool DataContainer::operator+=(Command1<DataContainer *> * event) {
     return this->addEvent(event);
 }
 
-bool DataContainer::removeEvent(Command0 * event) {
+bool DataContainer::removeEvent(Command1<DataContainer *> * event) {
     if(event == nullptr) return false;
 
     auto it = std::find(events.begin(), events.end(), event);
     if (it != events.end()) {
         // TODO IMPORTANT: handle the pointer
         events.erase(it);
+        Logger::log(INFO,
+                    std::string("We will delete the event ")
+                            .append(StringHelper::pointerToStr(event))
+                            .append(" from this container of type ")
+                            .append(DataTypeHelper::toString(this->type))
+                            .append("."),
+                    ERR_LOCATION);
         delete event;
         return true;
     }
@@ -574,7 +584,7 @@ bool DataContainer::removeEvent(Command0 * event) {
     return false;
 }
 
-bool DataContainer::operator-=(Command0 * event) {
+bool DataContainer::operator-=(Command1<DataContainer *> * event) {
     return this->removeEvent(event);
 }
 
@@ -584,6 +594,6 @@ void DataContainer::triggerEvents() {
             continue;
         }
 
-        event->execute();
+        event->execute(this);
     }
 }

@@ -246,3 +246,11 @@ void InputManager::update() {
         }
     }
 }
+
+void InputManager::addAction(InputEvent event, Command1<DataContainer *> * action) {
+    this->events.at(event) += action;
+}
+
+void InputManager::removeAction(InputEvent event, Command1<DataContainer *> * action) {
+    this->events.at(event) -= action;
+}

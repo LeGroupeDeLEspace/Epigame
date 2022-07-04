@@ -24,6 +24,12 @@ bool Logger::log(MESSAGE type, std::string message, std::string location)
     fs << std::endl;
 
     fs.close();
+
+    std::cout << getTime() << std::endl;
+    std::cout << getType(type) << ": " << message << std::endl;
+    std::cout << location << std::endl;
+    std::cout << std::endl;
+
     return true;
 }
 
