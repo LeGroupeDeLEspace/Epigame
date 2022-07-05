@@ -66,25 +66,27 @@ InputManager::InputManager() :
 
     glfwSetJoystickCallback((GLFWjoystickfun)InputManager::joystickCallbackStatic);
     // Creating some test events
-    this->keyboardEvents.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::W,std::vector<InputAction>({InputAction::MoveForward})));
-    this->keyboardEvents.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::S,std::vector<InputAction>({InputAction::MoveBackward})));
-    this->keyboardEvents.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::A,std::vector<InputAction>({InputAction::MoveLeft})));
-    this->keyboardEvents.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::D,std::vector<InputAction>({InputAction::MoveRight})));
-    this->keyboardEvents.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::Q,std::vector<InputAction>({InputAction::MoveUp})));
-    this->keyboardEvents.insert(std::make_pair<KeyCode,std::vector<InputAction>>(KeyCode::E,std::vector<InputAction>({InputAction::MoveDown})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::W,std::vector<InputAction>({InputAction::MoveForward})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::S,std::vector<InputAction>({InputAction::MoveBackward})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::A,std::vector<InputAction>({InputAction::MoveLeft})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::D,std::vector<InputAction>({InputAction::MoveRight})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::Q,std::vector<InputAction>({InputAction::MoveUp})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::E,std::vector<InputAction>({InputAction::MoveDown})));
+
+    this->mouseAxisEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Mouse::Axis::DeltaMovement, std::vector<InputAction>({InputAction::})));
 }
 
 InputManager::~InputManager() {
 
 }
 
-void InputManager::keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
+void InputManager::keyCallbackStatic(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods) {
     instance().keyCallback(window, key, scancode, action, mods);
 }
 
-void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods) {
+void InputManager::keyCallback(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods) {
     // Don't want to use the repeat action
-    if(action == InputState::Repeat) return;
+    if(action == Input::State::Repeat) return;
 
     if (keyboardEvents.contains(key)) {
         for (auto & event : keyboardEvents.at(key)) {
@@ -95,16 +97,16 @@ void InputManager::keyCallback(GLFWwindow* window, KeyCode key, int scancode, In
 
             if (containerType == DataType::Bool) {
                 LOG("We update a boolean value");
-                input.container.setData(action == InputState::Press);
+                input.container.setData(action == Input::State::Press);
             }
             else if (containerType % 2 == 0) { // Setting a float
                 LOG("We update a float value");
-                float final = input.container.getFloat(input.axis) + (action == InputState::Press ? input.getSignFloat() : -input.getSignFloat());
+                float final = input.container.getFloat(input.axis) + (action == Input::State::Press ? input.getSignFloat() : -input.getSignFloat());
                 input.container.setValue(final, input.axis);
             }
             else { // is implicitly "containerType % 2 == 0" => setting an int
                 LOG("We update a int value");
-                int final = input.container.getInt(input.axis) + (action == InputState::Press ? input.getSignInt() : - input.getSignInt());
+                int final = input.container.getInt(input.axis) + (action == Input::State::Press ? input.getSignInt() : - input.getSignInt());
                 input.container.setValue(final, input.axis);
             }
         }
@@ -119,36 +121,36 @@ void InputManager::cursorPositionCallback(GLFWwindow *window, double xpos, doubl
     auto previousMousePosition = this->mousePosition;
     this->mousePosition = glm::vec2 {xpos, ypos};
 
-    if (this->mouseAxisEvents.contains(MouseAxisEvent::Position)) {
-        for (auto & inputAction : this->mouseAxisEvents[MouseAxisEvent::Position]) {
-            inputEvents.at(inputAction).container.setData(this->mousePosition);
+    if (this->mouseAxisEvents.contains(Mouse::Axis::Position)) {
+        for (auto & inputAction : this->mouseAxisEvents[Mouse::Axis::Position]) {
+            events.at(inputAction).setData(this->mousePosition);
         }
     }
 
-    if (this->mouseAxisEvents.contains(MouseAxisEvent::DeltaMovement)) {
-        for (auto & inputAction : this->mouseAxisEvents[MouseAxisEvent::DeltaMovement]) {
-            inputEvents.at(inputAction).container.setData(this->mousePosition - previousMousePosition);
+    if (this->mouseAxisEvents.contains(Mouse::Axis::DeltaMovement)) {
+        for (auto & inputAction : this->mouseAxisEvents[Mouse::Axis::DeltaMovement]) {
+            events.at(inputAction).setData(this->mousePosition - previousMousePosition);
         }
     }
 }
 
-void InputManager::mouseButtonCallbackStatic(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
+void InputManager::mouseButtonCallbackStatic(GLFWwindow *window, Mouse::Button button, Input::State action, Input::Modifier mods) {
     InputManager::instance().mouseButtonCallback(window, button, action, mods);
 }
 
-void InputManager::mouseButtonCallback(GLFWwindow *window, MouseButton button, InputState action, InputModifier mods) {
+void InputManager::mouseButtonCallback(GLFWwindow *window, Mouse::Button button, Input::State action, Input::Modifier mods) {
     // Don't want to use the repeat action
-    if(action == InputState::Repeat) return;
+    if(action == Input::State::Repeat) return;
 
     if (this->mouseButtonEvents.contains(button)) {
         for (auto & inputAction : this->mouseButtonEvents[button]) {
             auto & event = inputEvents.at(inputAction);
             switch (event.axis) {
                 case None:
-                    event.container.setData(action == InputState::Press);
+                    event.container.setData(action == Input::State::Press);
                     break;
                 default:
-                    event.container.setData(action == InputState::Press ? 1.0f : 0.0f);
+                    event.container.setData(action == Input::State::Press ? 1.0f : 0.0f);
                     break;
             }
         }
@@ -162,9 +164,9 @@ void InputManager::scrollCallbackStatic(GLFWwindow *window, double xoffset, doub
 void InputManager::scrollCallback(GLFWwindow *window, double xoffset, double yoffset) {
     this->scrolling = glm::vec2 {xoffset, yoffset};
 
-    if (this->mouseAxisEvents.contains(MouseAxisEvent::DeltaScroll)) {
-        for (auto & inputAction : this->mouseAxisEvents[MouseAxisEvent::DeltaScroll]) {
-            inputEvents.at(inputAction).container.setData(this->scrolling);
+    if (this->mouseAxisEvents.contains(Mouse::Axis::DeltaScroll)) {
+        for (auto & inputAction : this->mouseAxisEvents[Mouse::Axis::DeltaScroll]) {
+            events.at(inputAction).setData(this->scrolling);
         }
     }
 }
@@ -182,11 +184,11 @@ void InputManager::mouseEnterWindowCallback(GLFWwindow *window, int entered) {
     }
 }
 
-void InputManager::joystickCallbackStatic(Joystick joystickId, int event) {
+void InputManager::joystickCallbackStatic(Joystick::JoystickId joystickId, int event) {
     InputManager::instance().joystickCallback(joystickId, event);
 }
 
-void InputManager::joystickCallback(Joystick jid, int event) {
+void InputManager::joystickCallback(Joystick::JoystickId jid, int event) {
     const char* joystickName = glfwGetJoystickName((int)jid);
     std::string name;
     if (joystickName != nullptr) {
@@ -196,6 +198,7 @@ void InputManager::joystickCallback(Joystick jid, int event) {
     }
     if (event == GLFW_CONNECTED)
     {
+        if(glfwJoystickIsGamepad(jid))
         // The joystick was connected
         this->joystickConnected.push_back(jid);
         LOG(name << " has been connected.");
@@ -217,15 +220,14 @@ void InputManager::joystickCallback(Joystick jid, int event) {
 
 // Updating the joystick
 void InputManager::update() {
-//    LOG("There is " << this->joystickConnected.size() << "Joystick connected.");
+//    LOG("There is " << this->joystickConnected.size() << "JoystickId connected.");
     for (auto & joystick : this->joystickConnected) {
-        int jid = (int)joystick;
 
         // Logging the different axis
         int axisCount;
-        const float* axes = glfwGetJoystickAxes(jid, &axisCount);
+        const float* axes = glfwGetJoystickAxes(joystick, &axisCount);
         for (int i = 0; i < axisCount; ++i) {
-            auto axis = (GamepadAxis)i;
+            auto axis =  (Gamepad::Axis)i;
             if (gamepadAxisEvents.contains(axis)) {
                 for (auto & inputAction : gamepadAxisEvents[axis]) {
                     auto & e = inputEvents.at(inputAction);
@@ -236,9 +238,9 @@ void InputManager::update() {
 
         // Logging the different buttons
         int buttonCount;
-        const unsigned char* buttons = glfwGetJoystickButtons(jid, &buttonCount);
+        const unsigned char* buttons = glfwGetJoystickButtons(joystick, &buttonCount);
         for (int i = 0; i < buttonCount; ++i) {
-            auto button = (GamepadButton)i;
+            auto button = (Gamepad::Button)i;
             if (gamepadButtonsEvents.contains(button)) {
                 for (auto & inputAction : gamepadButtonsEvents[button]) {
                     auto & e = inputEvents.at(inputAction);

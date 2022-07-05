@@ -26,27 +26,27 @@ private:
     bool cursorInsideApplicationWindows;
     glm::vec2 mousePosition;
     glm::vec2 scrolling;
-    std::vector<Joystick> joystickConnected;
+    std::vector<Joystick::JoystickId> joystickConnected;
 
     // Events
-    std::map<KeyCode, std::vector<InputAction>> keyboardEvents;
-    std::map<MouseAxisEvent, std::vector<InputAction>> mouseAxisEvents;
-    std::map<MouseButton, std::vector<InputAction>> mouseButtonEvents;
+    std::map<Keyboard::KeyCode, std::vector<InputAction>> keyboardEvents;
+    std::map<Mouse::Axis, std::vector<InputEvent>> mouseAxisEvents;
+    std::map<Mouse::Button, std::vector<InputAction>> mouseButtonEvents;
 
-    std::map<GamepadButton, std::vector<InputAction>> gamepadButtonsEvents;
-    std::map<GamepadAxis, std::vector<InputAction>> gamepadAxisEvents;
+    std::map<Gamepad::Button, std::vector<InputAction>> gamepadButtonsEvents;
+    std::map<Gamepad::Axis, std::vector<InputAction>> gamepadAxisEvents;
 
     std::map<InputEvent, DataContainer> events;
     std::map<InputAction, InputEventAction> inputEvents;
 
-    static void keyCallbackStatic(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
-    void keyCallback(GLFWwindow* window, KeyCode key, int scancode, InputState action, InputModifier mods);
+    static void keyCallbackStatic(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods);
+    void keyCallback(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods);
 
     static void cursorPositionCallbackStatic(GLFWwindow* window, double xpos, double ypos);
     void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
 
-    static void mouseButtonCallbackStatic(GLFWwindow* window, MouseButton button, InputState action, InputModifier mods);
-    void mouseButtonCallback(GLFWwindow* window, MouseButton button, InputState action, InputModifier mods);
+    static void mouseButtonCallbackStatic(GLFWwindow* window, Mouse::Button button, Input::State action, Input::Modifier mods);
+    void mouseButtonCallback(GLFWwindow* window, Mouse::Button button, Input::State action, Input::Modifier mods);
 
     static void scrollCallbackStatic(GLFWwindow* window, double xoffset, double yoffset);
     void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
@@ -54,8 +54,8 @@ private:
     static void mouseEnterWindowCallbackStatic(GLFWwindow* window, int entered);
     void mouseEnterWindowCallback(GLFWwindow* window, int entered);
 
-    static void joystickCallbackStatic(Joystick joystickId, int event);
-    void joystickCallback(Joystick joystickId, int event);
+    static void joystickCallbackStatic(Joystick::JoystickId joystickId, int event);
+    void joystickCallback(Joystick::JoystickId joystickId, int event);
 
     InputManager();
 public:
