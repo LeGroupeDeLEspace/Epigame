@@ -11,3 +11,7 @@ add_subdirectory(src)
 add_subdirectory(lib)
 
 target_link_libraries(bonjourmonde graphRender glfw)
+
+# move shaders
+# configure_file(./lib/graphical/shaders/base.frag.spv ./shaders/frag.spv COPYONLY)
+# configure_file(./lib/graphical/shaders/base.vert.spv ./shaders/vert.spv COPYONLY)

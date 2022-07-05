@@ -6,10 +6,10 @@ namespace gr {
 Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain) : device(device.getDevice()), renderPass(device, swapChain)
 {
     VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
-        "shaders", "vert.spv",
+        "shaders", "base.vert.spv",
     }));
     VkShaderModule fragShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
-        "shaders", "frag.spv",
+        "shaders", "base.frag.spv",
     }));
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
