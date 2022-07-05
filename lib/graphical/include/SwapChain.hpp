@@ -10,6 +10,9 @@ namespace gr {
         public:
             SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height);
             ~SwapChain();
+
+            const VkFormat &getImageFormat() const;
+            const VkExtent2D &getExtent() const;
         private:
             void createImageViews();
 
