@@ -22,23 +22,27 @@ InputManager::InputManager() :
         gamepadButtonsEvents(),
         gamepadAxisEvents(),
         events({
-           {InputEvent::Move, DataContainer(DataType::Vec3)},
-           {InputEvent::Look, DataContainer(DataType::Vec2)},
+           {Input::Event::Move, DataContainer(DataType::Vec3)},
+           {Input::Event::Look, DataContainer(DataType::Vec2)},
+           {Input::Event::Jump, DataContainer(DataType::Bool)},
         }),
         inputEvents({
             //Move Events
-            {InputAction::MoveForward, InputEventAction(this->events.at(InputEvent::Move), Axis::Z, true)},
-            {InputAction::MoveBackward, InputEventAction(this->events.at(InputEvent::Move), Axis::Z, false)},
-            {InputAction::MoveRight, InputEventAction(this->events.at(InputEvent::Move), Axis::X, true)},
-            {InputAction::MoveLeft, InputEventAction(this->events.at(InputEvent::Move), Axis::X, false)},
-            {InputAction::MoveUp, InputEventAction(this->events.at(InputEvent::Move), Axis::Y, true)},
-            {InputAction::MoveDown, InputEventAction(this->events.at(InputEvent::Move), Axis::Y, false)},
+            {Input::Action::MoveForward,  InputEventAction(this->events.at(Input::Event::Move), Axis::Z, true)},
+            {Input::Action::MoveBackward, InputEventAction(this->events.at(Input::Event::Move), Axis::Z, false)},
+            {Input::Action::MoveRight,    InputEventAction(this->events.at(Input::Event::Move), Axis::X, true)},
+            {Input::Action::MoveLeft,     InputEventAction(this->events.at(Input::Event::Move), Axis::X, false)},
+            {Input::Action::MoveUp,       InputEventAction(this->events.at(Input::Event::Move), Axis::Y, true)},
+            {Input::Action::MoveDown,     InputEventAction(this->events.at(Input::Event::Move), Axis::Y, false)},
 
             //Look Event
-            {InputAction::LookUp, InputEventAction(this->events.at(InputEvent::Look), Axis::Y, true)},
-            {InputAction::LookDown, InputEventAction(this->events.at(InputEvent::Look), Axis::Y, false)},
-            {InputAction::LookRight, InputEventAction(this->events.at(InputEvent::Look), Axis::X, true)},
-            {InputAction::LookLeft, InputEventAction(this->events.at(InputEvent::Look), Axis::X, false)},
+            {Input::Action::LookUp,       InputEventAction(this->events.at(Input::Event::Look), Axis::Y, true)},
+            {Input::Action::LookDown,     InputEventAction(this->events.at(Input::Event::Look), Axis::Y, false)},
+            {Input::Action::LookRight,    InputEventAction(this->events.at(Input::Event::Look), Axis::X, true)},
+            {Input::Action::LookLeft,     InputEventAction(this->events.at(Input::Event::Look), Axis::X, false)},
+
+            //Jump Event
+            {Input::Action::JumpAction,     InputEventAction(this->events.at(Input::Event::Jump), Axis::None, true)},
         })
 {
     //Get the windows
@@ -66,14 +70,15 @@ InputManager::InputManager() :
 
     glfwSetJoystickCallback((GLFWjoystickfun)InputManager::joystickCallbackStatic);
     // Creating some test events
-    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::W,std::vector<InputAction>({InputAction::MoveForward})));
-    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::S,std::vector<InputAction>({InputAction::MoveBackward})));
-    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::A,std::vector<InputAction>({InputAction::MoveLeft})));
-    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::D,std::vector<InputAction>({InputAction::MoveRight})));
-    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::Q,std::vector<InputAction>({InputAction::MoveUp})));
-    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::E,std::vector<InputAction>({InputAction::MoveDown})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::W, std::vector<Input::Action>({Input::Action::MoveForward})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::S, std::vector<Input::Action>({Input::Action::MoveBackward})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::A, std::vector<Input::Action>({Input::Action::MoveLeft})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::D, std::vector<Input::Action>({Input::Action::MoveRight})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::Q, std::vector<Input::Action>({Input::Action::MoveUp})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::E, std::vector<Input::Action>({Input::Action::MoveDown})));
+    this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Keyboard::KeyCode::Space, std::vector<Input::Action>({Input::Action::JumpAction})));
 
-//    this->mouseAxisEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Mouse::Axis::DeltaMovement, std::vector<InputAction>({InputAction::})));
+//    this->mouseAxisEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<Input::Action>>(Mouse::Axis::DeltaMovement, std::vector<Input::Action>({Input::Action::})));
 }
 
 InputManager::~InputManager() {
@@ -90,22 +95,22 @@ void InputManager::keyCallback(GLFWwindow* window, Keyboard::KeyCode key, int sc
 
     if (keyboardEvents.contains(key)) {
         for (auto & event : keyboardEvents.at(key)) {
-            LOG("Updating the event " << InputActionName[event]);
+//            LOG("Updating the event " << InputActionName[event]);
 
             auto & input = inputEvents.at(event);
             auto containerType = input.container.type;
 
             if (containerType == DataType::Bool) {
-                LOG("We update a boolean value");
+//                LOG("We update a boolean value");
                 input.container.setData(action == Input::State::Press);
             }
             else if (containerType % 2 == 0) { // Setting a float
-                LOG("We update a float value");
+//                LOG("We update a float value");
                 float final = input.container.getFloat(input.axis) + (action == Input::State::Press ? input.getSignFloat() : -input.getSignFloat());
                 input.container.setValue(final, input.axis);
             }
             else { // is implicitly "containerType % 2 == 0" => setting an int
-                LOG("We update a int value");
+//                LOG("We update a int value");
                 int final = input.container.getInt(input.axis) + (action == Input::State::Press ? input.getSignInt() : - input.getSignInt());
                 input.container.setValue(final, input.axis);
             }
@@ -258,14 +263,14 @@ void InputManager::update() {
     }
 }
 
-void InputManager::addAction(InputEvent event, Command1<DataContainer *> * action) {
+void InputManager::addAction(Input::Event event, Command1<DataContainer *> * action) {
     this->events.at(event) += action;
 }
 
-void InputManager::removeAction(InputEvent event, Command1<DataContainer *> * action) {
+void InputManager::removeAction(Input::Event event, Command1<DataContainer *> * action) {
     this->events.at(event) -= action;
 }
 
-void InputManager::clearAllEvents(InputEvent event) {
+void InputManager::clearAllEvents(Input::Event event) {
     this->events.at(event).clearAllEvents();
 }

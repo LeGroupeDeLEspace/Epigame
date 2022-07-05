@@ -29,15 +29,15 @@ private:
     std::vector<Joystick::JoystickId> joystickConnected;
 
     // Events
-    std::map<Keyboard::KeyCode, std::vector<InputAction>> keyboardEvents;
-    std::map<Mouse::Axis, std::vector<InputEvent>> mouseAxisEvents;
-    std::map<Mouse::Button, std::vector<InputAction>> mouseButtonEvents;
+    std::map<Keyboard::KeyCode, std::vector<Input::Action>> keyboardEvents;
+    std::map<Mouse::Axis, std::vector<Input::Event>> mouseAxisEvents;
+    std::map<Mouse::Button, std::vector<Input::Action>> mouseButtonEvents;
 
-    std::map<Gamepad::Button, std::vector<InputAction>> gamepadButtonsEvents;
-    std::map<Gamepad::Axis, std::vector<InputAction>> gamepadAxisEvents;
+    std::map<Gamepad::Button, std::vector<Input::Action>> gamepadButtonsEvents;
+    std::map<Gamepad::Axis, std::vector<Input::Action>> gamepadAxisEvents;
 
-    std::map<InputEvent, DataContainer> events;
-    std::map<InputAction, InputEventAction> inputEvents;
+    std::map<Input::Event, DataContainer> events;
+    std::map<Input::Action, InputEventAction> inputEvents;
 
     static void keyCallbackStatic(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods);
     void keyCallback(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods);
@@ -72,11 +72,11 @@ public:
 
     void update();
     // The functions for the rest of the
-    void loadInputs(std::map<int, std::vector<InputEvent>> inputs); //TODO: change the load
-    void changeInput(int oldInput, int newInput, InputEvent event); //TODO: change the changing
-    void addAction(InputEvent event, Command1<DataContainer *> * action); // Only adding one at a time for simplicity first.
-    void removeAction(InputEvent event, Command1<DataContainer *> * action); // Only removing one at a time for simplicity first.
-    void clearAllEvents(InputEvent event);
+    void loadInputs(std::map<int, std::vector<Input::Event>> inputs); //TODO: change the load
+    void changeInput(int oldInput, int newInput, Input::Event event); //TODO: change the changing
+    void addAction(Input::Event event, Command1<DataContainer *> * action); // Only adding one at a time for simplicity first.
+    void removeAction(Input::Event event, Command1<DataContainer *> * action); // Only removing one at a time for simplicity first.
+    void clearAllEvents(Input::Event event);
 };
 
 #endif //JEUDELESPACE_INPUTMANAGER_HPP

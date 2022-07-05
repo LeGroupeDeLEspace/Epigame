@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include "Inputs/InputEvent.hpp"
 
-const char* InputActionName[InputAction::Count] = {
+const char* InputActionName[Input::Action::Count] = {
 // Move Action
 "MoveForward",
 "MoveBackward",
@@ -20,12 +20,13 @@ const char* InputActionName[InputAction::Count] = {
 "LookLeft",
 "LookUp",
 "LookDown",
+"JumpAction",
 };
 
-InputAction InputActionHelper::GetInputAction(const char* action) {
-    for (int i = 0; i < InputAction::Count; ++i) {
+Input::Action InputActionHelper::GetInputAction(const char* action) {
+    for (int i = 0; i < Input::Action::Count; ++i) {
         if (strcmp(action, InputActionName[i]) == 0){
-            return static_cast<InputAction>(i);
+            return static_cast<Input::Action>(i);
         }
     }
 

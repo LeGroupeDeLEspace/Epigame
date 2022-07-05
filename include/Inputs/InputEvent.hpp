@@ -6,35 +6,40 @@
 #define JEUDELESPACE_INPUTEVENT_HPP
 
 #include <string>
+namespace Input {
+    enum Action {
+        // Move Action
+        MoveForward,
+        MoveBackward,
+        MoveRight,
+        MoveLeft,
+        MoveUp,
+        MoveDown,
+        // LookAction
+        LookRight,
+        LookLeft,
+        LookUp,
+        LookDown,
+        // Jump
+        JumpAction,
+        Count,
+    };
 
-enum InputAction {
-    // Move Action
-    MoveForward,
-    MoveBackward,
-    MoveRight,
-    MoveLeft,
-    MoveUp,
-    MoveDown,
-    // LookAction
-    LookRight,
-    LookLeft,
-    LookUp,
-    LookDown,
-    Count,
-};
-
-extern const char* InputActionName[InputAction::Count];
-
-namespace InputActionHelper {
-    InputAction GetInputAction(const char* action);
+    enum Event {
+        Move,
+        Look,
+        Accelerate,
+        Decelerate,
+        Jump,
+        //TODO: Add more ?
+    };
 }
 
-enum InputEvent {
-    Move,
-    Look,
-    Accelerate,
-    Decelerate,
-    //TODO: Add more ?
-};
+extern const char* InputActionName[Input::Action::Count];
+
+namespace InputActionHelper {
+    Input::Action GetInputAction(const char* action);
+}
+
 
 #endif //JEUDELESPACE_INPUTEVENT_HPP
