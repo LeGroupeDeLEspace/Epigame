@@ -600,4 +600,6 @@ bool DataContainer::clearAllEvents() {
         delete pd;
     }
     events.clear();
+
+    return true;
 }

@@ -73,7 +73,7 @@ InputManager::InputManager() :
     this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::Q,std::vector<InputAction>({InputAction::MoveUp})));
     this->keyboardEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Keyboard::KeyCode::E,std::vector<InputAction>({InputAction::MoveDown})));
 
-    this->mouseAxisEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Mouse::Axis::DeltaMovement, std::vector<InputAction>({InputAction::})));
+//    this->mouseAxisEvents.insert(std::make_pair<Keyboard::KeyCode,std::vector<InputAction>>(Mouse::Axis::DeltaMovement, std::vector<InputAction>({InputAction::})));
 }
 
 InputManager::~InputManager() {
