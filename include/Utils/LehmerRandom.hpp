@@ -2,20 +2,20 @@
 // Created by Iannis on 05/07/2022.
 //
 
-#ifndef JEUDELESPACE_BASERANDOM_HPP
-#define JEUDELESPACE_BASERANDOM_HPP
+#ifndef JEUDELESPACE_LEHMERRANDOM_HPP
+#define JEUDELESPACE_LEHMERRANDOM_HPP
 
 #include <cstdint>
 
-class BaseRandom {
+class LehmerRandom {
 private:
     uint32_t nLehmer;
     uint32_t Rand();
 public:
     const uint32_t initialSeed;
 
-    BaseRandom();
-    BaseRandom(uint32_t seed);
+    LehmerRandom();
+    LehmerRandom(uint32_t seed);
 
     int Next();
     int Next(int minValue, int maxValue);
@@ -25,4 +25,4 @@ public:
 
 };
 
-#endif //JEUDELESPACE_BASERANDOM_HPP
+#endif //JEUDELESPACE_LEHMERRANDOM_HPP

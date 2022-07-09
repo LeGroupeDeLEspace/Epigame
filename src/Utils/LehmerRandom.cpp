@@ -3,15 +3,15 @@
 //
 
 #include <random>
-#include "generation/BaseRandom.hpp"
+#include "Utils/LehmerRandom.hpp"
 
-BaseRandom::BaseRandom() : BaseRandom(std::random_device()()) {}
+LehmerRandom::LehmerRandom() : LehmerRandom(std::random_device()()) {}
 
-BaseRandom::BaseRandom(uint32_t seed) : initialSeed(seed) {
+LehmerRandom::LehmerRandom(uint32_t seed) : initialSeed(seed) {
     this->nLehmer = seed;
 }
 
-uint32_t BaseRandom::Rand() {
+uint32_t LehmerRandom::Rand() {
     this->nLehmer += 0xe120fc15;
     uint64_t tmp;
     tmp = (uint64_t)this->nLehmer * 0x4a39b70d;
@@ -21,20 +21,20 @@ uint32_t BaseRandom::Rand() {
     return m2;
 }
 
-int BaseRandom::Next() {
+int LehmerRandom::Next() {
     return Next(INT_MIN,INT_MAX);
 }
 
-int BaseRandom::Next(int minValue, int maxValue) {
+int LehmerRandom::Next(int minValue, int maxValue) {
     return (this->Rand() % (maxValue - minValue)) + minValue;
 }
 
 
-float BaseRandom::NextFloat(){
+float LehmerRandom::NextFloat(){
     return (float)this->Rand() / UINT32_MAX;
 }
 
-float BaseRandom::NextFloat(float minValue, float maxValue) {
+float LehmerRandom::NextFloat(float minValue, float maxValue) {
     return (NextFloat() * (maxValue - minValue)) + minValue;
 }
 
