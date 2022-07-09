@@ -7,12 +7,8 @@
 
 BaseRandom::BaseRandom() : BaseRandom(std::random_device()()) {}
 
-BaseRandom::BaseRandom(uint32_t seed) {
+BaseRandom::BaseRandom(uint32_t seed) : initialSeed(seed) {
     this->nLehmer = seed;
-}
-
-uint32_t BaseRandom::getSeed() const {
-    return this->nLehmer;
 }
 
 uint32_t BaseRandom::Rand() {
@@ -28,7 +24,17 @@ uint32_t BaseRandom::Rand() {
 int BaseRandom::Next() {
     return Next(INT_MIN,INT_MAX);
 }
+
 int BaseRandom::Next(int minValue, int maxValue) {
     return (this->Rand() % (maxValue - minValue)) + minValue;
+}
+
+
+float BaseRandom::NextFloat(){
+    return (float)this->Rand() / UINT32_MAX;
+}
+
+float BaseRandom::NextFloat(float minValue, float maxValue) {
+    return (NextFloat() * (maxValue - minValue)) + minValue;
 }
 

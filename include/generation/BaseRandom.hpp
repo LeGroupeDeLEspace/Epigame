@@ -12,13 +12,16 @@ private:
     uint32_t nLehmer;
     uint32_t Rand();
 public:
-    BaseRandom();
+    const uint32_t initialSeed;
 
+    BaseRandom();
     BaseRandom(uint32_t seed);
 
-    uint32_t  getSeed() const;
     int Next();
     int Next(int minValue, int maxValue);
+
+    float NextFloat();
+    float NextFloat(float minValue, float maxValue);
 
 };
 
