@@ -10,13 +10,15 @@
 class BaseRandom {
 private:
     uint32_t nLehmer;
+    uint32_t Rand();
 public:
     BaseRandom();
+
     BaseRandom(uint32_t seed);
 
-    uint32_t  getSeed();
-
-    uint32_t Next();
+    uint32_t  getSeed() const;
+    int Next();
+    int Next(int minValue, int maxValue);
 
 };
 

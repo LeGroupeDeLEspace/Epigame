@@ -11,11 +11,11 @@ BaseRandom::BaseRandom(uint32_t seed) {
     this->nLehmer = seed;
 }
 
-uint32_t BaseRandom::getSeed() {
+uint32_t BaseRandom::getSeed() const {
     return this->nLehmer;
 }
 
-uint32_t BaseRandom::Next() {
+uint32_t BaseRandom::Rand() {
     this->nLehmer += 0xe120fc15;
     uint64_t tmp;
     tmp = (uint64_t)this->nLehmer * 0x4a39b70d;
@@ -24,3 +24,11 @@ uint32_t BaseRandom::Next() {
     uint32_t m2 = (tmp >> 32) ^ tmp;
     return m2;
 }
+
+int BaseRandom::Next() {
+    return Next(INT_MIN,INT_MAX);
+}
+int BaseRandom::Next(int minValue, int maxValue) {
+    return (this->Rand() % (maxValue - minValue)) + minValue;
+}
+
