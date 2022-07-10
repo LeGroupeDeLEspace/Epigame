@@ -5,14 +5,18 @@
 #ifndef JEUDELESPACE_UNIVERSE_HPP
 #define JEUDELESPACE_UNIVERSE_HPP
 
+#include "glm/vec3.hpp"
 #include "Utils/LehmerRandom.hpp"
+#include "generation/Galaxy.hpp"
 
 class Universe {
 private:
 LehmerRandom rand;
 public:
     Universe();
-    getSolarSystem(int x, int y, int z);
+    Universe(uint32_t seed);
+    Galaxy getGalaxy(glm::ivec3 position);
+    Galaxy getGalaxy(int x, int y, int z);
 };
 
 

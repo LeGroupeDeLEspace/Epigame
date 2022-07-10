@@ -18,9 +18,11 @@ public:
     LehmerRandom(uint32_t seed);
 
     int Next();
+    int Next(int maxValue);
     int Next(int minValue, int maxValue);
 
     float NextFloat();
+    float NextFloat(float maxValue);
     float NextFloat(float minValue, float maxValue);
 
 };

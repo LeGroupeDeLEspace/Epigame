@@ -6,8 +6,21 @@
 #define JEUDELESPACE_SOLARSYSTEM_HPP
 
 
-class SolarSystem {
+#include <string>
+#include <vector>
+#include "generation/CelestialBody.hpp"
+#include "Utils/LehmerRandom.hpp"
 
+class SolarSystem {
+private:
+    LehmerRandom rand;
+    std::string name;
+    std::vector<CelestialBody> celestialBodies;
+public:
+    const bool exist;
+    SolarSystem(uint32_t parentSeed, int x, int y, int z);
+    std::string getName() const;
+    size_t getNumberOfCelestialBodies();
 };
 
 

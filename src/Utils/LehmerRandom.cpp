@@ -25,15 +25,31 @@ int LehmerRandom::Next() {
     return Next(INT_MIN,INT_MAX);
 }
 
+int LehmerRandom::Next(int maxValue) {
+    return this->Rand() % maxValue;
+}
+
 int LehmerRandom::Next(int minValue, int maxValue) {
     return (this->Rand() % (maxValue - minValue)) + minValue;
 }
 
-
+/// Get a random number between 0 and 1.
+/// \return a number between 0 and 1.
 float LehmerRandom::NextFloat(){
     return (float)this->Rand() / UINT32_MAX;
 }
 
+/// Get a random float between 0 and maxValue.
+/// \param maxValue: the upperBounds for the random (include).
+/// \return a random float between 0 and maxValue.
+float LehmerRandom::NextFloat(float maxValue) {
+    return (NextFloat() * maxValue);
+}
+
+/// Get a random number between minValue and maxValue.
+/// \param minValue: The lower bound of the random (include).
+/// \param maxValue The upper bound of the random (include).
+/// \return a float between minValue and maxValue.
 float LehmerRandom::NextFloat(float minValue, float maxValue) {
     return (NextFloat() * (maxValue - minValue)) + minValue;
 }

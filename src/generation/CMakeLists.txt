@@ -4,4 +4,5 @@ target_sources(bonjourmonde PRIVATE
         Universe.cpp
         Galaxy.cpp
         SolarSystem.cpp
+        CelestialBody.cpp
 )
