@@ -3,8 +3,8 @@
 //
 
 #include <random>
-#include <limits.h>
-#include <stdint.h>
+#include <climits>
+#include <cstdint>
 #include "utils/LehmerRandom.hpp"
 
 LehmerRandom::LehmerRandom() : LehmerRandom(std::random_device()()) {}
