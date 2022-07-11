@@ -16,14 +16,18 @@ namespace gr {
             VkShaderModule loadShader(const std::string &path);
             void initFrameBuffers(const SwapChain &swapChain);
             void initCommandPool(const PhysicalDevice &physicalDevice);
+            void initCommandBuffer(const SwapChain &swapChain);
+            void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
             VkDevice device;
+            const SwapChain &swapChain;
 
             VkPipeline graphicsPipeline;
             VkPipelineLayout pipelineLayout;
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;
-            VkCommandPool commandPool;
+            VkCommandPool commandPool;  //TODO createClass
+            std::vector<VkCommandBuffer> commandBuffers;
     };
 }
 

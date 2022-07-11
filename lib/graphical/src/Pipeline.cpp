@@ -3,7 +3,7 @@
 
 namespace gr {
 
-Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device.getDevice()), renderPass(device, swapChain)
+Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device.getDevice()), swapChain(swapChain), renderPass(device, swapChain)
 {
     VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
@@ -159,8 +159,9 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
 
 Pipeline::~Pipeline()
 {
+    vkDestroyCommandPool(this->device, this->commandPool, nullptr);
     vkDestroyPipeline(this->device, this->graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(this->device, pipelineLayout, nullptr);
+    vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
 }
 
 VkShaderModule Pipeline::loadShader(const std::string &path)
@@ -216,6 +217,53 @@ void Pipeline::initCommandPool(const PhysicalDevice &physicalDevice)
 
     if (vkCreateCommandPool(this->device, &poolInfo, nullptr, &this->commandPool) != VK_SUCCESS) {
         throw std::runtime_error("failed to create command pool");
+    }
+}
+
+void Pipeline::initCommandBuffer(const SwapChain &swapChain)
+{
+    this->commandBuffers.resize(this->frambuffers.size());
+
+    VkCommandBufferAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = commandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
+
+    if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+        throw std::runtime_error("failed to allocate buffers");
+    }
+}
+
+void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+{
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+        throw std::runtime_error("help follow up in 30 min");
+    }
+
+    //TODO implem to renderPass class
+    VkRenderPassBeginInfo renderPassInfo{};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    renderPassInfo.renderPass = this->renderPass.getPass();
+    renderPassInfo.framebuffer = this->frambuffers[imageIndex];
+    renderPassInfo.renderArea.offset = {0, 0};
+    renderPassInfo.renderArea.extent = this->swapChain.getExtent();
+
+
+    VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+    renderPassInfo.clearValueCount = 1;
+    renderPassInfo.pClearValues = &clearColor;
+
+    vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    vkCmdEndRenderPass(commandBuffer);
+
+    if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+        throw std::runtime_error("20 min");
     }
 }
 

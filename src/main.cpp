@@ -1,9 +1,12 @@
-#include "Logger.hpp"
-#include "ErrorTracking.hpp"
-#include <iostream>
+#include "Graphics.hpp"
 
 int main()
 {
-    Logger::log(WARNING, "ici une erreur", ERR_LOCATION);
+    gr::Graphics graph;
+    GLFWwindow *window = graph.getWindow();
+
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+    }
     return 0;
 }
