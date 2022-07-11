@@ -1,59 +1,41 @@
+#include "Logger.hpp"
+#include "ErrorTracking.hpp"
+#include "generation/Universe.hpp"
 #include <iostream>
-#include "inputs/InputManager.hpp"
-#include "TestWindow.hpp"
-#include "glm/gtx/string_cast.hpp"
-
-class DataContainerStateLogger : public Command1<DataContainer *> {
-public:
-    DataContainerStateLogger() = default;
-    ~DataContainerStateLogger() override = default;
-    void execute(DataContainer * value) override{
-        switch (value->type) {
-            case Bool:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << value->getBool() << std::endl;
-                break;
-            case Float:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << value->getFloat() << std::endl;
-                break;
-            case Int:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << value->getInt() << std::endl;
-                break;
-            case Vec2:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << glm::to_string(value->getVec2()) << std::endl;
-                break;
-            case Vec2Int:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << glm::to_string(value->getVec2Int()) << std::endl;
-                break;
-            case Vec3:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << glm::to_string(value->getVec3()) << std::endl;
-                break;
-            case Vec3Int:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << glm::to_string(value->getVec3Int()) << std::endl;
-                break;
-            case Vec4:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << glm::to_string(value->getVec4()) << std::endl;
-                break;
-            case Vec4Int:
-                std::cout << "Changing " << value << " of type " << DataTypeHelper::toString(value->type) << " to " << glm::to_string(value->getVec4Int()) << std::endl;
-                break;
-        }
-    }
-};
 
 int main()
 {
-    std::cout << "Begin of the project" << std::endl;
-    bool result;
-    TestWindow testWindow = TestWindow::instance();
-    InputManager & input = InputManager::instance();
-    input.addAction(Input::Event::Move, new DataContainerStateLogger());
-    input.addAction(Input::Event::Look, new DataContainerStateLogger());
-    input.addAction(Input::Event::Jump, new DataContainerStateLogger());
-    do {
-        result = testWindow.update();
-        input.update();
-    } while (result);
-
-    delete &input;
+    Logger::log(WARNING, "Here a warning", ERR_LOCATION);
+    Universe u=(10);
+    int systemNumber = 0;
+    int emptySystems = 0;
+    int stars = 0;
+    auto g = u.getGalaxy(298,208,42);
+    for (int x = -10; x < 10; ++x) {
+        for (int y = -10; y < 10; ++y) {
+            for (int z = -10; z < 10; ++z) {
+                systemNumber++;
+                auto s = g.getSolarSystem(x,y,z);
+//                std::cout << s.getName() << " is at {" << x << "," << y << "," << z << "}" << " in the " << g.getName() << " galaxy and it " << (s.exist ? "exists" : "doesn't exist.");
+                if (s.exist){
+                    stars += s.getNumberOfCelestialBodies();
+//                    std::cout << " " << "It has " << s.getNumberOfCelestialBodies() << " Celestial Bodies.";
+//                    std::cout << std::endl;
+                    for (int i = 0; i < s.getNumberOfCelestialBodies(); ++i) {
+                        auto b = s.getCelestialBody(i);
+//                        std::cout << '\t' << b.name << std::endl;
+                    }
+                } else {
+                    emptySystems++;
+//                    std::cout << std::endl;
+                }
+//                std::cout<< "------------------------" << std::endl;
+            }
+        }
+    }
+    std::cout << "================ This galaxy has " << systemNumber << " systems and a total of " << stars << " celestial bodies ================" << std::endl;
+    std::cout << "- The galaxy name is " << g.getName() << std::endl;
+    std::cout << "- There are " << emptySystems << " empty systems" << std::endl;
+    // ---
     return 0;
 }

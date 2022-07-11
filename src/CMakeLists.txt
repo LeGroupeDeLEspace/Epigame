@@ -6,5 +6,6 @@ target_sources(bonjourmonde PRIVATE
     Logger.cpp
 )
 
+add_subdirectory(generation)
 add_subdirectory(utils)
 add_subdirectory(inputs)
