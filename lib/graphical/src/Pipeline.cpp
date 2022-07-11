@@ -3,7 +3,7 @@
 
 namespace gr {
 
-Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain) : device(device.getDevice()), renderPass(device, swapChain)
+Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device.getDevice()), renderPass(device, swapChain)
 {
     VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
@@ -178,6 +178,45 @@ VkShaderModule Pipeline::loadShader(const std::string &path)
         throw std::runtime_error("failed to create shader module");
     }
     return result;
+}
+
+void Pipeline::initFrameBuffers(const SwapChain &swapChain)
+{
+    size_t n_buffers = swapChain.getViews().size();
+    this->frambuffers.resize(n_buffers);
+
+    for (size_t i = 0; i < n_buffers; i++) {
+        VkImageView attachments[] = {   // peut être à simplifier ? (VkImageView *attachments = &swapChain[i])
+            swapChain.getViews()[i]
+        };
+
+        VkFramebufferCreateInfo framebufferInfo{};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = this->renderPass.getPass();
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.width = swapChain.getExtent().width;
+        framebufferInfo.height = swapChain.getExtent().height;
+        framebufferInfo.layers = 1;
+
+        if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &this->frambuffers[i]) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create framebuffer");
+        }
+    }
+}
+
+void Pipeline::initCommandPool(const PhysicalDevice &physicalDevice)
+{
+    QueueFamilyIndices queueFamilyIndices = physicalDevice.getFamilyQueues();
+
+    VkCommandPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
+    poolInfo.flags = 0;
+
+    if (vkCreateCommandPool(this->device, &poolInfo, nullptr, &this->commandPool) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create command pool");
+    }
 }
 
 }

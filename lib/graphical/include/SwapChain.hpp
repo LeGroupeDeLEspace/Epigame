@@ -13,6 +13,7 @@ namespace gr {
 
             const VkFormat &getImageFormat() const;
             const VkExtent2D &getExtent() const;
+            const std::vector<VkImageView> &getViews() const;
         private:
             void createImageViews();
 
