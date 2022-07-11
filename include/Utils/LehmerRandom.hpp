@@ -24,7 +24,6 @@ public:
     float NextFloat();
     float NextFloat(float maxValue);
     float NextFloat(float minValue, float maxValue);
-
 };
 
 #endif //JEUDELESPACE_LEHMERRANDOM_HPP

@@ -4,6 +4,6 @@
 
 #include "generation/CelestialBody.hpp"
 
-CelestialBody::CelestialBody(std::string name, glm::vec3 position) : name(name), position(position) {
+CelestialBody::CelestialBody(std::string name, UniversalPosition position, float size) : name(name), position(position), size(size) {
 
 }

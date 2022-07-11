@@ -11,7 +11,7 @@ SolarSystem::SolarSystem(uint32_t parentSeed, int x, int y, int z) :
         rand(FNV1::Hash(parentSeed,x,y,z)),
         name(),
         exist(rand.Next(255)>25),
-        celestialBodies(rand.Next(5,25), CelestialBody("no_name",glm::vec3()))
+        celestialBodies(rand.Next(5,25), CelestialBody("no_name",UniversalPosition(), 0))
 {
     int len = rand.Next(5,20);
     for (int i = 0; i < len; ++i) {

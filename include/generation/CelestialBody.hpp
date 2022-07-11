@@ -6,12 +6,13 @@
 #define JEUDELESPACE_CELESTIALBODY_HPP
 
 #include <string>
-#include "glm/vec3.hpp"
+#include "generation/UniversalPosition.hpp"
 class CelestialBody {
 public:
     const std::string name;
-    const glm::vec3 position;
-    CelestialBody(std::string name, glm::vec3 position);
+    const UniversalPosition position;
+    const float size;
+    CelestialBody(std::string name, UniversalPosition position, float size);
 };
 
 
