@@ -12,22 +12,28 @@ namespace gr {
         public:
             Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice);
             ~Pipeline();
+            void drawFrame();
         private:
             VkShaderModule loadShader(const std::string &path);
             void initFrameBuffers(const SwapChain &swapChain);
             void initCommandPool(const PhysicalDevice &physicalDevice);
             void initCommandBuffer(const SwapChain &swapChain);
+            void initSemaphores();
             void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
-            VkDevice device;
+            const LogicalDevice &device;
             const SwapChain &swapChain;
+            const PhysicalDevice &physicalDevice;
 
             VkPipeline graphicsPipeline;
             VkPipelineLayout pipelineLayout;
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;
             VkCommandPool commandPool;  //TODO createClass
-            std::vector<VkCommandBuffer> commandBuffers;
+            VkCommandBuffer commandBuffer;
+
+            VkSemaphore imageAvailableSemaphore;
+            VkSemaphore renderFinishedSemaphore;
     };
 }
 

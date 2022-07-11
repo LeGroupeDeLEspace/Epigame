@@ -3,7 +3,7 @@
 
 namespace gr {
 
-Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device.getDevice()), swapChain(swapChain), renderPass(device, swapChain)
+Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain)
 {
     VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
@@ -125,7 +125,7 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
     pipelineLayoutInfo.pushConstantRangeCount = 0;
     pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-    if (vkCreatePipelineLayout(this->device, &pipelineLayoutInfo, nullptr, &this->pipelineLayout) != VK_SUCCESS) {
+    if (vkCreatePipelineLayout(this->device.getDevice(), &pipelineLayoutInfo, nullptr, &this->pipelineLayout) != VK_SUCCESS) {
         throw std::runtime_error("failed to create pipeline layout!");
     }
 
@@ -149,19 +149,25 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
     pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     pipelineInfo.basePipelineIndex = -1;
 
-    if (vkCreateGraphicsPipelines(this->device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->graphicsPipeline) != VK_SUCCESS) {
+    if (vkCreateGraphicsPipelines(this->device.getDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &this->graphicsPipeline) != VK_SUCCESS) {
         throw std::runtime_error("failed to create graphics pipeline!");
     }
 
-    vkDestroyShaderModule(this->device, vertShaderModule, nullptr);
-    vkDestroyShaderModule(this->device, fragShaderModule, nullptr);
+    vkDestroyShaderModule(this->device.getDevice(), vertShaderModule, nullptr);
+    vkDestroyShaderModule(this->device.getDevice(), fragShaderModule, nullptr);
+    initFrameBuffers(this->swapChain);
+    initCommandPool(this->physicalDevice);
+    initCommandBuffer(this->swapChain);
+    initSemaphores();
 }
 
 Pipeline::~Pipeline()
 {
-    vkDestroyCommandPool(this->device, this->commandPool, nullptr);
-    vkDestroyPipeline(this->device, this->graphicsPipeline, nullptr);
-    vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
+    vkDestroySemaphore(this->device.getDevice(), this->renderFinishedSemaphore, nullptr);
+    vkDestroySemaphore(this->device.getDevice(), this->imageAvailableSemaphore, nullptr);
+    vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
+    vkDestroyPipeline(this->device.getDevice(), this->graphicsPipeline, nullptr);
+    vkDestroyPipelineLayout(this->device.getDevice(), this->pipelineLayout, nullptr);
 }
 
 VkShaderModule Pipeline::loadShader(const std::string &path)
@@ -175,7 +181,7 @@ VkShaderModule Pipeline::loadShader(const std::string &path)
     createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
     VkShaderModule result;
 
-    if (vkCreateShaderModule(this->device, &createInfo, nullptr, &result) != VK_SUCCESS) {
+    if (vkCreateShaderModule(this->device.getDevice(), &createInfo, nullptr, &result) != VK_SUCCESS) {
         throw std::runtime_error("failed to create shader module");
     }
     return result;
@@ -200,7 +206,7 @@ void Pipeline::initFrameBuffers(const SwapChain &swapChain)
         framebufferInfo.height = swapChain.getExtent().height;
         framebufferInfo.layers = 1;
 
-        if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &this->frambuffers[i]) != VK_SUCCESS) {
+        if (vkCreateFramebuffer(device.getDevice(), &framebufferInfo, nullptr, &this->frambuffers[i]) != VK_SUCCESS) {
             throw std::runtime_error("failed to create framebuffer");
         }
     }
@@ -215,22 +221,20 @@ void Pipeline::initCommandPool(const PhysicalDevice &physicalDevice)
     poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
     poolInfo.flags = 0;
 
-    if (vkCreateCommandPool(this->device, &poolInfo, nullptr, &this->commandPool) != VK_SUCCESS) {
+    if (vkCreateCommandPool(this->device.getDevice(), &poolInfo, nullptr, &this->commandPool) != VK_SUCCESS) {
         throw std::runtime_error("failed to create command pool");
     }
 }
 
 void Pipeline::initCommandBuffer(const SwapChain &swapChain)
 {
-    this->commandBuffers.resize(this->frambuffers.size());
-
     VkCommandBufferAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     allocInfo.commandPool = commandPool;
     allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
+    allocInfo.commandBufferCount = 1;
 
-    if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+    if (vkAllocateCommandBuffers(this->device.getDevice(), &allocInfo, &this->commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("failed to allocate buffers");
     }
 }
@@ -264,6 +268,61 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("20 min");
+    }
+}
+
+void Pipeline::drawFrame()
+{
+    uint32_t imageIndex;
+    vkAcquireNextImageKHR(this->device.getDevice(), this->swapChain.getSwapChain(), UINT64_MAX, this->imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+
+    vkResetCommandBuffer(this->commandBuffer, 0);
+    this->recordCommandBuffer(this->commandBuffer, imageIndex);
+
+    VkSubmitInfo submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = {imageAvailableSemaphore};
+    VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &this->commandBuffer;
+
+    VkSemaphore signalSemaphores[] = {renderFinishedSemaphore};
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    if (vkQueueSubmit(this->device.getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+        throw std::runtime_error("8 min");
+    }
+    
+    VkPresentInfoKHR presentInfo{};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = {this->swapChain.getSwapChain()};
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+
+    presentInfo.pImageIndices = &imageIndex;
+
+    vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
+}
+
+void Pipeline::initSemaphores()
+{
+    VkSemaphoreCreateInfo semaphoreInfo{};
+
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+    if (vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
+        vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS) {
+        throw std::runtime_error("14 min");
     }
 }
 

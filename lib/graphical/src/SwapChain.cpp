@@ -110,4 +110,9 @@ const std::vector<VkImageView> &SwapChain::getViews() const
     return this->swapChainImageViews;
 }
 
+const VkSwapchainKHR &SwapChain::getSwapChain() const
+{
+    return this->swapChain;
+}
+
 }

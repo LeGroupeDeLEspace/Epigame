@@ -10,6 +10,8 @@ namespace gr {
             LogicalDevice(const PhysicalDevice &physicalDevice);
             ~LogicalDevice();
             const VkDevice &getDevice() const;
+            VkQueue getGraphicsQueue() const;
+            VkQueue getPresentQueue() const;
         private:
             VkDevice device;
 

@@ -21,4 +21,9 @@ GLFWwindow *Graphics::getWindow()
     return this->windowHandler.getWindow();
 }
 
+void Graphics::test()
+{
+    this->pipeline.drawFrame();
+}
+
 }
