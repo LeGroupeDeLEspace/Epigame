@@ -7,9 +7,9 @@
 #include <glm/glm.hpp>
 #include <map>
 #include "GLFW/glfw3.h"
-#include "Utils/Command.hpp"
+#include "utils/Command.hpp"
 #include "InputEnums.hpp"
-#include "Utils/DataContainer.hpp"
+#include "utils/DataContainer.hpp"
 #include "Inputs/InputEvent.hpp"
 
 struct InputEventAction {

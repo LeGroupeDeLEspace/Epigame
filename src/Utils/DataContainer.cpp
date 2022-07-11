@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <iostream>
 #include <cstring>
-#include "Utils/DataContainer.hpp"
+#include "utils/DataContainer.hpp"
 #include "Logger.hpp"
 #include "ErrorTracking.hpp"
-#include "Utils/StringHelper.hpp"
+#include "utils/StringHelper.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 
