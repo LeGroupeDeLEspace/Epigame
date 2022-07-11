@@ -9,7 +9,9 @@
 
 class UniversalPosition {
 private:
-    float position[9];
+    glm::vec3 positionUniverse;
+    glm::vec3 positionGalaxy;
+    glm::vec3 positionSolarSystem;
 public:
     UniversalPosition();
     UniversalPosition(float position[9]);
