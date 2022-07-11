@@ -2,7 +2,7 @@
 // Created by Iannis on 04/07/2022.
 //
 
-#include "Utils/StringHelper.hpp"
+#include "utils/StringHelper.hpp"
 
 #include <sstream>
 
