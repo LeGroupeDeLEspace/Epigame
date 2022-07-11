@@ -6,7 +6,7 @@
 #define JEUDELESPACE_UNIVERSE_HPP
 
 #include "glm/vec3.hpp"
-#include "Utils/LehmerRandom.hpp"
+#include "utils/LehmerRandom.hpp"
 #include "generation/Galaxy.hpp"
 
 class Universe {

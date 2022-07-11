@@ -4,7 +4,7 @@
 
 #include <system_error>
 #include "generation/SolarSystem.hpp"
-#include "Utils/FNV1Hash.hpp"
+#include "utils/FNV1Hash.hpp"
 
 SolarSystem::SolarSystem(uint32_t parentSeed, int x, int y, int z, std::string parentName) :
         rand(FNV1::Hash(parentSeed, x, y, z)),

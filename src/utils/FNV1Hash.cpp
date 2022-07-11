@@ -2,7 +2,7 @@
 // Created by Iannis on 09/07/2022.
 //
 
-#include "Utils/FNV1Hash.hpp"
+#include "utils/FNV1Hash.hpp"
 const uint32_t fnv_prime = 0x811C9DC5;
 
 uint32_t FNV1::Hash(uint32_t val1, int val2, int val3, int val4){

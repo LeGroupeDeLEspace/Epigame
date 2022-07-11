@@ -3,7 +3,7 @@
 //
 
 #include "generation/Galaxy.hpp"
-#include "Utils/FNV1Hash.hpp"
+#include "utils/FNV1Hash.hpp"
 
 Galaxy::Galaxy(uint32_t parentSeed, int x, int y, int z) :
         Galaxy(FNV1::Hash(parentSeed, x, y, z)) {

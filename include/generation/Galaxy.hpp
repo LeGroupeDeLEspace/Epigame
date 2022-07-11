@@ -8,7 +8,7 @@
 #include <cstdint>
 #include "glm/vec3.hpp"
 #include "generation/SolarSystem.hpp"
-#include "Utils/LehmerRandom.hpp"
+#include "utils/LehmerRandom.hpp"
 
 class Galaxy {
 private:
