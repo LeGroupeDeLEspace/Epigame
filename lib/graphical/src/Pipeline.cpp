@@ -165,6 +165,9 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
 
 Pipeline::~Pipeline()
 {
+    for (auto it : this->inFlightFence) {
+        vkDestroyFence(this->device.getDevice(), it, nullptr);
+    }
     for (auto it : this->renderFinishedSemaphore) {
         vkDestroySemaphore(this->device.getDevice(), it, nullptr);
     }
@@ -279,6 +282,9 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
 
 void Pipeline::drawFrame()
 {
+    vkWaitForFences(this->device.getDevice(), 1, &inFlightFence[currentFrame], VK_TRUE, UINT64_MAX);
+    vkResetFences(this->device.getDevice(), 1, &inFlightFence[currentFrame]);
+
     uint32_t imageIndex;
     vkAcquireNextImageKHR(this->device.getDevice(), this->swapChain.getSwapChain(), UINT64_MAX, this->imageAvailableSemaphore[this->currentFrame], VK_NULL_HANDLE, &imageIndex);
 
@@ -326,16 +332,22 @@ void Pipeline::initSemaphores()
 {
     this->imageAvailableSemaphore.resize(config::maxFrameInFlight);
     this->renderFinishedSemaphore.resize(config::maxFrameInFlight);
+    this->inFlightFence.resize(config::maxFrameInFlight);
 
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
+    VkFenceCreateInfo fenceInfo{};
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
     for (int i = 0; i < config::maxFrameInFlight; i++) {
 
-    if (vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &this->imageAvailableSemaphore[i]) != VK_SUCCESS ||
-        vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &this->renderFinishedSemaphore[i]) != VK_SUCCESS) {
-        throw std::runtime_error("14 min");
-    }
+        if (vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &this->imageAvailableSemaphore[i]) != VK_SUCCESS ||
+            vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &this->renderFinishedSemaphore[i]) != VK_SUCCESS ||
+            vkCreateFence(this->device.getDevice(), &fenceInfo, nullptr, &this->inFlightFence[i]) != VK_SUCCESS) {
+            throw std::runtime_error("14 min");
+        }
     }
 }
 
