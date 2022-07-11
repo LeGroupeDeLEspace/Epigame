@@ -32,8 +32,10 @@ namespace gr {
             VkCommandPool commandPool;  //TODO createClass
             VkCommandBuffer commandBuffer;
 
-            VkSemaphore imageAvailableSemaphore;
-            VkSemaphore renderFinishedSemaphore;
+            int currentFrame;
+
+            std::vector<VkSemaphore> imageAvailableSemaphore;
+            std::vector<VkSemaphore> renderFinishedSemaphore;
     };
 }
 

@@ -16,6 +16,8 @@ namespace gr {
 
             GLFWwindow *getWindow();
 
+            void waitForIdle();
+
             void test();
         private:
             WindowHandler windowHandler;

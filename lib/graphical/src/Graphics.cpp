@@ -26,4 +26,8 @@ void Graphics::test()
     this->pipeline.drawFrame();
 }
 
+void Graphics::waitForIdle() {
+    vkDeviceWaitIdle(this->device.getDevice());
+}
+
 }

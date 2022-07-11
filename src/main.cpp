@@ -7,6 +7,8 @@ int main()
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
+        graph.test();
     }
+    graph.waitForIdle();
     return 0;
 }

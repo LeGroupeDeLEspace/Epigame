@@ -1,5 +1,6 @@
 #include <System.hpp>
 #include "Pipeline.hpp"
+#include "VkConfigConstants.hpp"
 
 namespace gr {
 
@@ -159,12 +160,17 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
     initCommandPool(this->physicalDevice);
     initCommandBuffer(this->swapChain);
     initSemaphores();
+    this->currentFrame = 0;
 }
 
 Pipeline::~Pipeline()
 {
-    vkDestroySemaphore(this->device.getDevice(), this->renderFinishedSemaphore, nullptr);
-    vkDestroySemaphore(this->device.getDevice(), this->imageAvailableSemaphore, nullptr);
+    for (auto it : this->renderFinishedSemaphore) {
+        vkDestroySemaphore(this->device.getDevice(), it, nullptr);
+    }
+    for (auto it : this->imageAvailableSemaphore) {
+        vkDestroySemaphore(this->device.getDevice(), it, nullptr);
+    }
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
     vkDestroyPipeline(this->device.getDevice(), this->graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(this->device.getDevice(), this->pipelineLayout, nullptr);
@@ -274,7 +280,7 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
 void Pipeline::drawFrame()
 {
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(this->device.getDevice(), this->swapChain.getSwapChain(), UINT64_MAX, this->imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    vkAcquireNextImageKHR(this->device.getDevice(), this->swapChain.getSwapChain(), UINT64_MAX, this->imageAvailableSemaphore[this->currentFrame], VK_NULL_HANDLE, &imageIndex);
 
     vkResetCommandBuffer(this->commandBuffer, 0);
     this->recordCommandBuffer(this->commandBuffer, imageIndex);
@@ -282,7 +288,7 @@ void Pipeline::drawFrame()
     VkSubmitInfo submitInfo{};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
-    VkSemaphore waitSemaphores[] = {imageAvailableSemaphore};
+    VkSemaphore waitSemaphores[] = {this->imageAvailableSemaphore[this->currentFrame]};
     VkPipelineStageFlags waitStages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = waitSemaphores;
@@ -291,7 +297,7 @@ void Pipeline::drawFrame()
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &this->commandBuffer;
 
-    VkSemaphore signalSemaphores[] = {renderFinishedSemaphore};
+    VkSemaphore signalSemaphores[] = {this->renderFinishedSemaphore[this->currentFrame]};
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -312,17 +318,24 @@ void Pipeline::drawFrame()
     presentInfo.pImageIndices = &imageIndex;
 
     vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
+
+    this->currentFrame = (currentFrame + 1) % config::maxFrameInFlight;
 }
 
 void Pipeline::initSemaphores()
 {
-    VkSemaphoreCreateInfo semaphoreInfo{};
+    this->imageAvailableSemaphore.resize(config::maxFrameInFlight);
+    this->renderFinishedSemaphore.resize(config::maxFrameInFlight);
 
+    VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 
-    if (vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &imageAvailableSemaphore) != VK_SUCCESS ||
-        vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &renderFinishedSemaphore) != VK_SUCCESS) {
+    for (int i = 0; i < config::maxFrameInFlight; i++) {
+
+    if (vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &this->imageAvailableSemaphore[i]) != VK_SUCCESS ||
+        vkCreateSemaphore(this->device.getDevice(), &semaphoreInfo, nullptr, &this->renderFinishedSemaphore[i]) != VK_SUCCESS) {
         throw std::runtime_error("14 min");
+    }
     }
 }
 
