@@ -13,8 +13,11 @@
 class Galaxy {
 private:
     LehmerRandom rand;
+    std::string name;
 public:
     Galaxy(uint32_t parentSeed, int x, int y, int z);
+    Galaxy(uint32_t seed);
+    std::string getName() const;
     SolarSystem getSolarSystem(glm::ivec3 position);
     SolarSystem getSolarSystem(int x, int y, int z);
 };

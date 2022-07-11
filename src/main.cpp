@@ -5,14 +5,14 @@
 
 int main()
 {
-    Logger::log(WARNING, "Here an warning", ERR_LOCATION);
+    Logger::log(WARNING, "Here a warning", ERR_LOCATION);
     Universe u=(10);
     auto g = u.getGalaxy(0,0,0);
     for (int x = -10; x < 10; ++x) {
         for (int y = -10; y < 10; ++y) {
             for (int z = -10; z < 10; ++z) {
                 auto s = g.getSolarSystem(x,y,z);
-                std::cout << s.getName() << "is at {" << x << "," << y << "," << z << "}" << " and it " << (s.exist ? "exist" : "doesn't exist.");
+                std::cout << s.getName() << "is at {" << x << "," << y << "," << z << "}" << " in the " << g.getName() << " galaxy and it " << (s.exist ? "exists" : "doesn't exist.");
                 if (s.exist){
                     std::cout << " " << "It has " << s.getNumberOfCelestialBodies() << " Celestial Bodies.";
                     std::cout << std::endl;
