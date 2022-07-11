@@ -32,8 +32,10 @@
 
 # End of https://www.toptal.com/developers/gitignore/api/c++
 
-
+#Ignores build folders
 build/
+cmake-build*/
+
 .vscode/
 # ignores cmake : https://github.com/github/gitignore/blob/main/CMake.gitignore
 CMakeLists.txt.user
