@@ -7,4 +7,4 @@ target_sources(bonjourmonde PRIVATE
 )
 
 add_subdirectory(utils)
-add_subdirectory(Inputs)
+add_subdirectory(inputs)

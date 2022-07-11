@@ -10,7 +10,7 @@
 #include "utils/Command.hpp"
 #include "InputEnums.hpp"
 #include "utils/DataContainer.hpp"
-#include "Inputs/InputEvent.hpp"
+#include "inputs/InputEvent.hpp"
 
 struct InputEventAction {
     DataContainer& container;

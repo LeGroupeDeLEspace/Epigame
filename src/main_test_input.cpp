@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Inputs/InputManager.hpp"
+#include "inputs/InputManager.hpp"
 #include "TestWindow.hpp"
 #include "glm/gtx/string_cast.hpp"
 

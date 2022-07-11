@@ -5,7 +5,7 @@
 #include <string>
 #include <cstring>
 #include <stdexcept>
-#include "Inputs/InputEvent.hpp"
+#include "inputs/InputEvent.hpp"
 
 const char* InputActionName[Input::Action::Count] = {
 // Move Action

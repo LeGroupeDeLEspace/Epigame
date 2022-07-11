@@ -2,8 +2,8 @@
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
 #include <map>
-#include "Inputs/InputEvent.hpp"
-#include "Inputs/InputManager.hpp"
+#include "inputs/InputEvent.hpp"
+#include "inputs/InputManager.hpp"
 #include "TestWindow.hpp"
 
 #define LOG(s) std::cout << s << std::endl
