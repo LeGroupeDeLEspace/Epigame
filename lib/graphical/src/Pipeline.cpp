@@ -1,4 +1,5 @@
 #include <System.hpp>
+#include <iostream>
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
 
@@ -230,8 +231,8 @@ void Pipeline::initCommandPool(const PhysicalDevice &physicalDevice)
 
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
     poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-    poolInfo.flags = 0;
 
     if (vkCreateCommandPool(this->device.getDevice(), &poolInfo, nullptr, &this->commandPool) != VK_SUCCESS) {
         throw std::runtime_error("failed to create command pool");
@@ -295,7 +296,6 @@ void Pipeline::drawFrame()
     if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
         vkWaitForFences(this->device.getDevice(), 1, &this->imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
     }
-
     this->imagesInFlight[imageIndex] = this->inFlightFence[currentFrame];
 
     vkResetCommandBuffer(this->commandBuffer, 0);
@@ -319,7 +319,7 @@ void Pipeline::drawFrame()
 
     vkResetFences(this->device.getDevice(), 1, &inFlightFence[currentFrame]);
 
-    if (vkQueueSubmit(this->device.getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+    if (vkQueueSubmit(this->device.getGraphicsQueue(), 1, &submitInfo, inFlightFence[currentFrame]) != VK_SUCCESS) {
         throw std::runtime_error("8 min");
     }
     
