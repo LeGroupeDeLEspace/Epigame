@@ -1,41 +1,65 @@
-#include "Logger.hpp"
-#include "ErrorTracking.hpp"
-#include "generation/Universe.hpp"
 #include <iostream>
+#include "glm/gtx/string_cast.hpp"
+#include "inputs/InputManager.hpp"
+#include "generation/Universe.hpp"
+#include "ErrorTracking.hpp"
+#include "Logger.hpp"
+#include "TestWindow.hpp"
 
-int main()
-{
-    Logger::log(WARNING, "Here a warning", ERR_LOCATION);
-    Universe u=(10);
-    int systemNumber = 0;
-    int emptySystems = 0;
-    int stars = 0;
-    auto g = u.getGalaxy(298,208,42);
-    for (int x = -10; x < 10; ++x) {
-        for (int y = -10; y < 10; ++y) {
-            for (int z = -10; z < 10; ++z) {
-                systemNumber++;
-                auto s = g.getSolarSystem(x,y,z);
-//                std::cout << s.getName() << " is at {" << x << "," << y << "," << z << "}" << " in the " << g.getName() << " galaxy and it " << (s.exist ? "exists" : "doesn't exist.");
-                if (s.exist){
-                    stars += s.getNumberOfCelestialBodies();
-//                    std::cout << " " << "It has " << s.getNumberOfCelestialBodies() << " Celestial Bodies.";
-//                    std::cout << std::endl;
-                    for (int i = 0; i < s.getNumberOfCelestialBodies(); ++i) {
-                        auto b = s.getCelestialBody(i);
-//                        std::cout << '\t' << b.name << std::endl;
-                    }
-                } else {
-                    emptySystems++;
-//                    std::cout << std::endl;
-                }
-//                std::cout<< "------------------------" << std::endl;
-            }
+#define LOG(s) std::cout << s << std::endl
+#define LOGENDL() std::cout << std::endl
+
+
+class MovementEvent : public Command1<DataContainer *> {
+private:
+    UniversalPosition position;
+    bool isMoving;
+public:
+    MovementEvent(): position(10,glm::ivec3(10,20,30),glm::ivec3(0,0,0)), isMoving(false){
+        displayCurrentSolarSystem();
+    }
+    ~MovementEvent() override = default;
+    void execute(DataContainer * value) override {
+        if (isMoving && value->getVec3() == glm::vec3(0,0,0)){
+            isMoving = false;
+        }
+        else if (!isMoving && value->getVec3() != glm::vec3(0,0,0)){
+            isMoving = true;
+            position.positionSolarSystem += value->getVec3();
+            displayCurrentSolarSystem();
         }
     }
-    std::cout << "================ This galaxy has " << systemNumber << " systems and a total of " << stars << " celestial bodies ================" << std::endl;
-    std::cout << "- The galaxy name is " << g.getName() << std::endl;
-    std::cout << "- There are " << emptySystems << " empty systems" << std::endl;
-    // ---
+
+    void displayCurrentSolarSystem(){
+        auto u = Universe(position.seedUniverse);
+        auto g = u.getGalaxy(position.positionGalaxy);
+        auto s = g.getSolarSystem(position.positionSolarSystem);
+
+        LOG("We are in the Universe of seed " << std::to_string(position.seedUniverse));
+        LOG("We are in the Galaxy " << g.getName() << " at position " << glm::to_string(position.positionGalaxy));
+        LOG("We are in the Solar System " << s.getName() << " at position " << glm::to_string(position.positionSolarSystem));
+        if (s.exist) {
+            LOG(s.getName() << " has " << std::to_string(s.getNumberOfCelestialBodies()) << " Celestial Bodies");
+        } else {
+            LOG(s.getName() << " isn't really a Solar System. It doesn't even have a sun...");
+        }
+        LOG("==================================================");
+        LOGENDL();
+
+    }
+};
+int main()
+{
+    std::cout << "Begin of the project" << std::endl;
+    bool result;
+    TestWindow testWindow = TestWindow::instance();
+    InputManager & input = InputManager::instance();
+    input.addAction(Input::Event::Move, new MovementEvent());
+    do {
+        result = testWindow.update();
+        input.update();
+    } while (result);
+
+    delete &input;
     return 0;
 }
