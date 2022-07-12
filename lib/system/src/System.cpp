@@ -1,5 +1,7 @@
 #include "System.hpp"
 #include <fstream>
+#include <filesystem>
+
 
 namespace su {
 
@@ -42,5 +44,13 @@ std::vector<char> System::readFile(const std::string& filename)
 
     return buffer;
 }
+
+    bool System::createFolder(const std::filesystem::path &path) {
+        if(std::filesystem::exists(path)){
+            return std::filesystem::is_directory(path);
+        }
+
+        return std::filesystem::create_directories(path);
+    }
 
 }
