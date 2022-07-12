@@ -12,11 +12,12 @@
 
 class Galaxy {
 private:
+    const UniversalPosition position;
     LehmerRandom rand;
     std::string name;
 public:
-    Galaxy(uint32_t parentSeed, int x, int y, int z);
-    Galaxy(uint32_t seed);
+    Galaxy(UniversalPosition parentPosition, int x, int y, int z);
+    Galaxy(UniversalPosition position);
     std::string getName() const;
     SolarSystem getSolarSystem(glm::ivec3 position);
     SolarSystem getSolarSystem(int x, int y, int z);

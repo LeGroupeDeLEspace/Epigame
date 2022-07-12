@@ -5,12 +5,19 @@
 #include "generation/Galaxy.hpp"
 #include "utils/FNV1Hash.hpp"
 
-Galaxy::Galaxy(uint32_t parentSeed, int x, int y, int z) :
-        Galaxy(FNV1::Hash(parentSeed, x, y, z)) {
+Galaxy::Galaxy(UniversalPosition position, int x, int y, int z) :
+        Galaxy(UniversalPosition(position.getSeedUniverse(),glm::vec3(x,y,z))) {
 
 }
 
-Galaxy::Galaxy(uint32_t seed) : rand(seed), name() {
+Galaxy::Galaxy(UniversalPosition position) :
+position(position),
+rand(FNV1::Hash(
+        position.getSeedUniverse(),
+        position.getPositionGalaxy().x,
+        position.getPositionGalaxy().y,
+        position.getPositionGalaxy().z)),
+        name() {
     int len = rand.Next(5, 20);
     for (int i = 0; i < len; ++i) {
         name.push_back('A' + rand.Next(0, 26));

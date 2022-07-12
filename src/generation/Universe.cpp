@@ -4,11 +4,15 @@
 
 #include "generation/Universe.hpp"
 
-Universe::Universe() : rand() {
+Universe::Universe() : rand(), position() {
 
 }
 
-Universe::Universe(uint32_t seed) : rand(seed) {
+Universe::Universe(uint32_t seed) : rand(seed), position(seed) {
+
+}
+
+Universe::Universe(UniversalPosition position) : rand(position.getSeedUniverse()), position(position) {
 
 }
 
@@ -17,5 +21,5 @@ Galaxy Universe::getGalaxy(glm::ivec3 position) {
 }
 
 Galaxy Universe::getGalaxy(int x, int y, int z) {
-    return {rand.initialSeed,x,y,z};
+    return {position, x, y, z};
 }
