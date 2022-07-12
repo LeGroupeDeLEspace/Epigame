@@ -12,9 +12,11 @@
 class Universe {
 private:
 LehmerRandom rand;
+const UniversalPosition currentPosition;
 public:
     Universe();
     Universe(uint32_t seed);
+    Universe(UniversalPosition position);
     Galaxy getGalaxy(glm::ivec3 position);
     Galaxy getGalaxy(int x, int y, int z);
 };

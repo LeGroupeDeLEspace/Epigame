@@ -13,13 +13,15 @@
 
 class SolarSystem {
 private:
+    UniversalPosition position;
     LehmerRandom rand;
     std::string name;
     size_t numberCelestialBodies;
     std::vector<CelestialBody> celestialBodies;
 public:
     const bool exist;
-    SolarSystem(uint32_t parentSeed, int x, int y, int z, std::string parentName);
+    SolarSystem(UniversalPosition parentPosition, int x, int y, int z, std::string parentName);
+    SolarSystem(UniversalPosition position, std::string parentName);
     std::string getName() const;
     size_t getNumberOfCelestialBodies();
     CelestialBody getCelestialBody(int index);
