@@ -24,11 +24,13 @@ SolarSystem::SolarSystem(uint32_t parentSeed, int x, int y, int z, std::string p
 
     // TODO: create the sun at 0.
     celestialBodies.emplace_back(std::string(name).append("-SUN"),
-                                 UniversalPosition(glm::vec3(), glm::vec3(), glm::vec3(x, y, z)), rand.Next(25, 50));
+                                 UniversalPosition(uint32_t(), glm::vec3(), glm::vec3(x, y, z)),
+                                 rand.Next(25, 50));
     for (int i = 1; i < numberCelestialBodies; ++i) {
         // TODO: Create all the Planet
         celestialBodies.emplace_back(std::string(name).append("-PLANET-").append(std::to_string(i)),
-                                     UniversalPosition(glm::vec3(), glm::vec3(), glm::vec3(x, y, z)), rand.Next(5, 20));
+                                     UniversalPosition(uint32_t(), glm::vec3(), glm::vec3(x, y, z)),
+                                     rand.Next(5, 20));
     }
 
 }

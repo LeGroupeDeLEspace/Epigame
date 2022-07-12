@@ -9,14 +9,16 @@
 
 class UniversalPosition {
 private:
-    glm::vec3 positionUniverse;
+    uint32_t seedUniverse;
     glm::vec3 positionGalaxy;
     glm::vec3 positionSolarSystem;
 public:
+    UniversalPosition(uint32_t seedUniverse, glm::vec3 galaxy, glm::vec3 solarSystem);
+    UniversalPosition(uint32_t seedUniverse, glm::vec3 galaxy);
+    UniversalPosition(uint32_t seedUniverse);
     UniversalPosition();
-    UniversalPosition(glm::vec3 universe, glm::vec3 galaxy, glm::vec3 solarSystem);
-    glm::vec3 getPositionUniverse();
-    glm::vec3 getPositionInGalaxy();
+    uint32_t getSeedUniverse();
+    glm::vec3 getPositionGalaxy();
     glm::vec3 getPositionSolarSystem();
 };
 

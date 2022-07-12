@@ -4,20 +4,16 @@
 
 #include "generation/UniversalPosition.hpp"
 
-UniversalPosition::UniversalPosition() : positionUniverse(), positionGalaxy(), positionSolarSystem() {
+UniversalPosition::UniversalPosition(uint32_t seedUniverse, glm::vec3 galaxy, glm::vec3 solarSystem) : seedUniverse(seedUniverse), positionGalaxy(galaxy), positionSolarSystem(solarSystem) {}
+UniversalPosition::UniversalPosition(uint32_t seedUniverse, glm::vec3 galaxy) : seedUniverse(seedUniverse), positionGalaxy(galaxy), positionSolarSystem() {}
+UniversalPosition::UniversalPosition(uint32_t seedUniverse) : seedUniverse(seedUniverse), positionGalaxy(), positionSolarSystem() {}
+UniversalPosition::UniversalPosition() : seedUniverse(), positionGalaxy(), positionSolarSystem() {}
 
+uint32_t UniversalPosition::getSeedUniverse() {
+    return seedUniverse;
 }
 
-UniversalPosition::UniversalPosition(glm::vec3 universe, glm::vec3 galaxy, glm::vec3 solarSystem) : positionUniverse(universe), positionGalaxy(galaxy), positionSolarSystem(solarSystem) {
-
-}
-
-glm::vec3 UniversalPosition::getPositionUniverse() {
-    return positionUniverse;
-}
-
-
-glm::vec3 UniversalPosition::getPositionInGalaxy() {
+glm::vec3 UniversalPosition::getPositionGalaxy() {
     return positionGalaxy;
 }
 
