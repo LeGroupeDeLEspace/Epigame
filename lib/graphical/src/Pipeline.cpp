@@ -175,6 +175,9 @@ Pipeline::~Pipeline()
         vkDestroySemaphore(this->device.getDevice(), it, nullptr);
     }
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
+    for (auto it : this->frambuffers) {
+        vkDestroyFramebuffer(this->device.getDevice(), it, nullptr);
+    }
     vkDestroyPipeline(this->device.getDevice(), this->graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(this->device.getDevice(), this->pipelineLayout, nullptr);
 }
@@ -271,8 +274,10 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     renderPassInfo.pClearValues = &clearColor;
 
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+    
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
     vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    
     vkCmdEndRenderPass(commandBuffer);
 
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
