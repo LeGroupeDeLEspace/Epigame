@@ -9,14 +9,3 @@ UniversalPosition::UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy) :
 UniversalPosition::UniversalPosition(uint32_t seedUniverse) : seedUniverse(seedUniverse), positionGalaxy(), positionSolarSystem() {}
 UniversalPosition::UniversalPosition() : seedUniverse(), positionGalaxy(), positionSolarSystem() {}
 
-uint32_t UniversalPosition::getSeedUniverse() {
-    return seedUniverse;
-}
-
-glm::ivec3 UniversalPosition::getPositionGalaxy() {
-    return positionGalaxy;
-}
-
-glm::ivec3 UniversalPosition::getPositionSolarSystem() {
-    return positionSolarSystem;
-}
