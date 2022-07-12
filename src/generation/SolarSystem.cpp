@@ -7,7 +7,7 @@
 #include "utils/FNV1Hash.hpp"
 
 SolarSystem::SolarSystem(UniversalPosition parentPosition, int x, int y, int z, std::string parentName) :
-        SolarSystem(UniversalPosition(parentPosition.getSeedUniverse(),parentPosition.getPositionGalaxy(),glm::ivec3(x,y,z)), parentName){
+        SolarSystem(UniversalPosition(parentPosition.seedUniverse,parentPosition.positionGalaxy,glm::ivec3(x,y,z)), parentName){
 
 }
 
@@ -15,13 +15,13 @@ SolarSystem::SolarSystem(UniversalPosition position, std::string parentName) :
         position(position),
         rand(FNV1::Hash( // Generating the SolarSystem seed
                 FNV1::Hash( // Regenerating the parent Seed
-                        position.getSeedUniverse(),
-                        position.getPositionGalaxy().x,
-                        position.getPositionGalaxy().y,
-                        position.getPositionGalaxy().z),
-                position.getPositionSolarSystem().x,
-                position.getPositionSolarSystem().y,
-                position.getPositionSolarSystem().z)),
+                        position.seedUniverse,
+                        position.positionGalaxy.x,
+                        position.positionGalaxy.y,
+                        position.positionGalaxy.z),
+                position.positionSolarSystem.x,
+                position.positionSolarSystem.y,
+                position.positionSolarSystem.z)),
         name(),
         exist(rand.Next(255) > 25),
         numberCelestialBodies(rand.Next(5, 25)),

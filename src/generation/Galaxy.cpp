@@ -6,17 +6,17 @@
 #include "utils/FNV1Hash.hpp"
 
 Galaxy::Galaxy(UniversalPosition position, int x, int y, int z) :
-        Galaxy(UniversalPosition(position.getSeedUniverse(),glm::vec3(x,y,z))) {
+        Galaxy(UniversalPosition(position.seedUniverse,glm::vec3(x,y,z))) {
 
 }
 
 Galaxy::Galaxy(UniversalPosition position) :
 position(position),
 rand(FNV1::Hash(
-        position.getSeedUniverse(),
-        position.getPositionGalaxy().x,
-        position.getPositionGalaxy().y,
-        position.getPositionGalaxy().z)),
+        position.seedUniverse,
+        position.positionGalaxy.x,
+        position.positionGalaxy.y,
+        position.positionGalaxy.z)),
         name() {
     int len = rand.Next(5, 20);
     for (int i = 0; i < len; ++i) {

@@ -12,7 +12,7 @@ Universe::Universe(uint32_t seed) : rand(seed), position(seed) {
 
 }
 
-Universe::Universe(UniversalPosition position) : rand(position.getSeedUniverse()), position(position) {
+Universe::Universe(UniversalPosition position) : rand(position.seedUniverse), position(position) {
 
 }
 
