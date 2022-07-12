@@ -46,12 +46,8 @@ std::vector<char> System::readFile(const std::string& filename)
 }
 
     bool System::createFolder(const std::filesystem::path &path) {
-        if(!std::filesystem::exists(path)) {
-            return false;
-        }
-
-        if (std::filesystem::is_directory(path)){
-            return true;
+        if(std::filesystem::exists(path)){
+            return std::filesystem::is_directory(path);
         }
 
         return std::filesystem::create_directories(path);
