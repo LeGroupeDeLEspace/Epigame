@@ -13,7 +13,7 @@
 
 class SolarSystem {
 private:
-    UniversalPosition position;
+    const UniversalPosition position;
     LehmerRandom rand;
     std::string name;
     size_t numberCelestialBodies;

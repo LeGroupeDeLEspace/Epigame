@@ -12,7 +12,7 @@
 class Universe {
 private:
 LehmerRandom rand;
-const UniversalPosition currentPosition;
+const UniversalPosition position;
 public:
     Universe();
     Universe(uint32_t seed);

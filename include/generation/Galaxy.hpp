@@ -12,7 +12,7 @@
 
 class Galaxy {
 private:
-    UniversalPosition position;
+    const UniversalPosition position;
     LehmerRandom rand;
     std::string name;
 public:
