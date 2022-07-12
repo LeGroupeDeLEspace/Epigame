@@ -37,6 +37,7 @@ namespace gr {
             std::vector<VkSemaphore> imageAvailableSemaphore;
             std::vector<VkSemaphore> renderFinishedSemaphore;
             std::vector<VkFence> inFlightFence;
+            std::vector<VkFence> imagesInFlight;
     };
 }
 

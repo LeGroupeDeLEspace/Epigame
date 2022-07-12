@@ -15,6 +15,7 @@ namespace gr {
             const VkExtent2D &getExtent() const;
             const std::vector<VkImageView> &getViews() const;
             const VkSwapchainKHR &getSwapChain() const;
+            const std::vector<VkImage> &getImages() const;
         private:
             void createImageViews();
 

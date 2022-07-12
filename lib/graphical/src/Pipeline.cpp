@@ -283,10 +283,15 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
 void Pipeline::drawFrame()
 {
     vkWaitForFences(this->device.getDevice(), 1, &inFlightFence[currentFrame], VK_TRUE, UINT64_MAX);
-    vkResetFences(this->device.getDevice(), 1, &inFlightFence[currentFrame]);
 
     uint32_t imageIndex;
     vkAcquireNextImageKHR(this->device.getDevice(), this->swapChain.getSwapChain(), UINT64_MAX, this->imageAvailableSemaphore[this->currentFrame], VK_NULL_HANDLE, &imageIndex);
+
+    if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
+        vkWaitForFences(this->device.getDevice(), 1, &this->imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+    }
+
+    this->imagesInFlight[imageIndex] = this->inFlightFence[currentFrame];
 
     vkResetCommandBuffer(this->commandBuffer, 0);
     this->recordCommandBuffer(this->commandBuffer, imageIndex);
@@ -306,6 +311,8 @@ void Pipeline::drawFrame()
     VkSemaphore signalSemaphores[] = {this->renderFinishedSemaphore[this->currentFrame]};
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
+
+    vkResetFences(this->device.getDevice(), 1, &inFlightFence[currentFrame]);
 
     if (vkQueueSubmit(this->device.getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
         throw std::runtime_error("8 min");
@@ -333,6 +340,7 @@ void Pipeline::initSemaphores()
     this->imageAvailableSemaphore.resize(config::maxFrameInFlight);
     this->renderFinishedSemaphore.resize(config::maxFrameInFlight);
     this->inFlightFence.resize(config::maxFrameInFlight);
+    this->imagesInFlight.resize(this->swapChain.getImages().size(), VK_NULL_HANDLE);
 
     VkSemaphoreCreateInfo semaphoreInfo{};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
