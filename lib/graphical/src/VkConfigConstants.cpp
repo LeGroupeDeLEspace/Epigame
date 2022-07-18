@@ -14,5 +14,7 @@ const std::vector<const char*> deviceExtensions = {
 };
 const bool enableValidationLayers = true;
 
+const int maxFrameInFlight = 2;
+
 }
 }

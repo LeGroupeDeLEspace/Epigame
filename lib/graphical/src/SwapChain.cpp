@@ -105,4 +105,19 @@ const VkExtent2D &SwapChain::getExtent() const
     return this->swapChainExtent;
 }
 
+const std::vector<VkImageView> &SwapChain::getViews() const
+{
+    return this->swapChainImageViews;
+}
+
+const VkSwapchainKHR &SwapChain::getSwapChain() const
+{
+    return this->swapChain;
+}
+
+const std::vector<VkImage> &SwapChain::getImages() const
+{
+    return this->swapChainImages;
+}
+
 }

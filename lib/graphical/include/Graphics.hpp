@@ -15,6 +15,10 @@ namespace gr {
             ~Graphics();
 
             GLFWwindow *getWindow();
+
+            void waitForIdle();
+
+            void test();
         private:
             WindowHandler windowHandler;
             VulkanInstance instance;

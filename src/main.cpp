@@ -1,5 +1,5 @@
 #include <iostream>
-#include "glm/gtx/string_cast.hpp"
+#include <glm/gtx/string_cast.hpp>
 #include "inputs/InputManager.hpp"
 #include "generation/Universe.hpp"
 #include "ErrorTracking.hpp"
