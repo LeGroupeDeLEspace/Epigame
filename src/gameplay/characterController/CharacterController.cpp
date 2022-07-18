@@ -7,6 +7,9 @@
 void CharacterController::enable() {
     status = true;
 }
+void CharacterController::update() {
+
+}
 
 void CharacterController::disable() {
     status = false;

@@ -9,4 +9,5 @@ target_sources(bonjourmonde PRIVATE
 add_subdirectory(generation)
 add_subdirectory(utils)
 add_subdirectory(inputs)
+add_subdirectory(scene)
 add_subdirectory(gameplay)

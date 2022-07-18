@@ -5,16 +5,14 @@
 #ifndef JEUDELESPACE_CHARACTERCONTROLLER_HPP
 #define JEUDELESPACE_CHARACTERCONTROLLER_HPP
 
-#include "ICharacterController.hpp"
-
-class CharacterController : public ICharacterController {
+class CharacterController {
 private:
     bool status;
 public:
-    void enable() override;
-    virtual void update() override = 0;
-    void disable() override;
-    bool isEnable() override;
+    void enable();
+    void update();
+    void disable();
+    bool isEnable();
 };
 
 
