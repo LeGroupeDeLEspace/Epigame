@@ -8,6 +8,7 @@
 #include <string>
 #include "generation/UniversalPosition.hpp"
 #include "CelestialBody.hpp"
+#include "utils/LehmerRandom.hpp"
 
 class Planet : public CelestialBody {
 public:
@@ -23,6 +24,9 @@ public:
         Lava,
         Terran
     };
+    type bodyType;
+    LehmerRandom rand;
+    Planet(std::string name, UniversalPosition position, Coordinates localPosition, float size);
 };
 
 #endif //JEUDELESPACE_PLANET_HPP

@@ -7,15 +7,18 @@
 
 #include <string>
 #include "generation/UniversalPosition.hpp"
+#include "LocalCoordinates.hpp"
+
 class CelestialBody {
-private:
-    const float distanceFromStar;
 public:
     const std::string name;
     const UniversalPosition position;
     const float size;
-    CelestialBody(std::string name, UniversalPosition position, float size);
-    float getDistanceFromStar(){return distanceFromStar;}
+    const Coordinates localPosition;
+
+    CelestialBody(std::string name, UniversalPosition position, Coordinates localPosition, float size);
+
+    Coordinates getlocalPosition();
 };
 
 
