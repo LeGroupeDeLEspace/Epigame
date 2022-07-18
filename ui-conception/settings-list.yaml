@@ -1,0 +1,33 @@
+Settings :
+	Video :
+    - draw distance
+    - quality
+	Audio :
+    - ship volume
+    - enviroment volume
+    - ui volume
+    - music volume
+	Gameplay :
+    - 
+	Controls :
+    General :
+      - pause
+    On Foot :
+      - forward
+      - backward
+      - left
+      - right
+      - jump
+      - crouch
+      - run
+      - (walk)
+      - interact / enter ship
+    In Ship :
+      - forward
+      - backward
+      - left
+      - right
+      - interact / exit ship
+      - boost
+      - up
+      - down
