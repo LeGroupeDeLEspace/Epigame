@@ -4,6 +4,11 @@
 
 #include "generation/CelestialBody.hpp"
 
-CelestialBody::CelestialBody(std::string name, UniversalPosition position, float size) : name(name), position(position), size(size) {
 
+CelestialBody::CelestialBody(std::string name, UniversalPosition position, Coordinates coordinates, float size) : name(
+        name), position(position), localPosition(coordinates), size(size) {
+}
+
+Coordinates CelestialBody::getlocalPosition() {
+    return localPosition;
 }
