@@ -120,4 +120,10 @@ const std::vector<VkImage> &SwapChain::getImages() const
     return this->swapChainImages;
 }
 
+void SwapChain::recreate()
+{
+    vkDeviceWaitIdle(device);
+    
+}
+
 }

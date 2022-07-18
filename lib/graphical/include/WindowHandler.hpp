@@ -23,5 +23,6 @@ namespace gr {
             size_t windowHeight;
     };
 
+    extern WindowHandler mainWindow;
 }
 #endif

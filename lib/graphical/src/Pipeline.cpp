@@ -2,12 +2,13 @@
 #include <iostream>
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
+#include "WindowHandler.hpp"
 
 namespace gr {
 
-Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain)
+void Pipeline::createGraphicsPipeline()
 {
-    VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
+        VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
     }));
     VkShaderModule fragShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
@@ -157,11 +158,17 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
 
     vkDestroyShaderModule(this->device.getDevice(), vertShaderModule, nullptr);
     vkDestroyShaderModule(this->device.getDevice(), fragShaderModule, nullptr);
+
+}
+
+Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance)
+{
     initFrameBuffers(this->swapChain);
     initCommandPool(this->physicalDevice);
     initCommandBuffer(this->swapChain);
     initSemaphores();
     this->currentFrame = 0;
+
 }
 
 Pipeline::~Pipeline()
@@ -366,6 +373,14 @@ void Pipeline::initSemaphores()
             throw std::runtime_error("14 min");
         }
     }
+}
+
+void Pipeline::swapChainRecreation()
+{
+    this->swapChain = SwapChain(this->device.getDevice(), this->physicalDevice, this->instance, gr::mainWindow.getWidth(), gr::mainWindow.getHeight());
+    this->renderPass = RenderPass(this->device, this->swapChain);
+    this->createGraphicsPipeline();
+    this->initFrameBuffers();
 }
 
 }
