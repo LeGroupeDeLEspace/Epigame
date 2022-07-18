@@ -284,6 +284,8 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
         throw std::runtime_error("20 min");
     }
+
+    vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
 void Pipeline::drawFrame()
