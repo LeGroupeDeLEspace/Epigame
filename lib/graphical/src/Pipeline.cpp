@@ -295,8 +295,10 @@ void Pipeline::drawFrame()
 
     if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
         vkWaitForFences(this->device.getDevice(), 1, &this->imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+        // std::cout << "waiting: " << this->imagesInFlight[imageIndex] << "(" << imageIndex << "/" << currentFrame << ")" << std::endl;
     }
     this->imagesInFlight[imageIndex] = this->inFlightFence[currentFrame];
+    // std::cout << "set: " << this->imagesInFlight[imageIndex] << "(" << imageIndex << "/" << currentFrame << ")" << std::endl;
 
     vkResetCommandBuffer(this->commandBuffer, 0);
     this->recordCommandBuffer(this->commandBuffer, imageIndex);
@@ -322,7 +324,7 @@ void Pipeline::drawFrame()
     if (vkQueueSubmit(this->device.getGraphicsQueue(), 1, &submitInfo, inFlightFence[currentFrame]) != VK_SUCCESS) {
         throw std::runtime_error("8 min");
     }
-    
+
     VkPresentInfoKHR presentInfo{};
     presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
