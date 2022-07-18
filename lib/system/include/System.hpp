@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 namespace su {
 
@@ -13,6 +14,7 @@ namespace su {
         
             static std::string resolvePath(const std::vector<std::string> &parts);
             static std::vector<char> readFile(const std::string& filename);
+            static bool createFolder(const std::filesystem::path &path);
     };
 
 }
