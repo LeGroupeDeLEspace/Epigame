@@ -61,4 +61,14 @@ const VkDevice &LogicalDevice::getDevice() const
     return this->device;
 }
 
+VkQueue LogicalDevice::getGraphicsQueue() const
+{
+    return this->graphicsQueue;
+}
+
+VkQueue LogicalDevice::getPresentQueue() const
+{
+    return this->presentQueue;
+}
+
 }
