@@ -14,13 +14,10 @@ namespace gr {
             Graphics();
             ~Graphics();
 
-            GLFWwindow *getWindow();
-
             void waitForIdle();
 
             void test();
         private:
-            WindowHandler windowHandler;
             VulkanInstance instance;
             PhysicalDevice physicalDevice;
             LogicalDevice device;

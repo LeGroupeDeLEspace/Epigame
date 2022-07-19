@@ -11,7 +11,11 @@ namespace gr {
             ~RenderPass();
 
             const VkRenderPass &getPass() const;
+
+            void recreate(const SwapChain &swapChain);
         private:
+
+            void initPass(const SwapChain &swapChain);
             VkRenderPass renderPass;
             const VkDevice device;
     };

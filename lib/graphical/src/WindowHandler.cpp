@@ -30,4 +30,6 @@ size_t WindowHandler::getHeight() const {
     return this->windowHeight;
 }
 
+WindowHandler mainWindow;
+
 }

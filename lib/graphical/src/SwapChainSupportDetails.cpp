@@ -35,6 +35,8 @@ VkExtent2D SwapChainSupportDetails::chooseSwapExtent(uint32_t width, uint32_t he
     } else {
         VkExtent2D actualExtent{width, height};
 
+        //TODO adapt from course page 154 using WindowHandler
+
         actualExtent.width = std::max(this->capabilities.minImageExtent.width, std::min(this->capabilities.maxImageExtent.width, actualExtent.width));
         actualExtent.height = std::max(this->capabilities.minImageExtent.height, std::min(this->capabilities.maxImageExtent.height, actualExtent.height));
         return actualExtent;
