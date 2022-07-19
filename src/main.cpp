@@ -5,7 +5,6 @@
 #include "generation/Universe.hpp"
 #include "ErrorTracking.hpp"
 #include "Logger.hpp"
-#include "TestWindow.hpp"
 #include "Game.hpp"
 
 #define LOG(s) std::cout << s << std::endl
@@ -81,11 +80,13 @@ int main()
         game.draw();
         auto end = std::chrono::system_clock::now();
         // floating-point duration: no duration_cast needed
-        std::chrono::duration<double, std::milli> ellapsedTime = end - start;
+        std::chrono::duration<double, std::milli> elapsedTime = end - start;
 
-        game.waitEndOfFrame(ellapsedTime.count());
+        game.waitEndOfFrame(elapsedTime.count());
     }
 
+    game.graphics.waitForIdle();
     delete &game;
+
     return 0;
 }

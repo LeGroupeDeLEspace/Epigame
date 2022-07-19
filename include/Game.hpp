@@ -6,17 +6,14 @@
 #define JEUDELESPACE_GAME_HPP
 
 #include "inputs/InputManager.hpp"
-#include "TestWindow.hpp"
+#include "Graphics.hpp"
+#include "WindowHandler.hpp"
 
 #define DEFAULT_FRAME_DURATION 16.666
 
 class Game {
-private:
-    /// The duration of a frame in milliseconds.
-    double frameDuration;
-    TestWindow & testWindow;
-    InputManager & input;
 public:
+    gr::Graphics graphics;
     Game();
     Game(double frameDuration);
     bool isRunning() const;
@@ -27,6 +24,11 @@ public:
     /// The time that as passed in millisecond;
     void waitEndOfFrame(double timePassed);
     ~Game() = default;
+private:
+    /// The duration of a frame in milliseconds.
+    double frameDuration;
+    gr::WindowHandler & windowHandler;
+    InputManager & input;
 };
 
 

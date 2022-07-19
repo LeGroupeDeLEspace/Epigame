@@ -7,20 +7,23 @@
 #include <iostream>
 #include "Game.hpp"
 
-Game::Game() : frameDuration(DEFAULT_FRAME_DURATION), testWindow(TestWindow::instance()), input(InputManager::instance()) {
+Game::Game() : graphics(), frameDuration(DEFAULT_FRAME_DURATION), windowHandler(gr::mainWindow), input(InputManager::instance()) {
 
 }
 
-Game::Game(double frameDuration) : frameDuration(frameDuration), testWindow(TestWindow::instance()), input(InputManager::instance())  {
+Game::Game(double frameDuration) : graphics(), frameDuration(frameDuration), windowHandler(gr::mainWindow), input(InputManager::instance())  {
 
 }
 
 bool Game::isRunning() const {
-    return !this->testWindow.shouldClose();
+    return !glfwWindowShouldClose(this->windowHandler.getWindow());
 }
 
 void Game::processInputs() {
-    this->testWindow.update();
+    if(isRunning()){
+        glfwPollEvents();
+    }
+
     this->input.update();
 }
 
@@ -33,7 +36,7 @@ void Game::lateUpdate() {
 }
 
 void Game::draw() {
-
+    graphics.test();
 }
 
 void Game::waitEndOfFrame(double timePassed) {
