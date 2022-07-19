@@ -40,7 +40,7 @@ void Game::draw() {
 }
 
 void Game::waitEndOfFrame(double timePassed) {
-    std::cout << "Waiting " << std::to_string(frameDuration - timePassed) << "ms." << std::endl;
+//    std::cout << "Waiting " << std::to_string(frameDuration - timePassed) << "ms." << std::endl;
     std::this_thread::sleep_for(std::chrono::duration<double,std::milli>(frameDuration-timePassed));
 }
 
