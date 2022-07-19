@@ -23,6 +23,7 @@ namespace gr {
             void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
             void createGraphicsPipeline();
             void swapChainRecreation();
+            void cleanPipeline();
 
             const LogicalDevice &device;
             SwapChain &swapChain;

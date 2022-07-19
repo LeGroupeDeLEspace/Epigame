@@ -19,7 +19,7 @@ const VkRenderPass &RenderPass::getPass() const
 
 void RenderPass::recreate(const SwapChain &swapChain)
 {
-
+    this->initPass(swapChain);
 }
 
 void RenderPass::initPass(const SwapChain &swapChain)

@@ -183,7 +183,14 @@ Pipeline::~Pipeline()
     for (auto it : this->imageAvailableSemaphore) {
         vkDestroySemaphore(this->device.getDevice(), it, nullptr);
     }
+    this->cleanPipeline();
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
+}
+
+void Pipeline::cleanPipeline()
+{
+    vkFreeCommandBuffers(this->device.getDevice(), commandPool, 1, &this->commandBuffer);
+
     for (auto it : this->frambuffers) {
         vkDestroyFramebuffer(this->device.getDevice(), it, nullptr);
     }
@@ -345,8 +352,14 @@ void Pipeline::drawFrame()
     presentInfo.pSwapchains = swapChains;
 
     presentInfo.pImageIndices = &imageIndex;
+    VkResult result = vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
 
-    vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        this->swapChainRecreation();
+    }
+    else if (result != VK_SUCCESS) {
+        throw std::runtime_error("failed to present swap chain image");
+    }
 
     this->currentFrame = (currentFrame + 1) % config::maxFrameInFlight;
 
@@ -380,6 +393,15 @@ void Pipeline::initSemaphores()
 void Pipeline::swapChainRecreation()
 {
     vkDeviceWaitIdle(this->device.getDevice());
+
+
+    //clean up old swapchain
+
+    this->cleanPipeline();
+    this->renderPass.~RenderPass();
+    this->swapChain.~SwapChain();
+    
+    
     this->swapChain.recreate(this->physicalDevice, this->instance, mainWindow.getWidth(), mainWindow.getHeight());
     this->renderPass.recreate(this->swapChain);
     this->createGraphicsPipeline();

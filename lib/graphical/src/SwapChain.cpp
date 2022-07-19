@@ -126,7 +126,8 @@ const std::vector<VkImage> &SwapChain::getImages() const
 
 void SwapChain::recreate(const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height)
 {
-    
+    this->initNewSwapChain(physicalDevice, instance, width, height);
+    this->createImageViews();
 }
 
 }
