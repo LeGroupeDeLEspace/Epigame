@@ -55,11 +55,23 @@ public:
 };
 
 
-Game::Game() : graphics(), frameDuration(DEFAULT_FRAME_DURATION), windowHandler(gr::mainWindow), input(InputManager::instance()) {
+Game::Game() :
+    graphics(),
+    frameDuration(DEFAULT_FRAME_DURATION),
+    windowHandler(gr::mainWindow),
+    input(InputManager::instance()),
+    sceneStateMachine()
+{
     input.addAction(Input::Event::Move, new MovementEvent());
 }
 
-Game::Game(double frameDuration) : graphics(), frameDuration(frameDuration), windowHandler(gr::mainWindow), input(InputManager::instance())  {
+Game::Game(double frameDuration) :
+    graphics(),
+    frameDuration(frameDuration),
+    windowHandler(gr::mainWindow),
+    input(InputManager::instance()),
+    sceneStateMachine()
+{
 
 }
 
@@ -73,18 +85,20 @@ void Game::processInputs() {
     }
 
     this->input.update();
+    this->sceneStateMachine.ProcessInput();
 }
 
-void Game::update() {
-
+void Game::update(float deltaTime) {
+    sceneStateMachine.Update(deltaTime);
 }
 
-void Game::lateUpdate() {
-
+void Game::lateUpdate(float deltaTime) {
+    sceneStateMachine.LateUpdate(deltaTime);
 }
 
 void Game::draw() {
     graphics.test();
+//    sceneStateMachine.Draw(*this->windowHandler.getWindow()); /* Not for now */
 }
 
 void Game::waitEndOfFrame(double timePassed) {
