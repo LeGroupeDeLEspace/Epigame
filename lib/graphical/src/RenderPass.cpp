@@ -4,6 +4,26 @@ namespace gr {
 
 RenderPass::RenderPass(const LogicalDevice &device, const SwapChain &swapChain) : device(device.getDevice())
 {
+    this->initPass(swapChain);
+}
+
+RenderPass::~RenderPass()
+{
+    vkDestroyRenderPass(this->device, this->renderPass, nullptr);
+}
+
+const VkRenderPass &RenderPass::getPass() const
+{
+    return this->renderPass;
+}
+
+void RenderPass::recreate(const SwapChain &swapChain)
+{
+    this->initPass(swapChain);
+}
+
+void RenderPass::initPass(const SwapChain &swapChain)
+{
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format = swapChain.getImageFormat();
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -38,19 +58,9 @@ RenderPass::RenderPass(const LogicalDevice &device, const SwapChain &swapChain) 
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
 
-    if (vkCreateRenderPass(device.getDevice(), &renderPassInfo, nullptr, &this->renderPass) != VK_SUCCESS) {
+    if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &this->renderPass) != VK_SUCCESS) {
         throw std::runtime_error("failed to create render pass!");
     }
-}
-
-RenderPass::~RenderPass()
-{
-    vkDestroyRenderPass(this->device, this->renderPass, nullptr);
-}
-
-const VkRenderPass &RenderPass::getPass() const
-{
-    return this->renderPass;
 }
 
 }

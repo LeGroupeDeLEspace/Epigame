@@ -1,13 +1,18 @@
 #include <System.hpp>
 #include <iostream>
+
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
+#include "WindowHandler.hpp"
 
 namespace gr {
 
-Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain)
+void Pipeline::createGraphicsPipeline()
 {
-    VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
+        VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
     }));
     VkShaderModule fragShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
@@ -157,11 +162,18 @@ Pipeline::Pipeline(const LogicalDevice &device, const SwapChain &swapChain, cons
 
     vkDestroyShaderModule(this->device.getDevice(), vertShaderModule, nullptr);
     vkDestroyShaderModule(this->device.getDevice(), fragShaderModule, nullptr);
+
+}
+
+Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance)
+{
+    this->createGraphicsPipeline();
     initFrameBuffers(this->swapChain);
     initCommandPool(this->physicalDevice);
     initCommandBuffer(this->swapChain);
     initSemaphores();
     this->currentFrame = 0;
+
 }
 
 Pipeline::~Pipeline()
@@ -175,7 +187,14 @@ Pipeline::~Pipeline()
     for (auto it : this->imageAvailableSemaphore) {
         vkDestroySemaphore(this->device.getDevice(), it, nullptr);
     }
+    this->cleanPipeline();
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
+}
+
+void Pipeline::cleanPipeline()
+{
+    vkFreeCommandBuffers(this->device.getDevice(), commandPool, 1, &this->commandBuffer);
+
     for (auto it : this->frambuffers) {
         vkDestroyFramebuffer(this->device.getDevice(), it, nullptr);
     }
@@ -285,7 +304,6 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
         throw std::runtime_error("20 min");
     }
 
-    vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
 void Pipeline::drawFrame()
@@ -338,10 +356,18 @@ void Pipeline::drawFrame()
     presentInfo.pSwapchains = swapChains;
 
     presentInfo.pImageIndices = &imageIndex;
+    VkResult result = vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
 
-    vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        this->swapChainRecreation();
+    }
+    else if (result != VK_SUCCESS) {
+        throw std::runtime_error("failed to present swap chain image");
+    }
 
     this->currentFrame = (currentFrame + 1) % config::maxFrameInFlight;
+
+    vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
 void Pipeline::initSemaphores()
@@ -366,6 +392,34 @@ void Pipeline::initSemaphores()
             throw std::runtime_error("14 min");
         }
     }
+}
+
+void Pipeline::swapChainRecreation()
+{
+    //handling minimization (waiting for the window to be reopened)
+    int width;
+    int height;
+    GLFWwindow *window = mainWindow.getWindow();
+    glfwGetFramebufferSize(window, &width, &height);
+
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(this->device.getDevice());
+
+    //clean up old swapchain
+
+    this->cleanPipeline();
+    this->renderPass.~RenderPass();
+    this->swapChain.~SwapChain();
+    
+    
+    this->swapChain.recreate(this->physicalDevice, this->instance, static_cast<uint32_t>(mainWindow.getWidth()), static_cast<uint32_t>(mainWindow.getHeight()));
+    this->renderPass.recreate(this->swapChain);
+    this->createGraphicsPipeline();
+    this->initFrameBuffers(this->swapChain);
 }
 
 }

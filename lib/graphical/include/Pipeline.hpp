@@ -6,11 +6,12 @@
 #include "SwapChain.hpp"
 #include "RenderPass.hpp"
 #include "PhysicalDevice.hpp"
+#include "VulkanInstance.hpp"
 
 namespace gr {
     class Pipeline {
         public:
-            Pipeline(const LogicalDevice &device, const SwapChain &swapChain, const PhysicalDevice &physicalDevice);
+            Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice);
             ~Pipeline();
             void drawFrame();
         private:
@@ -20,10 +21,14 @@ namespace gr {
             void initCommandBuffer(const SwapChain &swapChain);
             void initSemaphores();
             void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+            void createGraphicsPipeline();
+            void swapChainRecreation();
+            void cleanPipeline();
 
             const LogicalDevice &device;
-            const SwapChain &swapChain;
+            SwapChain &swapChain;
             const PhysicalDevice &physicalDevice;
+            VulkanInstance &instance;
 
             VkPipeline graphicsPipeline;
             VkPipelineLayout pipelineLayout;
