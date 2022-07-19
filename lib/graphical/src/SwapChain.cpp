@@ -4,6 +4,20 @@ namespace gr {
 
 SwapChain::SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height) : device(device)
 {
+    this->initNewSwapChain(physicalDevice, instance, width, height);
+    this->createImageViews();
+}
+
+SwapChain::~SwapChain()
+{
+    for (auto imageView : this->swapChainImageViews) {
+        vkDestroyImageView(this->device, imageView, nullptr);
+    }
+    vkDestroySwapchainKHR(this->device, this->swapChain, nullptr);
+}
+
+void SwapChain::initNewSwapChain(const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height)
+{
     SwapChainSupportDetails swapChainSupport = physicalDevice.getSwapChainSupport();
     
     VkSurfaceFormatKHR surfaceFormat = swapChainSupport.chooseSwapSurfaceFormat();
@@ -57,16 +71,6 @@ SwapChain::SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, cons
 
     this->swapChainImageFormat = surfaceFormat.format;
     this->swapChainExtent = extent;
-
-    this->createImageViews();
-}
-
-SwapChain::~SwapChain()
-{
-    for (auto imageView : this->swapChainImageViews) {
-        vkDestroyImageView(this->device, imageView, nullptr);
-    }
-    vkDestroySwapchainKHR(this->device, this->swapChain, nullptr);
 }
 
 void SwapChain::createImageViews()
@@ -120,9 +124,8 @@ const std::vector<VkImage> &SwapChain::getImages() const
     return this->swapChainImages;
 }
 
-void SwapChain::recreate()
+void SwapChain::recreate(const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height)
 {
-    vkDeviceWaitIdle(device);
     
 }
 

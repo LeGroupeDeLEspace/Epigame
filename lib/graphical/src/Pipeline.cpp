@@ -163,6 +163,7 @@ void Pipeline::createGraphicsPipeline()
 
 Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance)
 {
+    this->createGraphicsPipeline();
     initFrameBuffers(this->swapChain);
     initCommandPool(this->physicalDevice);
     initCommandBuffer(this->swapChain);
@@ -377,10 +378,11 @@ void Pipeline::initSemaphores()
 
 void Pipeline::swapChainRecreation()
 {
-    this->swapChain = SwapChain(this->device.getDevice(), this->physicalDevice, this->instance, gr::mainWindow.getWidth(), gr::mainWindow.getHeight());
-    this->renderPass = RenderPass(this->device, this->swapChain);
+    vkDeviceWaitIdle(this->device.getDevice());
+    this->swapChain.recreate(this->physicalDevice, this->instance, mainWindow.getWidth(), mainWindow.getHeight());
+    this->renderPass.recreate(this->swapChain);
     this->createGraphicsPipeline();
-    this->initFrameBuffers();
+    this->initFrameBuffers(this->swapChain);
 }
 
 }

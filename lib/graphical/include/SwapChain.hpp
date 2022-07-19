@@ -11,7 +11,7 @@ namespace gr {
             SwapChain(VkDevice device, const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height);
             ~SwapChain();
 
-            void recreate();
+            void recreate(const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height);
 
             const VkFormat &getImageFormat() const;
             const VkExtent2D &getExtent() const;
@@ -20,6 +20,7 @@ namespace gr {
             const std::vector<VkImage> &getImages() const;
         private:
             void createImageViews();
+            void initNewSwapChain(const PhysicalDevice &physicalDevice, const VulkanInstance &instance, uint32_t width, uint32_t height);
 
             VkDevice device;
             VkSwapchainKHR swapChain;
