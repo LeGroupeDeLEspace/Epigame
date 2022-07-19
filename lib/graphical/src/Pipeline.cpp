@@ -293,7 +293,6 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
         throw std::runtime_error("20 min");
     }
 
-    vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
 void Pipeline::drawFrame()
@@ -350,6 +349,8 @@ void Pipeline::drawFrame()
     vkQueuePresentKHR(this->device.getPresentQueue(), &presentInfo);
 
     this->currentFrame = (currentFrame + 1) % config::maxFrameInFlight;
+
+    vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
 void Pipeline::initSemaphores()
