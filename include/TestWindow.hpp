@@ -17,7 +17,8 @@ public:
         return *instance;
     }
     static GLFWwindow* getCurrentWindow();
-    bool update();
+    void update();
+    bool shouldClose();
 private:
     TestWindow();
     GLFWwindow* window;

@@ -1,10 +1,12 @@
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
+#include <chrono>
 #include "inputs/InputManager.hpp"
 #include "generation/Universe.hpp"
 #include "ErrorTracking.hpp"
 #include "Logger.hpp"
 #include "TestWindow.hpp"
+#include "Game.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 #define LOGENDL() std::cout << std::endl
@@ -48,18 +50,42 @@ public:
 
     }
 };
-int main()
+
+int oldMain()
 {
     std::cout << "Begin of the project" << std::endl;
     bool result;
-    TestWindow testWindow = TestWindow::instance();
+    TestWindow & testWindow = TestWindow::instance();
     InputManager & input = InputManager::instance();
     input.addAction(Input::Event::Move, new MovementEvent());
     do {
-        result = testWindow.update();
+        testWindow.update();
         input.update();
-    } while (result);
+    } while (!testWindow.shouldClose());
 
     delete &input;
+    return 0;
+}
+
+int main()
+{
+    // Init the game variable
+    Game game;
+
+    while (game.isRunning()){
+        auto start = std::chrono::system_clock::now();
+        // Some computation here
+        game.processInputs();
+        game.update();
+        game.lateUpdate();
+        game.draw();
+        auto end = std::chrono::system_clock::now();
+        // floating-point duration: no duration_cast needed
+        std::chrono::duration<double, std::milli> ellapsedTime = end - start;
+
+        game.waitEndOfFrame(ellapsedTime.count());
+    }
+
+    delete &game;
     return 0;
 }

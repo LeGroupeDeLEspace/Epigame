@@ -11,12 +11,12 @@ TestWindow::TestWindow() {
     this->window = glfwCreateWindow(WIDTH, HEIGHT, "test", nullptr, nullptr);
 }
 
-bool TestWindow::update() {
-    if (!glfwWindowShouldClose(this->window)) {
-        glfwPollEvents();
-        return true;
-    }
-    return false;
+void TestWindow::update() {
+    glfwPollEvents();
+}
+
+bool TestWindow::shouldClose() {
+    return glfwWindowShouldClose(this->window);
 }
 
 GLFWwindow *TestWindow::getCurrentWindow() {
