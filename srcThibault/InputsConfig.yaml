@@ -1,0 +1,43 @@
+---
+#InputsConfig.yaml
+
+input:
+  move:
+    type: Vec3
+    z:
+      pos:
+        - Keyboard::KeyCode::Z
+        - Keyboard::KeyCode::Up
+      neg:
+        - Keyboard::KeyCode::S
+        - Keyboard::KeyCode::Down
+      value: Gamepad::Axis::Left_X
+    y:
+      pos:
+        - Keyboard::KeyCode::E
+        - Keyboard::KeyCode::Page_Up
+        - Gamepad::Axis::Right_Trigger
+      neg:
+        - Keyboard::KeyCode::A
+        - Keyboard::KeyCode::Page_Down
+        - Gamepad::Axis::Left_Trigger
+    x:
+      pos:
+        - Keyboard::KeyCode::D
+        - Keyboard::KeyCode::Right
+      neg:
+        - Keyboard::KeyCode::Q
+        - Keyboard::KeyCode::Left
+      value: Gamepad::Axis::Left_Y
+  look:
+    type: Vec2
+    x:
+      value: Gamepad::Axis::Right_X
+    y:
+      value: Gamepad::Axis::Right_Y
+    value: Mouse::Axis::DeltaMovement
+  boost:
+    type: Bool
+    value:
+      - Gamepad::Button::A
+      - Keyboard::Keycode::Space
