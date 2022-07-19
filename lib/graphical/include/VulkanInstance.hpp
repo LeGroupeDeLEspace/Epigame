@@ -2,7 +2,9 @@
 #define GR_VULKAN_INSTANCE_HPP_
 
 #define GLFW_INCLUDE_VULKAN
+
 #include <GLFW/glfw3.h>
+#include <vector>
 #include "ValidationLayer.hpp"
 
 namespace gr {

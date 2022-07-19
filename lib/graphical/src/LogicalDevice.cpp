@@ -1,4 +1,5 @@
 #include <set>
+#include <stdexcept>
 #include "LogicalDevice.hpp"
 #include "VkConfigConstants.hpp"
 

@@ -1,4 +1,5 @@
 #include <set>
+#include <stdexcept>
 #include "PhysicalDevice.hpp"
 #include "VkConfigConstants.hpp"
 #include "SwapChainSupportDetails.hpp"

@@ -2,6 +2,7 @@
 #define GR_PIPELINE_HPP_
 
 #include <vector>
+#include <string>
 #include "LogicalDevice.hpp"
 #include "SwapChain.hpp"
 #include "RenderPass.hpp"

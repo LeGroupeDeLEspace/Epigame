@@ -1,7 +1,7 @@
 #ifndef GR_QUEUE_FAMILY_INDICES
 #define GR_QUEUE_FAMILY_INDICES
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan.h>
 #include <optional>
 
 namespace gr {

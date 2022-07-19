@@ -1,7 +1,8 @@
 #ifndef GR_SWAP_CHAIN_SUPPORT_DETAILS_HPP_
 #define GR_SWAP_CHAIN_SUPPORT_DETAILS_HPP_
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan.h>
+#include <vector>
 
 namespace gr {
 
