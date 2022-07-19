@@ -1,5 +1,9 @@
 #include <System.hpp>
 #include <iostream>
+
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
 #include "WindowHandler.hpp"
@@ -392,8 +396,18 @@ void Pipeline::initSemaphores()
 
 void Pipeline::swapChainRecreation()
 {
-    vkDeviceWaitIdle(this->device.getDevice());
+    //handling minimization (waiting for the window to be reopened)
+    int width;
+    int height;
+    GLFWwindow *window = mainWindow.getWindow();
+    glfwGetFramebufferSize(window, &width, &height);
 
+    while (width == 0 || height == 0) {
+        glfwGetFramebufferSize(window, &width, &height);
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(this->device.getDevice());
 
     //clean up old swapchain
 
