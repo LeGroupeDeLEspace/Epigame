@@ -21,6 +21,7 @@ namespace gr {
             void initCommandPool(const PhysicalDevice &physicalDevice);
             void initCommandBuffer(const SwapChain &swapChain);
             void initSemaphores();
+            void initVbuffer();
             void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
             void createGraphicsPipeline();
             void swapChainRecreation();
@@ -35,6 +36,9 @@ namespace gr {
             VkPipelineLayout pipelineLayout;
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;
+
+            VkBuffer vbuffer;   //maybe TODO createClass
+
             VkCommandPool commandPool;  //TODO createClass
             VkCommandBuffer commandBuffer;
 

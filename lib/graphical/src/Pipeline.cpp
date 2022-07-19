@@ -178,16 +178,19 @@ void Pipeline::createGraphicsPipeline()
 Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance)
 {
     this->createGraphicsPipeline();
-    initFrameBuffers(this->swapChain);
-    initCommandPool(this->physicalDevice);
-    initCommandBuffer(this->swapChain);
-    initSemaphores();
+    this->initFrameBuffers(this->swapChain);
+    this->initCommandPool(this->physicalDevice);
+    this->initVbuffer();
+    this->initCommandBuffer(this->swapChain);
+    this->initSemaphores();
     this->currentFrame = 0;
 
 }
 
 Pipeline::~Pipeline()
 {
+    vkDestroyBuffer(this->device.getDevice(), this->vbuffer, nullptr);
+
     for (auto it : this->inFlightFence) {
         vkDestroyFence(this->device.getDevice(), it, nullptr);
     }
@@ -199,6 +202,21 @@ Pipeline::~Pipeline()
     }
     this->cleanPipeline();
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
+}
+
+void Pipeline::initVbuffer()
+{
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = sizeof(vertices[0]) * vertices.size();
+    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(this->device.getDevice(), &bufferInfo, nullptr, &this->vbuffer) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create vertex buffer");
+    }
+
+
 }
 
 void Pipeline::cleanPipeline()
