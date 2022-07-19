@@ -6,7 +6,7 @@ Graphics::Graphics() :
 instance(mainWindow.getWindow()),
 physicalDevice(this->instance),
 device(this->physicalDevice),
-swapChain(this->device.getDevice(), this->physicalDevice, this->instance, mainWindow.getWidth(), mainWindow.getHeight()),
+swapChain(this->device.getDevice(), this->physicalDevice, this->instance, static_cast<uint32_t>(mainWindow.getWidth()), static_cast<uint32_t>(mainWindow.getHeight())),
 pipeline(this->instance, this->device, this->swapChain, this->physicalDevice)
 {
 }

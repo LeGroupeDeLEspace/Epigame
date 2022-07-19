@@ -416,7 +416,7 @@ void Pipeline::swapChainRecreation()
     this->swapChain.~SwapChain();
     
     
-    this->swapChain.recreate(this->physicalDevice, this->instance, mainWindow.getWidth(), mainWindow.getHeight());
+    this->swapChain.recreate(this->physicalDevice, this->instance, static_cast<uint32_t>(mainWindow.getWidth()), static_cast<uint32_t>(mainWindow.getHeight()));
     this->renderPass.recreate(this->swapChain);
     this->createGraphicsPipeline();
     this->initFrameBuffers(this->swapChain);
