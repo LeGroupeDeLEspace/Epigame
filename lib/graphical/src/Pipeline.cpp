@@ -4,6 +4,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#include <cstring>
+
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
 #include "WindowHandler.hpp"
@@ -190,6 +192,7 @@ Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapCh
 Pipeline::~Pipeline()
 {
     vkDestroyBuffer(this->device.getDevice(), this->vbuffer, nullptr);
+    vkFreeMemory(this->device.getDevice(), this->vbufferMemory, nullptr);
 
     for (auto it : this->inFlightFence) {
         vkDestroyFence(this->device.getDevice(), it, nullptr);
@@ -204,6 +207,22 @@ Pipeline::~Pipeline()
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
 }
 
+uint32_t Pipeline::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(this->physicalDevice.getDevice(), &memProperties);
+
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if (typeFilter & (1 << i) &&
+            (memProperties.memoryTypes[i].propertyFlags & properties) == properties    
+        ) {
+            return i;
+        }
+    }
+
+    throw std::runtime_error("failed to find suitable memory type!");
+}
+
 void Pipeline::initVbuffer()
 {
     VkBufferCreateInfo bufferInfo{};
@@ -216,7 +235,29 @@ void Pipeline::initVbuffer()
         throw std::runtime_error("failed to create vertex buffer");
     }
 
+    VkMemoryRequirements memRequirements{};
+    vkGetBufferMemoryRequirements(this->device.getDevice(), this->vbuffer, &memRequirements);
+    
+    VkMemoryAllocateInfo allocInfo{};
 
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex =
+        findMemoryType(memRequirements.memoryTypeBits,
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+    if (vkAllocateMemory(this->device.getDevice(), &allocInfo, nullptr, &this->vbufferMemory) != VK_SUCCESS) {
+        throw std::runtime_error("failed to allocate vertex buffer memory!");
+    }
+
+    vkBindBufferMemory(this->device.getDevice(), this->vbuffer, this->vbufferMemory, 0);
+
+    void *data;
+    vkMapMemory(this->device.getDevice(), this->vbufferMemory, 0, bufferInfo.size, 0, &data);
+
+    memcpy(data, vertices.data(), (size_t) bufferInfo.size);
+    vkUnmapMemory(this->device, this->vbufferMemory);
 }
 
 void Pipeline::cleanPipeline()
