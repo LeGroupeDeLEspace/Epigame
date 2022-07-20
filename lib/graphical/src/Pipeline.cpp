@@ -15,6 +15,10 @@ static const std::vector<gr::Vertex> vertices = {   //tmp test data
     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+    
+    {{1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
 };
 
 namespace gr {
@@ -257,7 +261,7 @@ void Pipeline::initVbuffer()
     vkMapMemory(this->device.getDevice(), this->vbufferMemory, 0, bufferInfo.size, 0, &data);
 
     memcpy(data, vertices.data(), (size_t) bufferInfo.size);
-    vkUnmapMemory(this->device, this->vbufferMemory);
+    vkUnmapMemory(this->device.getDevice(), this->vbufferMemory);
 }
 
 void Pipeline::cleanPipeline()
@@ -365,7 +369,10 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-    vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+    VkBuffer vertexBuffers[] = {this->vbuffer};
+    VkDeviceSize offsets[] = {0};
+    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+    vkCmdDraw(commandBuffer, vertices.size(), 1, 0, 0);
     
     vkCmdEndRenderPass(commandBuffer);
 
