@@ -1,4 +1,4 @@
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan.h>
 #include "VkConfigConstants.hpp"
 
 namespace gr {

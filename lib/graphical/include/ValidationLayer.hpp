@@ -1,7 +1,7 @@
 #ifndef GR_VALIDATION_LAYER_HPP_
 #define GR_VALIDATION_LAYER_HPP_
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan.h>
 
 namespace gr {
     class ValidationLayer {
