@@ -14,4 +14,5 @@ target_sources(graphRender PRIVATE
     RenderPass.cpp
     Pipeline.cpp
     Vertex.cpp
+    Buffer.cpp
 )

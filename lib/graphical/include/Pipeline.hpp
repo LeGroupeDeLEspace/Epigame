@@ -26,7 +26,6 @@ namespace gr {
             void createGraphicsPipeline();
             void swapChainRecreation();
             void cleanPipeline();
-            uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 
             const LogicalDevice &device;

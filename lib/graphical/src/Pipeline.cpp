@@ -25,7 +25,7 @@ namespace gr {
 
 void Pipeline::createGraphicsPipeline()
 {
-        VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
+    VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
     }));
     VkShaderModule fragShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
@@ -209,22 +209,6 @@ Pipeline::~Pipeline()
     }
     this->cleanPipeline();
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
-}
-
-uint32_t Pipeline::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
-{
-    VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(this->physicalDevice.getDevice(), &memProperties);
-
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-        if (typeFilter & (1 << i) &&
-            (memProperties.memoryTypes[i].propertyFlags & properties) == properties    
-        ) {
-            return i;
-        }
-    }
-
-    throw std::runtime_error("failed to find suitable memory type!");
 }
 
 void Pipeline::initVbuffer()
