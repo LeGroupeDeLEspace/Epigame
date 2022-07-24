@@ -1,7 +1,7 @@
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include "inputs/InputEvent.hpp"
 #include "inputs/InputManager.hpp"
 #include "WindowHandler.hpp"

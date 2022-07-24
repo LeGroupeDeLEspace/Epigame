@@ -5,6 +5,7 @@
 #include "scene/SceneStateMachine.hpp"
 
 SceneStateMachine::SceneStateMachine() : scenes(0), curScene(nullptr) { }
+
 void SceneStateMachine::ProcessInput()
 {
     if(curScene)

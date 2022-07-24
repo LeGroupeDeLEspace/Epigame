@@ -9,3 +9,15 @@ UniversalPosition::UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy) :
 UniversalPosition::UniversalPosition(uint32_t seedUniverse) : seedUniverse(seedUniverse), positionGalaxy(), positionSolarSystem() {}
 UniversalPosition::UniversalPosition() : seedUniverse(), positionGalaxy(), positionSolarSystem() {}
 
+bool operator==(const UniversalPosition &lhs, const UniversalPosition &rhs) {
+    return lhs.seedUniverse == rhs.seedUniverse &&
+    lhs.positionGalaxy == rhs.positionGalaxy &&
+    lhs.positionSolarSystem == rhs.positionSolarSystem;
+}
+
+bool operator!=(const UniversalPosition &lhs, const UniversalPosition &rhs) {
+    return lhs.seedUniverse != rhs.seedUniverse ||
+    lhs.positionGalaxy != rhs.positionGalaxy ||
+    lhs.positionSolarSystem != rhs.positionSolarSystem;
+}
+
