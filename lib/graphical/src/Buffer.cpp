@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <cstring>
 #include "Buffer.hpp"
 #include "Vertex.hpp"
 
@@ -69,9 +70,23 @@ void Buffer::initMemory(const PhysicalDevice &physicalDevice)
     }
 }
 
-void Buffer::copyData(void *data)
+void Buffer::copyData(const Vertex *data)
 {
+    void *mapped;
+    
+    vkMapMemory(this->device.getDevice(), this->memory, 0, this->length * sizeof(Vertex), 0, &mapped);
+    memcpy(mapped, data, sizeof(Vertex) * this->length);
+    vkUnmapMemory(this->device.getDevice(), this->memory);
+}
 
+VkBuffer Buffer::getBuffer() const
+{
+    return this->vbuffer;
+}
+
+VkDeviceMemory Buffer::getMemory() const
+{
+    return this->memory;
 }
 
 }

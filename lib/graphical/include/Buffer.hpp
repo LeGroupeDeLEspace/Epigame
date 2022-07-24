@@ -2,6 +2,7 @@
 #define GR_VERTEX_BUFFER_HPP_
 
 #include "LogicalDevice.hpp"
+#include "Vertex.hpp"
 
 namespace gr {
     class Buffer {
@@ -10,7 +11,7 @@ namespace gr {
             Buffer(const LogicalDevice &device, const PhysicalDevice &physicalDevice, size_t nvertex, VkMemoryPropertyFlags properties); // TODO implement this
             ~Buffer();
 
-            void copyData(void *data); // TODO implement length / offset
+            void copyData(const Vertex *data); // TODO implement length / offset
 
             VkBuffer getBuffer() const;
             VkDeviceMemory getMemory() const;
