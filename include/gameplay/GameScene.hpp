@@ -10,12 +10,13 @@
 #include "utils/DataContainer.hpp"
 #include "generation/UniversalPosition.hpp"
 #include "generation/Universe.hpp"
+#include <entt/entt.hpp>
 
 class OnMove : public Command1<DataContainer *> {
 private:
-    UniversalPosition& universalPosition;
+    glm::vec3& movement;
 public:
-    explicit OnMove(UniversalPosition& universalPosition);
+    explicit OnMove(glm::vec3& movement);
     ~OnMove() override;
     void execute(DataContainer * value) override;
 };
@@ -23,12 +24,13 @@ public:
 
 class GameScene : public Scene {
 private:
-    UniversalPosition previousUniversalPosition;
+    entt::registry registry;
+    entt::entity player;
+    glm::vec3 movement;
     UniversalPosition universalPosition;
     OnMove onMoveCommand;
 public:
     GameScene();
-    GameScene(UniversalPosition& universalPosition);
     void OnCreate() override;
     void OnDestroy() override;
     void OnActivate() override;

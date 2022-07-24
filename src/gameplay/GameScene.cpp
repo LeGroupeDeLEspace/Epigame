@@ -7,37 +7,34 @@
 #include "inputs/InputManager.hpp"
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
+#include "gameplay/components/Rotation.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 #define LOGENDL() std::cout << std::endl
 
-OnMove::OnMove(UniversalPosition& universalPosition) : universalPosition(universalPosition) {
+// Avec la universalPosition, on a la position de la camera dans l'espace. Et les autres objects ne sont que des offsets de cette position
+// La rotation global corresponds a la direction dans laquelle regarde le joueur (quaternion * {0,0,1})
+// Tout les objets ont donc un i64vec3 pour leurs position,
+// un quaternion pour leurs rotation
+// et suivant les objets une struct type planet / sun / ... qui les aideront a définir ce qu'ils font et ne font pas
+// Ou juste un celestial body avec plus de paramètres... plus logique aussi.
 
-}
-
-OnMove::~OnMove() {
-
-}
-
-void OnMove::execute(DataContainer* value) {
-    universalPosition.positionSolarSystem += value->getVec3();
-}
-
-
-GameScene::GameScene() : previousUniversalPosition(), universalPosition(previousUniversalPosition), onMoveCommand(this->universalPosition) {
-
-}
-
-GameScene::GameScene(UniversalPosition& universalPosition): previousUniversalPosition(universalPosition), universalPosition(universalPosition), onMoveCommand(this->universalPosition) {
-
-}
+GameScene::GameScene() :
+        registry(),
+        player(),
+        movement(),
+        universalPosition(),
+        onMoveCommand(this->movement) {}
 
 void GameScene::OnCreate() {
+    player = registry.create();
+    registry.emplace<UniversalPosition>(player);
+    registry.emplace<Rotation>(player);
 
 }
 
 void GameScene::OnDestroy() {
-
+    registry.clear();
 }
 
 void GameScene::OnActivate() {
@@ -50,13 +47,14 @@ void GameScene::OnDeactivate() {
 }
 
 void GameScene::Draw(GLFWwindow &window) {
-    if(previousUniversalPosition != universalPosition) {
+    if(glm::vec3{0,0,0} != movement) {
         DrawUniverse();
-        previousUniversalPosition = universalPosition;
     }
 }
 
 void GameScene::DrawUniverse() const {
+
+
     auto u = Universe(universalPosition.seedUniverse);
     auto g = u.getGalaxy(universalPosition.positionGalaxy);
     auto s = g.getSolarSystem(universalPosition.positionSolarSystem);
@@ -73,4 +71,17 @@ void GameScene::DrawUniverse() const {
     }
     LOG("==================================================");
     LOGENDL();
+}
+
+
+OnMove::OnMove(glm::vec3& movement) : movement(movement) {
+
+}
+
+OnMove::~OnMove() {
+
+}
+
+void OnMove::execute(DataContainer* value) {
+    movement = value->getVec3();
 }
