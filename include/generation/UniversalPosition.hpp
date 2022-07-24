@@ -12,9 +12,11 @@ private:
 public:
     uint32_t seedUniverse;
     glm::ivec3 positionGalaxy;
-    glm::i64vec3 positionSolarSystem;
+    glm::ivec3 positionSolarSystem;
+    glm::i64vec3 position;
 
-    UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::i64vec3 solarSystem);
+    UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem, glm::i64vec3 position);
+    UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem);
     UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy);
     UniversalPosition(uint32_t seedUniverse);
     UniversalPosition();

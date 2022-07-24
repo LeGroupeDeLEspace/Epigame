@@ -48,6 +48,9 @@ void GameScene::OnDeactivate() {
 
 void GameScene::Draw(GLFWwindow &window) {
     if(glm::vec3{0,0,0} != movement) {
+        //TODO: change the movement to be fluid.
+        universalPosition.positionSolarSystem += movement;
+        movement = glm::vec3{0,0,0};
         DrawUniverse();
     }
 }
