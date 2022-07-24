@@ -181,7 +181,7 @@ void Pipeline::createGraphicsPipeline()
 
 }
 
-Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance)
+Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance), buffer(device, physicalDevice, vertices.size())
 {
     this->createGraphicsPipeline();
     this->initFrameBuffers(this->swapChain);
@@ -195,9 +195,6 @@ Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapCh
 
 Pipeline::~Pipeline()
 {
-    vkDestroyBuffer(this->device.getDevice(), this->vbuffer, nullptr);
-    vkFreeMemory(this->device.getDevice(), this->vbufferMemory, nullptr);
-
     for (auto it : this->inFlightFence) {
         vkDestroyFence(this->device.getDevice(), it, nullptr);
     }
@@ -213,39 +210,7 @@ Pipeline::~Pipeline()
 
 void Pipeline::initVbuffer()
 {
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = sizeof(vertices[0]) * vertices.size();
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (vkCreateBuffer(this->device.getDevice(), &bufferInfo, nullptr, &this->vbuffer) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create vertex buffer");
-    }
-
-    VkMemoryRequirements memRequirements{};
-    vkGetBufferMemoryRequirements(this->device.getDevice(), this->vbuffer, &memRequirements);
-    
-    VkMemoryAllocateInfo allocInfo{};
-
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex =
-        findMemoryType(memRequirements.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-    if (vkAllocateMemory(this->device.getDevice(), &allocInfo, nullptr, &this->vbufferMemory) != VK_SUCCESS) {
-        throw std::runtime_error("failed to allocate vertex buffer memory!");
-    }
-
-    vkBindBufferMemory(this->device.getDevice(), this->vbuffer, this->vbufferMemory, 0);
-
-    void *data;
-    vkMapMemory(this->device.getDevice(), this->vbufferMemory, 0, bufferInfo.size, 0, &data);
-
-    memcpy(data, vertices.data(), (size_t) bufferInfo.size);
-    vkUnmapMemory(this->device.getDevice(), this->vbufferMemory);
+    this->buffer.copyData(vertices.data());
 }
 
 void Pipeline::cleanPipeline()
@@ -353,7 +318,7 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-    VkBuffer vertexBuffers[] = {this->vbuffer};
+    VkBuffer vertexBuffers[] = {this->buffer.getBuffer()};
     VkDeviceSize offsets[] = {0};
     vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
     vkCmdDraw(commandBuffer, vertices.size(), 1, 0, 0);

@@ -8,6 +8,7 @@
 #include "RenderPass.hpp"
 #include "PhysicalDevice.hpp"
 #include "VulkanInstance.hpp"
+#include "Buffer.hpp"
 
 namespace gr {
     class Pipeline {
@@ -38,8 +39,7 @@ namespace gr {
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;
 
-            VkBuffer vbuffer;   //maybe TODO createClass
-            VkDeviceMemory vbufferMemory;
+            Buffer buffer;
 
             VkCommandPool commandPool;  //TODO createClass
             VkCommandBuffer commandBuffer;
