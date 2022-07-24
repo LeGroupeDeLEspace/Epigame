@@ -13,4 +13,5 @@ target_sources(graphRender PRIVATE
     SwapChain.cpp
     RenderPass.cpp
     Pipeline.cpp
+    Vertex.cpp
 )

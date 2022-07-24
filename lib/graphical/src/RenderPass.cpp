@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "RenderPass.hpp"
 
 namespace gr {
