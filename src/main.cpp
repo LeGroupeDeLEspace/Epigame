@@ -1,5 +1,5 @@
 #include <chrono>
-#include <math.h>
+#include <cmath>
 #include "Game.hpp"
 
 int main()
