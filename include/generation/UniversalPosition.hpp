@@ -20,5 +20,8 @@ public:
     UniversalPosition();
 };
 
+bool operator==(const UniversalPosition& lhs, const UniversalPosition& rhs);
+bool operator!=(const UniversalPosition& lhs, const UniversalPosition& rhs);
+
 
 #endif //JEUDELESPACE_UNIVERSALPOSITION_HPP

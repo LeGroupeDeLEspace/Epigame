@@ -1,6 +1,5 @@
 #include <iostream>
 #include "inputs/InputManager.hpp"
-#include "TestWindow.hpp"
 #include "glm/gtx/string_cast.hpp"
 
 class DataContainerStateLogger : public Command1<DataContainer *> {

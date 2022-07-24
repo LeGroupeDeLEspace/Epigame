@@ -5,7 +5,7 @@
 #include <string>
 #include <memory>
 #include <glm/glm.hpp>
-#include <map>
+#include <unordered_map>
 #include "GLFW/glfw3.h"
 #include "utils/Command.hpp"
 #include "InputEnums.hpp"
@@ -29,15 +29,15 @@ private:
     std::vector<Joystick::JoystickId> joystickConnected;
 
     // Events
-    std::map<Keyboard::KeyCode, std::vector<Input::Action>> keyboardEvents;
-    std::map<Mouse::Axis, std::vector<Input::Event>> mouseAxisEvents;
-    std::map<Mouse::Button, std::vector<Input::Action>> mouseButtonEvents;
+    std::unordered_map<Keyboard::KeyCode, std::vector<Input::Action>> keyboardEvents;
+    std::unordered_map<Mouse::Axis, std::vector<Input::Event>> mouseAxisEvents;
+    std::unordered_map<Mouse::Button, std::vector<Input::Action>> mouseButtonEvents;
 
-    std::map<Gamepad::Button, std::vector<Input::Action>> gamepadButtonsEvents;
-    std::map<Gamepad::Axis, std::vector<Input::Action>> gamepadAxisEvents;
+    std::unordered_map<Gamepad::Button, std::vector<Input::Action>> gamepadButtonsEvents;
+    std::unordered_map<Gamepad::Axis, std::vector<Input::Action>> gamepadAxisEvents;
 
-    std::map<Input::Event, DataContainer> events;
-    std::map<Input::Action, InputEventAction> inputEvents;
+    std::unordered_map<Input::Event, DataContainer> events;
+    std::unordered_map<Input::Action, InputEventAction> inputEvents;
 
     static void keyCallbackStatic(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods);
     void keyCallback(GLFWwindow* window, Keyboard::KeyCode key, int scancode, Input::State action, Input::Modifier mods);
@@ -72,7 +72,7 @@ public:
 
     void update();
     // The functions for the rest of the
-    void loadInputs(std::map<int, std::vector<Input::Event>> inputs); //TODO: change the load
+    void loadInputs(std::unordered_map<int, std::vector<Input::Event>> inputs); //TODO: change the load
     void changeInput(int oldInput, int newInput, Input::Event event); //TODO: change the changing
     void addAction(Input::Event event, Command1<DataContainer *> * action); // Only adding one at a time for simplicity first.
     void removeAction(Input::Event event, Command1<DataContainer *> * action); // Only removing one at a time for simplicity first.

@@ -1,10 +1,11 @@
 #include <iostream>
 #include <glm/gtx/string_cast.hpp>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include "inputs/InputEvent.hpp"
 #include "inputs/InputManager.hpp"
-#include "TestWindow.hpp"
+#include "WindowHandler.hpp"
+#include "Graphics.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 
@@ -46,7 +47,7 @@ InputManager::InputManager() :
         })
 {
     //Get the windows
-    GLFWwindow* window = TestWindow::getCurrentWindow();
+    GLFWwindow* window = gr::mainWindow.getWindow();
 
     // Initializing the keyboards inputs
     std::cout << "Initializing the keyboard inputs" << std::endl;
