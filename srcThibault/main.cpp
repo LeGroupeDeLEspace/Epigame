@@ -47,10 +47,11 @@ std::vector<std::string> returnWitchSwitch(const YAML::Node &tmp, std::vector<st
     {
         case YAML::NodeType::Null :
             std::cout << "Null\n";
-            break;
+            return vec;
         case YAML::NodeType::Scalar :
             std::cout << "Scalar\n";
-            break;
+            vec.push_back(tmp.as<std::string>());
+            return vec;
         case YAML::NodeType::Sequence :
             std::cout << "Sequence\n";
             for (YAML::const_iterator it = tmp.begin(); it != tmp.end(); it++) {
@@ -60,9 +61,15 @@ std::vector<std::string> returnWitchSwitch(const YAML::Node &tmp, std::vector<st
             return std::vector<std::string>();
         case YAML::NodeType::Map :
             std::cout << "Map\n";
-            break;
+            for (YAML::const_iterator it = tmp.begin(); it != tmp.end(); it++) {
+                std::string key = it->first.as<std::string>();
+                std::string value = it->second.as<std::string>();
+                vec.push_back(key + ": " + value);
+            }
+            return vec;
         default :
             std::cout << "default\n";
+            return vec;
     }
     return std::vector<std::string>();
 }
@@ -103,7 +110,9 @@ std::vector<std::string> GetTheYamlValue(std::vector<std::string> &vecStr)
 
 int main()
 {
-    std::vector<std::string> vecStr = {"input", "move", "z", "pos"};
+//    std::vector<std::string> vecStr = {"input", "move", "x", "value"};
+    std::vector<std::string> vecStr = {"input", "mapping"};
+//    std::vector<std::string> vecStr = {"input"};
     std::vector<std::string> res = GetTheYamlValue(vecStr);
     std::cout << "print de res: " << std::endl;
     for (int i = 0; i < res.size(); i++) {
