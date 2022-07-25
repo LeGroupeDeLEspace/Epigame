@@ -34,8 +34,6 @@ Buffer::Buffer(const LogicalDevice &device, const PhysicalDevice &physicalDevice
     this->initMemory(physicalDevice);
 
     vkBindBufferMemory(this->device.getDevice(), this->vbuffer, this->memory, 0);
-
-    std::cout << "Buffer construction: " << nvertex << std::endl;
 }
 
 Buffer::Buffer(Buffer &&r) : device(r.device)
@@ -47,6 +45,18 @@ Buffer::Buffer(Buffer &&r) : device(r.device)
     r.memory = VK_NULL_HANDLE;
     r.vbuffer = VK_NULL_HANDLE;
     r.length = 0;
+}
+
+Buffer& Buffer::operator=(Buffer &&r)
+{
+    this->length = r.length;
+    this->memory = r.memory;
+    this->vbuffer = r.vbuffer;
+
+    r.memory = VK_NULL_HANDLE;
+    r.vbuffer = VK_NULL_HANDLE;
+    r.length = 0;
+    return *this;
 }
 
 void Buffer::initBuffer(size_t length)

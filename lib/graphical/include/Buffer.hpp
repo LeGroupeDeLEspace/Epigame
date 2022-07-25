@@ -14,6 +14,8 @@ namespace gr {
 
             Buffer(Buffer &&r);
 
+            Buffer& operator=(Buffer &&r);
+
             ~Buffer();
 
             void copyData(const Vertex *data); // TODO implement length / offset

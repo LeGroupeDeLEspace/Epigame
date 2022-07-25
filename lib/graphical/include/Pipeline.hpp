@@ -18,7 +18,7 @@ namespace gr {
             void drawFrame();
 
             Buffer &newBuffer(size_t nvertex);
-
+            void removeBuffer(Buffer &buffer);
         private:
             VkShaderModule loadShader(const std::string &path);
             void initFrameBuffers(const SwapChain &swapChain);

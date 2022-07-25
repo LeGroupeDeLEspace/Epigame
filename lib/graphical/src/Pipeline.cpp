@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include <cstring>
+#include <algorithm>
 
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
@@ -469,6 +470,20 @@ void Pipeline::swapChainRecreation()
     this->renderPass.recreate(this->swapChain);
     this->createGraphicsPipeline();
     this->initFrameBuffers(this->swapChain);
+}
+
+void Pipeline::removeBuffer(Buffer &b)
+{
+    for (auto it = this->buffers2d.begin(); it != this->buffers2d.end(); ++it) {
+        if (&(*it) == &b) {
+            this->buffers2d.erase(it);
+            return;
+        }
+    }
+
+    // this->buffers2d.erase(std::find(this->buffers2d.begin(), this->buffers2d.end(), [&](Buffer &node) {
+    //     return &node == &b;
+    // }));
 }
 
 }
