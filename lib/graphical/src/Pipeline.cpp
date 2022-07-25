@@ -335,11 +335,8 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     // vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers2, offsets);
     // vkCmdDraw(commandBuffer, vertices2.size(), 1, 0, 0);
 
-    VkDeviceSize offsets[] = {0};
     for (auto &it : this->buffers2d) {
-        VkBuffer vertexBuffers[] = {it.getBuffer()};
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-        vkCmdDraw(commandBuffer, it.getVCount(), 1, 0, 0);
+        it.draw(commandBuffer);
     }
     
     vkCmdEndRenderPass(commandBuffer);
@@ -414,9 +411,9 @@ void Pipeline::drawFrame()
     vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
-Buffer &Pipeline::newBuffer(size_t nvertex)
+Buffer &Pipeline::newBuffer(size_t nvertex, size_t nindex)
 {
-    this->buffers2d.push_back(Buffer(this->device, this->physicalDevice, nvertex));
+    this->buffers2d.push_back(Buffer(this->device, this->physicalDevice, nvertex, nindex));
     return this->buffers2d.back();
 }
 
