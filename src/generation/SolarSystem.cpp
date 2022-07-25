@@ -41,6 +41,7 @@ SolarSystem::SolarSystem(UniversalPosition position) :
     // TODO: create the sun at 0.
     celestialBodies.emplace_back(std::string(name).append("-SUN"),
                                  position,
+
                                  rand.Next(25, 50));
     for (int i = 1; i < numberCelestialBodies; ++i) {
         // TODO: Create all the Planet
@@ -62,7 +63,7 @@ size_t SolarSystem::getNumberOfCelestialBodies() {
 }
 
 CelestialBody SolarSystem::getCelestialBody(int index) {
-    if (index < 0 || index >= this->numberCelestialBodies) {
+    if (index < 0 || (size_t)index >= this->numberCelestialBodies) {
         throw std::runtime_error(std::string("The index ").append(std::to_string(index).append(" is invalid.")));
     }
     return celestialBodies[index];
