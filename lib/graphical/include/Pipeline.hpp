@@ -8,6 +8,7 @@
 #include "RenderPass.hpp"
 #include "PhysicalDevice.hpp"
 #include "VulkanInstance.hpp"
+#include "Buffer.hpp"
 
 namespace gr {
     class Pipeline {
@@ -15,6 +16,9 @@ namespace gr {
             Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice);
             ~Pipeline();
             void drawFrame();
+
+            Buffer &newBuffer(size_t nvertex);
+            void removeBuffer(Buffer &buffer);
         private:
             VkShaderModule loadShader(const std::string &path);
             void initFrameBuffers(const SwapChain &swapChain);
@@ -26,8 +30,6 @@ namespace gr {
             void createGraphicsPipeline();
             void swapChainRecreation();
             void cleanPipeline();
-            uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-
 
             const LogicalDevice &device;
             SwapChain &swapChain;
@@ -39,8 +41,7 @@ namespace gr {
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;
 
-            VkBuffer vbuffer;   //maybe TODO createClass
-            VkDeviceMemory vbufferMemory;
+            std::vector<Buffer> buffers2d;
 
             VkCommandPool commandPool;  //TODO createClass
             VkCommandBuffer commandBuffer;

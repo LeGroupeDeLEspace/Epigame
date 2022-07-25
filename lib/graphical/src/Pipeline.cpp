@@ -5,27 +5,34 @@
 #include <GLFW/glfw3.h>
 
 #include <cstring>
+#include <algorithm>
 
 #include "Pipeline.hpp"
 #include "VkConfigConstants.hpp"
 #include "WindowHandler.hpp"
 #include "Vertex.hpp"
 
-static const std::vector<gr::Vertex> vertices = {   //tmp test data
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+// static const std::vector<gr::Vertex> vertices = {   //tmp test data
+//     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+//     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+//     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
     
-    {{1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-};
+//     {{1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+//     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+//     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+// };
+
+// static const std::vector<gr::Vertex> vertices2 = {
+//     {{-1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+//     {{0.0f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+//     {{-0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}},
+// };
 
 namespace gr {
 
 void Pipeline::createGraphicsPipeline()
 {
-        VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
+    VkShaderModule vertShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
         "shaders", "base.vert.spv",
     }));
     VkShaderModule fragShaderModule = this->loadShader(su::System::resolvePath(std::vector<std::string>{
@@ -195,9 +202,6 @@ Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapCh
 
 Pipeline::~Pipeline()
 {
-    vkDestroyBuffer(this->device.getDevice(), this->vbuffer, nullptr);
-    vkFreeMemory(this->device.getDevice(), this->vbufferMemory, nullptr);
-
     for (auto it : this->inFlightFence) {
         vkDestroyFence(this->device.getDevice(), it, nullptr);
     }
@@ -211,57 +215,10 @@ Pipeline::~Pipeline()
     vkDestroyCommandPool(this->device.getDevice(), this->commandPool, nullptr);
 }
 
-uint32_t Pipeline::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
-{
-    VkPhysicalDeviceMemoryProperties memProperties;
-    vkGetPhysicalDeviceMemoryProperties(this->physicalDevice.getDevice(), &memProperties);
-
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-        if (typeFilter & (1 << i) &&
-            (memProperties.memoryTypes[i].propertyFlags & properties) == properties    
-        ) {
-            return i;
-        }
-    }
-
-    throw std::runtime_error("failed to find suitable memory type!");
-}
-
 void Pipeline::initVbuffer()
 {
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = sizeof(vertices[0]) * vertices.size();
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (vkCreateBuffer(this->device.getDevice(), &bufferInfo, nullptr, &this->vbuffer) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create vertex buffer");
-    }
-
-    VkMemoryRequirements memRequirements{};
-    vkGetBufferMemoryRequirements(this->device.getDevice(), this->vbuffer, &memRequirements);
-    
-    VkMemoryAllocateInfo allocInfo{};
-
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex =
-        findMemoryType(memRequirements.memoryTypeBits,
-        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-    if (vkAllocateMemory(this->device.getDevice(), &allocInfo, nullptr, &this->vbufferMemory) != VK_SUCCESS) {
-        throw std::runtime_error("failed to allocate vertex buffer memory!");
-    }
-
-    vkBindBufferMemory(this->device.getDevice(), this->vbuffer, this->vbufferMemory, 0);
-
-    void *data;
-    vkMapMemory(this->device.getDevice(), this->vbufferMemory, 0, bufferInfo.size, 0, &data);
-
-    memcpy(data, vertices.data(), (size_t) bufferInfo.size);
-    vkUnmapMemory(this->device.getDevice(), this->vbufferMemory);
+    // Buffer &test = this->newBuffer(vertices.size());
+    // test.copyData(vertices.data());
 }
 
 void Pipeline::cleanPipeline()
@@ -369,10 +326,21 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-    VkBuffer vertexBuffers[] = {this->vbuffer};
+    // VkBuffer vertexBuffers[] = {this->buffer.getBuffer()};
+    // VkDeviceSize offsets[] = {0};
+    // vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+    // vkCmdDraw(commandBuffer, vertices.size(), 1, 0, 0);
+    
+    // VkBuffer vertexBuffers2[] = {this->buffer2.getBuffer()};
+    // vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers2, offsets);
+    // vkCmdDraw(commandBuffer, vertices2.size(), 1, 0, 0);
+
     VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-    vkCmdDraw(commandBuffer, vertices.size(), 1, 0, 0);
+    for (auto &it : this->buffers2d) {
+        VkBuffer vertexBuffers[] = {it.getBuffer()};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdDraw(commandBuffer, it.getVCount(), 1, 0, 0);
+    }
     
     vkCmdEndRenderPass(commandBuffer);
 
@@ -446,6 +414,12 @@ void Pipeline::drawFrame()
     vkQueueWaitIdle(this->device.getPresentQueue());
 }
 
+Buffer &Pipeline::newBuffer(size_t nvertex)
+{
+    this->buffers2d.push_back(Buffer(this->device, this->physicalDevice, nvertex));
+    return this->buffers2d.back();
+}
+
 void Pipeline::initSemaphores()
 {
     this->imageAvailableSemaphore.resize(config::maxFrameInFlight);
@@ -496,6 +470,20 @@ void Pipeline::swapChainRecreation()
     this->renderPass.recreate(this->swapChain);
     this->createGraphicsPipeline();
     this->initFrameBuffers(this->swapChain);
+}
+
+void Pipeline::removeBuffer(Buffer &b)
+{
+    for (auto it = this->buffers2d.begin(); it != this->buffers2d.end(); ++it) {
+        if (&(*it) == &b) {
+            this->buffers2d.erase(it);
+            return;
+        }
+    }
+
+    // this->buffers2d.erase(std::find(this->buffers2d.begin(), this->buffers2d.end(), [&](Buffer &node) {
+    //     return &node == &b;
+    // }));
 }
 
 }
