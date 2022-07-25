@@ -16,6 +16,8 @@ static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags proper
             return i;
         }
     }
+
+    throw std::runtime_error("failed to find suitable memory type!");
 }
 
 namespace gr {

@@ -17,6 +17,8 @@ namespace gr {
             void waitForIdle();
 
             void test();
+
+            Buffer &newBuffer(size_t nvertex);
         private:
             VulkanInstance instance;
             PhysicalDevice physicalDevice;

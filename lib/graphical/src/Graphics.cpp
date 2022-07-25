@@ -24,4 +24,9 @@ void Graphics::waitForIdle() {
     vkDeviceWaitIdle(this->device.getDevice());
 }
 
+Buffer &Graphics::newBuffer(size_t nvertex)
+{
+    return this->pipeline.newBuffer(nvertex);
+}
+
 }

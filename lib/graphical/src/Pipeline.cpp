@@ -11,21 +11,21 @@
 #include "WindowHandler.hpp"
 #include "Vertex.hpp"
 
-static const std::vector<gr::Vertex> vertices = {   //tmp test data
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+// static const std::vector<gr::Vertex> vertices = {   //tmp test data
+//     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+//     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+//     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
     
-    {{1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-};
+//     {{1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+//     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+//     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+// };
 
-static const std::vector<gr::Vertex> vertices2 = {
-    {{-1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
-    {{0.0f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}},
-};
+// static const std::vector<gr::Vertex> vertices2 = {
+//     {{-1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+//     {{0.0f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+//     {{-0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}},
+// };
 
 namespace gr {
 
@@ -216,8 +216,8 @@ Pipeline::~Pipeline()
 
 void Pipeline::initVbuffer()
 {
-    Buffer &test = this->newBuffer(vertices.size());
-    test.copyData(vertices.data());
+    // Buffer &test = this->newBuffer(vertices.size());
+    // test.copyData(vertices.data());
 }
 
 void Pipeline::cleanPipeline()

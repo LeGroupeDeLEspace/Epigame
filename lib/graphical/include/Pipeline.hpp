@@ -16,6 +16,9 @@ namespace gr {
             Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice);
             ~Pipeline();
             void drawFrame();
+
+            Buffer &newBuffer(size_t nvertex);
+
         private:
             VkShaderModule loadShader(const std::string &path);
             void initFrameBuffers(const SwapChain &swapChain);
@@ -27,8 +30,6 @@ namespace gr {
             void createGraphicsPipeline();
             void swapChainRecreation();
             void cleanPipeline();
-
-            Buffer &newBuffer(size_t nvertex);
 
             const LogicalDevice &device;
             SwapChain &swapChain;
