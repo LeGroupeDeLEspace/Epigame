@@ -8,6 +8,8 @@
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 #include "gameplay/components/Rotation.hpp"
+#include "generation/UniversalPosition.hpp"
+#include "gameplay/components/LocalPosition.hpp"
 
 #define LOG(s) std::cout << s << std::endl
 #define LOGENDL() std::cout << std::endl
@@ -20,17 +22,19 @@
 // Ou juste un celestial body avec plus de paramètres... plus logique aussi.
 
 GameScene::GameScene() :
-        registry(),
-        player(),
-        movement(),
-        universalPosition(),
-        onMoveCommand(this->movement) {}
+        onMoveCommand(this->movement),
+        shouldUpdate(false) {}
 
 void GameScene::OnCreate() {
     player = registry.create();
     registry.emplace<UniversalPosition>(player);
     registry.emplace<Rotation>(player);
 
+    auto ss = SolarSystem(universalPosition);
+    for (int i = 0; i < ss.getNumberOfCelestialBodies(); ++i) {
+        const auto body = registry.create();
+        registry.emplace<LocalPosition>(body, LocalPosition::createLocalPosition(universalPosition,ss.getCelestialBody(i).position));
+    }
 }
 
 void GameScene::OnDestroy() {
@@ -46,18 +50,26 @@ void GameScene::OnDeactivate() {
     InputManager::instance().removeAction(Input::Event::Move, &onMoveCommand);
 }
 
-void GameScene::Draw(GLFWwindow &window) {
+void GameScene::Update(float deltaTime) {
     if(glm::vec3{0,0,0} != movement) {
         //TODO: change the movement to be fluid.
         universalPosition.positionSolarSystem += movement;
-        movement = glm::vec3{0,0,0};
+        shouldUpdate = true;
+    }
+}
+
+void GameScene::LateUpdate(float deltaTime) {
+
+}
+
+void GameScene::Draw(GLFWwindow &window) {
+    if(shouldUpdate) {
         DrawUniverse();
+        shouldUpdate = false;
     }
 }
 
 void GameScene::DrawUniverse() const {
-
-
     auto u = Universe(universalPosition.seedUniverse);
     auto g = u.getGalaxy(universalPosition.positionGalaxy);
     auto s = g.getSolarSystem(universalPosition.positionSolarSystem);
@@ -75,7 +87,6 @@ void GameScene::DrawUniverse() const {
     LOG("==================================================");
     LOGENDL();
 }
-
 
 OnMove::OnMove(glm::vec3& movement) : movement(movement) {
 

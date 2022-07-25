@@ -20,8 +20,8 @@ private:
     std::vector<CelestialBody> celestialBodies;
 public:
     const bool exist;
-    SolarSystem(UniversalPosition parentPosition, int x, int y, int z, std::string parentName);
-    SolarSystem(UniversalPosition position, std::string parentName);
+    SolarSystem(UniversalPosition parentPosition, int x, int y, int z);
+    SolarSystem(UniversalPosition position);
     std::string getName() const;
     size_t getNumberOfCelestialBodies();
     CelestialBody getCelestialBody(int index);

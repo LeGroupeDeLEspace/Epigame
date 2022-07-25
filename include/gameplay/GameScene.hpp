@@ -29,12 +29,16 @@ private:
     glm::vec3 movement;
     UniversalPosition universalPosition;
     OnMove onMoveCommand;
+
+    bool shouldUpdate;
 public:
     GameScene();
     void OnCreate() override;
     void OnDestroy() override;
     void OnActivate() override;
     void OnDeactivate() override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
     void Draw(GLFWwindow& window) override;
 
     void DrawUniverse() const;

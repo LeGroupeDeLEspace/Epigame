@@ -19,6 +19,7 @@ public:
     Universe(UniversalPosition position);
     Galaxy getGalaxy(glm::ivec3 position);
     Galaxy getGalaxy(int x, int y, int z);
+
 };
 
 

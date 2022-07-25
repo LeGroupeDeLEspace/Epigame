@@ -4,14 +4,15 @@
 
 #include <system_error>
 #include "generation/SolarSystem.hpp"
+#include "generation/Galaxy.hpp"
 #include "utils/FNV1Hash.hpp"
 
-SolarSystem::SolarSystem(UniversalPosition parentPosition, int x, int y, int z, std::string parentName) :
-        SolarSystem(UniversalPosition(parentPosition.seedUniverse,parentPosition.positionGalaxy,glm::ivec3(x,y,z)), parentName){
+SolarSystem::SolarSystem(UniversalPosition parentPosition, int x, int y, int z) :
+        SolarSystem(UniversalPosition(parentPosition.seedUniverse,parentPosition.positionGalaxy,glm::ivec3(x,y,z))){
 
 }
 
-SolarSystem::SolarSystem(UniversalPosition position, std::string parentName) :
+SolarSystem::SolarSystem(UniversalPosition position) :
         position(position),
         rand(FNV1::Hash( // Generating the SolarSystem seed
                 FNV1::Hash( // Regenerating the parent Seed
@@ -28,7 +29,7 @@ SolarSystem::SolarSystem(UniversalPosition position, std::string parentName) :
         celestialBodies()
 {
         int len = rand.Next(5, 20);
-        name.append(parentName + "-");
+        name.append(Galaxy(position).getName() + "-");
         for (int i = 0; i < len; ++i) {
             name.push_back('A' + rand.Next(0, 26));
         }
@@ -43,8 +44,10 @@ SolarSystem::SolarSystem(UniversalPosition position, std::string parentName) :
                                  rand.Next(25, 50));
     for (int i = 1; i < numberCelestialBodies; ++i) {
         // TODO: Create all the Planet
+        auto pos = UniversalPosition(position);
+        pos.position = glm::i64vec3(rand.Next(),rand.Next(),rand.Next());
         celestialBodies.emplace_back(std::string(name).append("-PLANET-").append(std::to_string(i)),
-                                     position,
+                                     pos,
                                      rand.Next(5, 20));
     }
 
