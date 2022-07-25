@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "yaml-cpp/yaml.h"
+#include <yaml-cpp/yaml.h>
 
 void writeInYamlFile()
 {
@@ -31,7 +31,7 @@ void writeInYamlFile()
 
 bool LoadFileAndPrint(std::string filename)
 {
-    YAML::Node config = YAML::LoadFile("./srcThibault/InputsConfig.yaml");
+    YAML::Node config = YAML::LoadFile(filename);
     
     if (!config) {
         std::cout << "The file couldn't be loaded!\n";
@@ -41,10 +41,8 @@ bool LoadFileAndPrint(std::string filename)
     return true;
 }
 
-std::vector<std::string> returnWitchSwitch(const YAML::Node &tmp)
+std::vector<std::string> returnWitchSwitch(const YAML::Node &tmp, std::vector<std::string> &vec)
 {
-    std::vector<std::string> vec;
-
     switch (tmp.Type())
     {
         case YAML::NodeType::Null :
@@ -55,12 +53,11 @@ std::vector<std::string> returnWitchSwitch(const YAML::Node &tmp)
             break;
         case YAML::NodeType::Sequence :
             std::cout << "Sequence\n";
-            std::cout << tmp << std::endl;
             for (YAML::const_iterator it = tmp.begin(); it != tmp.end(); it++) {
-                vec.push_back(it->as<std::string>());
-                std::cout << *it << std::endl;
+                std::string test = it->as<std::string>();
+                vec.push_back(test);
             }
-            return vec;
+            return std::vector<std::string>();
         case YAML::NodeType::Map :
             std::cout << "Map\n";
             break;
@@ -70,38 +67,36 @@ std::vector<std::string> returnWitchSwitch(const YAML::Node &tmp)
     return std::vector<std::string>();
 }
 
-std::vector<std::string> GetTheYamlValueRec(const YAML::Node &rec, std::vector<std::string> vecStr)
+std::vector<std::string> GetTheYamlValueRec(const YAML::Node &rec, std::vector<std::string> &vecStr, std::vector<std::string> &result)
 {
     if (!rec)
         return std::vector<std::string>();
     const YAML::Node& tmp = rec[vecStr.at(0)];
-    std::cout << tmp << std::endl;
     if (tmp) {
-        std::cout << "la taille de vecstr: " << vecStr.size() << std::endl;
         if (vecStr.size() == 1) {
-            return returnWitchSwitch(tmp);
+            returnWitchSwitch(tmp, result);
+            return result;
         }
         vecStr.erase(vecStr.begin());
-        std::cout << "avant de call a nouveau rec\n";
-        GetTheYamlValueRec(tmp, vecStr);
+        GetTheYamlValueRec(tmp, vecStr, result);
     }
     return std::vector<std::string>();
 }
 
-std::vector<std::string> GetTheYamlValue(std::vector<std::string> vecStr)
+std::vector<std::string> GetTheYamlValue(std::vector<std::string> &vecStr)
 {
     YAML::Node config = YAML::LoadFile("./srcThibault/InputsConfig.yaml");
+    std::vector<std::string> result;
 
     if (!config)
         std::cout << "The file couldn't be loaded!\n";
     if (vecStr.size() == 0)
         return std::vector<std::string>();
     const YAML::Node& rec = config[vecStr.at(0)];
-    std::cout << rec << std::endl;
     if (rec) {
         vecStr.erase(vecStr.begin());
-        std::cout << "\n\navant le call a rec\n\n";
-        GetTheYamlValueRec(rec, vecStr);
+        GetTheYamlValueRec(rec, vecStr, result);
+        return result;
     }
     return std::vector<std::string>();
 }
@@ -110,11 +105,14 @@ int main()
 {
     std::vector<std::string> vecStr = {"input", "move", "z", "pos"};
     std::vector<std::string> res = GetTheYamlValue(vecStr);
+    std::cout << "print de res: " << std::endl;
     for (int i = 0; i < res.size(); i++) {
         std::cout << res.at(i) << std::endl;
     }
     std::cout << "la size de rec: " << res.size() << std::endl;
-    std::cout << "\n\napres le call de ma fonction\n\n\n";
+
+//    testWriteNode("InputsConfigPersonalize");
+//    testWriteNodeWithField("./srcThibault/InputsConfigPersonalize");
 
 //    YAML::Node config = YAML::LoadFile("./srcThibault/InputsConfig.yaml");
 //    if (!config)
