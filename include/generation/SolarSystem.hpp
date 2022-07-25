@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include "generation/CelestialBody.hpp"
+#include "generation/Planet.hpp"
 #include "utils/LehmerRandom.hpp"
 
 class SolarSystem {
