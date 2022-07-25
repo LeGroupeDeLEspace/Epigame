@@ -14,9 +14,8 @@ public:
     const std::string name;
     const UniversalPosition position;
     const float size;
-    const Coordinates localPosition;
 
-    CelestialBody(std::string name, UniversalPosition position, Coordinates localPosition, float size);
+    CelestialBody(std::string name, UniversalPosition position, float size);
 
     Coordinates getlocalPosition();
 };

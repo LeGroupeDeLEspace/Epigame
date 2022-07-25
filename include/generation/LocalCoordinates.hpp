@@ -6,9 +6,9 @@
 #define JEUDELESPACE_LOCALCOORDINATES_HPP
 
 struct Coordinates {
-    float x;
-    float y;
-    float z;
+    long long x;
+    long long y;
+    long long z;
 };
 
 #endif //JEUDELESPACE_LOCALCOORDINATES_HPP
