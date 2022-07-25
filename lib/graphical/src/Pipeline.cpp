@@ -21,6 +21,12 @@ static const std::vector<gr::Vertex> vertices = {   //tmp test data
     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
 };
 
+static const std::vector<gr::Vertex> vertices2 = {
+    {{-1.f, -0.5f}, {0.0f, 0.0f, 1.0f}},
+    {{0.0f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}},
+};
+
 namespace gr {
 
 void Pipeline::createGraphicsPipeline()
@@ -181,7 +187,7 @@ void Pipeline::createGraphicsPipeline()
 
 }
 
-Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance), buffer(device, physicalDevice, vertices.size())
+Pipeline::Pipeline(VulkanInstance &instance, const LogicalDevice &device, SwapChain &swapChain, const PhysicalDevice &physicalDevice) : device(device), swapChain(swapChain), physicalDevice(physicalDevice), renderPass(device, swapChain), instance(instance)
 {
     this->createGraphicsPipeline();
     this->initFrameBuffers(this->swapChain);
@@ -210,7 +216,8 @@ Pipeline::~Pipeline()
 
 void Pipeline::initVbuffer()
 {
-    this->buffer.copyData(vertices.data());
+    Buffer &test = this->newBuffer(vertices.size());
+    test.copyData(vertices.data());
 }
 
 void Pipeline::cleanPipeline()
@@ -318,10 +325,21 @@ void Pipeline::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t image
     vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
     
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-    VkBuffer vertexBuffers[] = {this->buffer.getBuffer()};
+    // VkBuffer vertexBuffers[] = {this->buffer.getBuffer()};
+    // VkDeviceSize offsets[] = {0};
+    // vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+    // vkCmdDraw(commandBuffer, vertices.size(), 1, 0, 0);
+    
+    // VkBuffer vertexBuffers2[] = {this->buffer2.getBuffer()};
+    // vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers2, offsets);
+    // vkCmdDraw(commandBuffer, vertices2.size(), 1, 0, 0);
+
     VkDeviceSize offsets[] = {0};
-    vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-    vkCmdDraw(commandBuffer, vertices.size(), 1, 0, 0);
+    for (auto &it : this->buffers2d) {
+        VkBuffer vertexBuffers[] = {it.getBuffer()};
+        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        vkCmdDraw(commandBuffer, it.getVCount(), 1, 0, 0);
+    }
     
     vkCmdEndRenderPass(commandBuffer);
 
@@ -393,6 +411,12 @@ void Pipeline::drawFrame()
     this->currentFrame = (currentFrame + 1) % config::maxFrameInFlight;
 
     vkQueueWaitIdle(this->device.getPresentQueue());
+}
+
+Buffer &Pipeline::newBuffer(size_t nvertex)
+{
+    this->buffers2d.push_back(Buffer(this->device, this->physicalDevice, nvertex));
+    return this->buffers2d.back();
 }
 
 void Pipeline::initSemaphores()

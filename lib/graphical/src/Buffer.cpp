@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <cstring>
+#include <iostream>
 #include "Buffer.hpp"
 #include "Vertex.hpp"
 
@@ -15,8 +16,6 @@ static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags proper
             return i;
         }
     }
-
-    throw std::runtime_error("failed to find suitable memory type!");
 }
 
 namespace gr {
@@ -33,6 +32,19 @@ Buffer::Buffer(const LogicalDevice &device, const PhysicalDevice &physicalDevice
     this->initMemory(physicalDevice);
 
     vkBindBufferMemory(this->device.getDevice(), this->vbuffer, this->memory, 0);
+
+    std::cout << "Buffer construction: " << nvertex << std::endl;
+}
+
+Buffer::Buffer(Buffer &&r) : device(r.device)
+{
+    this->length = r.length;
+    this->memory = r.memory;
+    this->vbuffer = r.vbuffer;
+
+    r.memory = VK_NULL_HANDLE;
+    r.vbuffer = VK_NULL_HANDLE;
+    r.length = 0;
 }
 
 void Buffer::initBuffer(size_t length)
@@ -87,6 +99,11 @@ VkBuffer Buffer::getBuffer() const
 VkDeviceMemory Buffer::getMemory() const
 {
     return this->memory;
+}
+
+size_t Buffer::getVCount() const
+{
+    return this->length;
 }
 
 }

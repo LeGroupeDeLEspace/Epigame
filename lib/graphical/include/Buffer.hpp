@@ -9,10 +9,16 @@ namespace gr {
         public:
             Buffer(const LogicalDevice &device, const PhysicalDevice &physicalDevice, size_t nvertex);
             Buffer(const LogicalDevice &device, const PhysicalDevice &physicalDevice, size_t nvertex, VkMemoryPropertyFlags properties); // TODO implement this
+
+            Buffer(const Buffer &r) = delete;
+
+            Buffer(Buffer &&r);
+
             ~Buffer();
 
             void copyData(const Vertex *data); // TODO implement length / offset
 
+            size_t getVCount() const;
             VkBuffer getBuffer() const;
             VkDeviceMemory getMemory() const;
         private:

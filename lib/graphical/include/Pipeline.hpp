@@ -28,6 +28,7 @@ namespace gr {
             void swapChainRecreation();
             void cleanPipeline();
 
+            Buffer &newBuffer(size_t nvertex);
 
             const LogicalDevice &device;
             SwapChain &swapChain;
@@ -39,7 +40,7 @@ namespace gr {
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;
 
-            Buffer buffer;
+            std::vector<Buffer> buffers2d;
 
             VkCommandPool commandPool;  //TODO createClass
             VkCommandBuffer commandBuffer;
