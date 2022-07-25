@@ -33,7 +33,8 @@ void GameScene::OnCreate() {
     auto ss = SolarSystem(universalPosition);
     for (int i = 0; i < ss.getNumberOfCelestialBodies(); ++i) {
         const auto body = registry.create();
-        registry.emplace<LocalPosition>(body, LocalPosition::createLocalPosition(universalPosition,ss.getCelestialBody(i).position));
+        auto cb = ss.getCelestialBody(i);
+        registry.emplace<LocalPosition>(body, LocalPosition::createLocalPosition(universalPosition,cb.position));
     }
 }
 
@@ -55,10 +56,23 @@ void GameScene::Update(float deltaTime) {
         //TODO: change the movement to be fluid.
         universalPosition.positionSolarSystem += movement;
         shouldUpdate = true;
+        glm::i64vec3 mov = glm::i64vec3{movement.x * INT64_MAX, movement.y * INT64_MAX, movement.z * INT64_MAX};
+        auto view = registry.view<LocalPosition>();
+        for(auto [entity, pos]: view.each()) {
+            if(pos.ValidateChange(mov)) {
+                pos.value += mov;
+            } else {
+                registry.destroy(entity);
+            }
+        }
+
     }
 }
 
 void GameScene::LateUpdate(float deltaTime) {
+    if(glm::vec3{0,0,0} != movement) {
+        //TODO: add more celestial bodies
+    }
 
 }
 

@@ -3,6 +3,7 @@
 //
 
 #include "generation/Universe.hpp"
+#include <system_error>
 
 Universe::Universe() : rand(), position() {
 
@@ -22,4 +23,8 @@ Galaxy Universe::getGalaxy(glm::ivec3 position) {
 
 Galaxy Universe::getGalaxy(int x, int y, int z) {
     return {position, x, y, z};
+}
+
+std::vector<CelestialBody> Universe::getCelestialBody(UniversalPosition position, int64_t radius) {
+    throw std::runtime_error("get Celestials bodies not implemented yet");
 }
