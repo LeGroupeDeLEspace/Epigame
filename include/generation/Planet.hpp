@@ -26,7 +26,7 @@ public:
     };
     type bodyType;
     LehmerRandom rand;
-    Planet(std::string name, UniversalPosition position, Coordinates localPosition, float size);
+    Planet(std::string name, UniversalPosition position, float size);
 };
 
 #endif //JEUDELESPACE_PLANET_HPP

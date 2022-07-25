@@ -1,0 +1,46 @@
+								liste paramètres
+===================================================================================
+
+CelestialBody
+	|	|---> name : String
+	|	|---> size : int
+	|	|---> color : enum
+	|	|---> position : UniversalPosition
+	|	|	|---> seedUniverse : uint32_t;
+	|	|	|---> positionGalaxy
+	|	|	|	|---> x : int
+	|	|	|	|---> y : int
+	|	|	|	|---> z : int
+	|	|	|---> positionSolarSystem
+	|	|	|	|---> x : int
+	|	|	|	|---> y : int
+	|	|	|	|---> z : int
+	|	|	|---> position           					//Position locale dans un système solaire	
+	|	|	|	|---> x : long long
+	|	|	|	|---> y : long long
+	|	|	|	|---> z : long long
+	|_________________________
+	Planet
+	|	|---> bodyType : enum
+	|	|---> isMoon : bool
+	|_________________________
+	Star
+	|	|---> starType : enum
+	|_________________________
+
+===================================================================================
+								règles de génération
+===================================================================================
+
+name => "galaxyName" + "-" + "systemName" + "-" + randomName //randomName is between 3 and 26 char
+
+size => randomly generated from the seed
+
+color => value is function of the type (bodyType or starType) of the body generated
+
+position => positionGalaxy and positionSolarSystem gotten from the parent galaxy and system, position randomly generated from the seedUniverse; the latter inherited from the initial generation of the universe
+
+bodyType/starType => randomly selected in a list (enum) of value depending on the type of celestial body (planet or star)
+
+/!\ isMoon => determine if the body is a moon or not
+		WARNING: as of 25/07/2022 anything related to moons is just draft and development on this functionanlity is currently on hold.
