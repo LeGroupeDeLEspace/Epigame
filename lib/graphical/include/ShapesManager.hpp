@@ -9,10 +9,23 @@ namespace gr {
         public:
             ShapesManager(Pipeline &pipeline);
 
-            void loadShapes(std::vector<ShapeBase*> shapes);
+            void loadShapes(const std::vector<ShapeBase*> &shapes);
             void clear();
+            void copyDataToBuffer();
         private:
+            void createBuffer();
+
+            struct ShapeRef {
+                ShapeBase* shape;
+                size_t vertex_offset;
+                size_t indice_offset;
+            };
+
             Pipeline &pipeline;
+            Buffer *buffer;
+            std::vector<ShapeRef> shapes;
+            size_t totalVertices;
+            size_t totalIndices;
     };
 }
 

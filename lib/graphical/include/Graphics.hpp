@@ -7,6 +7,7 @@
 #include "LogicalDevice.hpp"
 #include "SwapChain.hpp"
 #include "Pipeline.hpp"
+#include "ShapesManager.hpp"
 
 namespace gr {
     class Graphics {
@@ -26,6 +27,9 @@ namespace gr {
             LogicalDevice device;
             SwapChain swapChain;
             Pipeline pipeline;
+
+        public: //TODO maybe change the way this class is exposed from Graphics
+            ShapesManager shapesManager;
     };
 }
 

@@ -15,4 +15,7 @@ target_sources(graphRender PRIVATE
     Pipeline.cpp
     Vertex.cpp
     Buffer.cpp
+    ShapesManager.cpp
+    ShapeBase.cpp
+    RectangleShape.cpp
 )

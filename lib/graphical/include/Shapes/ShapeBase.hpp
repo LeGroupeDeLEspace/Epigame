@@ -3,6 +3,8 @@
 
 #include <cstddef>
 #include <glm/glm.hpp>
+#include <vector>
+#include "Vertex.hpp"
 
 namespace gr {
     class ShapeBase
@@ -11,9 +13,15 @@ namespace gr {
             ShapeBase();
 
             void transform(const glm::tmat4x4<float> &transform);
+            void setColor(const glm::vec3 &color);
+
+            const std::vector<Vertex> &getVertices() const;
+            const std::vector<uint16_t> &getIndices() const;
+            size_t getVertexCount() const;
+            size_t getIndicesCount() const;
         protected:
-            size_t vertexCount;
-            size_t indiceCount;
+            std::vector<Vertex> geometry;
+            std::vector<uint16_t> indices;
     };
 }
 
