@@ -10,10 +10,15 @@
 #include "gameplay/components/Rotation.hpp"
 #include "generation/UniversalPosition.hpp"
 #include "gameplay/components/LocalPosition.hpp"
+#include "gameplay/components/Color.hpp"
+#include "gameplay/components/Size.hpp"
 #include <cmath>
 
 #define LOG(s) std::cout << s << std::endl
 #define LOGENDL() std::cout << std::endl
+
+//#define SPEED_MOVE (INT64_MAX/100)
+#define SPEED_MOVE (INT64_MAX)
 
 // Avec la universalPosition, on a la position de la camera dans l'espace. Et les autres objects ne sont que des offsets de cette position
 // La rotation global corresponds a la direction dans laquelle regarde le joueur (quaternion * {0,0,1})
@@ -23,6 +28,7 @@
 // Ou juste un celestial body avec plus de paramètres... plus logique aussi.
 
 GameScene::GameScene() :
+        universalPosition(50, glm::ivec3(), glm::ivec3(), glm::i64vec3()),
         onMoveCommand(this->movement),
         shouldUpdate(false) {}
 
@@ -31,12 +37,32 @@ void GameScene::OnCreate() {
     registry.emplace<UniversalPosition>(player);
     registry.emplace<Rotation>(player);
 
-//    auto ss = SolarSystem(universalPosition);
-//    for (int i = 0; i < ss.getNumberOfCelestialBodies(); ++i) {
-//        const auto body = registry.create();
-//        auto cb = ss.getCelestialBody(i);
-//        registry.emplace<LocalPosition>(body, LocalPosition::createLocalPosition(universalPosition,cb.position));
-//    }
+    auto ss = SolarSystem(universalPosition);
+    auto bodies = Universe::getCelestialBodies(universalPosition, INT64_MAX);
+    for (auto& cb: bodies) {
+        try {
+            LocalPosition lp = LocalPosition::createLocalPosition(universalPosition,cb.position);
+            const auto body = registry.create();
+            registry.emplace<LocalPosition>(body, lp);
+            registry.emplace<Size>(body, cb.size);
+            glm::vec3 c = glm::vec3 {
+                    (long double)cb.position.position.x /(long double)INT_MAX,
+                    (long double)cb.position.position.y /(long double)INT_MAX,
+                    (long double)cb.position.position.z /(long double)INT_MAX,
+            };
+
+            c *= 0.5f;
+            c += 0.5f;
+            registry.emplace<Color>(body, c);
+            LOG("Creating an entity at " << glm::to_string(lp.value));
+            LOG("It mesure  " << std::to_string(cb.size));
+            LOG("His color is  " << glm::to_string(c));
+            LOGENDL();
+        } catch (std::runtime_error& e) {
+            continue;
+        }
+    }
+    shouldUpdate = true;
 }
 
 void GameScene::OnDestroy() {
@@ -54,25 +80,64 @@ void GameScene::OnDeactivate() {
 void GameScene::Update(float deltaTime) {
     if(glm::vec3{0,0,0} != movement) {
         //TODO: change the movement to be fluid.
-        universalPosition.positionSolarSystem += movement;
         shouldUpdate = true;
-//        glm::i64vec3 mov = glm::i64vec3{movement.x * INT64_MAX, movement.y * INT64_MAX, movement.z * INT64_MAX};
-//        auto view = registry.view<LocalPosition>();
-//        for(auto [entity, pos]: view.each()) {
-//            if(pos.ValidateChange(mov)) {
-//                pos.value += mov;
-//            } else {
-//                registry.destroy(entity);
-//            }
-//        }
-        movement = glm::vec3{0,0,0};
+        glm::i64vec3 mov = glm::i64vec3{(int64_t)movement.x * (SPEED_MOVE), (int64_t)movement.y * (SPEED_MOVE), (int64_t)movement.z * (SPEED_MOVE)};
+        auto fullMov = UniversalPosition(0,glm::ivec3(),glm::ivec3(),mov);
+        auto view = registry.view<LocalPosition, Size>();
+        for(auto [entity, pos, size]: view.each()) {
+            if(pos.ValidateChange(-mov)) {
+                try {
+                    pos.value = LocalPosition::createLocalPosition(universalPosition+fullMov, pos.getGlobalPosition(universalPosition)).value;
+                } catch (std::runtime_error& e) {
+                    registry.destroy(entity);
+                }
+            } else {
+                registry.destroy(entity);
+            }
+        }
+        universalPosition += fullMov;
+
     }
 }
 
 void GameScene::LateUpdate(float deltaTime) {
-//    if(glm::vec3{0,0,0} != movement) {
-//        //TODO: add more celestial bodies
-//    }
+    if(glm::vec3{0,0,0} != movement) {
+        auto view = registry.view<LocalPosition>();
+        auto bodies = Universe::getCelestialBodies(universalPosition, INT64_MAX);
+        for (auto& cb: bodies) {
+            bool stop = false;
+            for (auto [entity, pos]: view.each()) {
+                if(cb.position == pos.getGlobalPosition(universalPosition)) {
+                    stop = true;
+                    break;
+                }
+            }
+            if(stop) continue;
+
+            try {
+                LocalPosition lp = LocalPosition::createLocalPosition(universalPosition,cb.position);
+                const auto body = registry.create();
+                registry.emplace<LocalPosition>(body, lp);
+                registry.emplace<Size>(body, cb.size);
+                glm::vec3 c = glm::vec3 {
+                        (long double)cb.position.position.x /(long double)INT_MAX,
+                        (long double)cb.position.position.y /(long double)INT_MAX,
+                        (long double)cb.position.position.z /(long double)INT_MAX,
+                };
+
+                c *= 0.5f;
+                c += 0.5f;
+                registry.emplace<Color>(body, c);
+                LOG("Creating an entity at " << glm::to_string(lp.value));
+                LOG("It mesure  " << std::to_string(cb.size));
+                LOG("His color is  " << glm::to_string(c));
+                LOGENDL();
+            } catch (std::runtime_error& e) {
+                continue;
+            }
+        }
+        movement = glm::vec3();
+    }
 }
 
 void GameScene::Draw(gr::Graphics& graphics) {
@@ -93,6 +158,7 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
                                 << glm::to_string(universalPosition.positionGalaxy));
     LOG("We are in the Solar System " << s.getName() << " at position "
                                       << glm::to_string(universalPosition.positionSolarSystem));
+    LOG("We are at position " << glm::to_string(universalPosition.position));
     if (s.exist) {
         LOG(s.getName() << " has " << std::to_string(s.getNumberOfCelestialBodies()) << " Celestial Bodies");
     } else {
@@ -101,6 +167,21 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
     LOG("==================================================");
     LOGENDL();
 
+//    auto view = registry.view<LocalPosition, Size, Color>();
+//    for (auto [entity, pos, size, color]: view.each()) {
+//        glm::vec3 p = glm::vec3{
+//                (float)pos.value.x/(float)INT64_MAX,
+//                (float)pos.value.y/(float)INT64_MAX,
+//                (float)pos.value.z/(float)INT64_MAX
+//        };
+//        float s = size.value / 50.0f;
+//        LOG("Drawing planet at " << glm::to_string(p));
+//        LOG("with a size of " << std::to_string(s));
+//        LOG("and the color of  " << glm::to_string(color.value));
+//        LOGENDL();
+//        this->DrawPlanet(graphics, p, glm::vec3(s,s,s), color.value);
+//    }
+
     if (s.exist) {
         const size_t count = s.getNumberOfCelestialBodies();
         int max = 0;
@@ -108,16 +189,25 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
             max += (i+1);
         }
         for (int i = 0; i < count; ++i) {
-            auto b = s.getCelestialBody(i);
-            float s = b.size/50.0f;
+            auto cb = s.getCelestialBody(i);
+            float s = cb.size / 50.0f;
             glm::vec3 pos = glm::vec3{
-                (float)b.position.position.x/(float)INT_MAX,
-                (float)b.position.position.y/(float)INT_MAX,
-                (float)b.position.position.z/(float)INT_MAX
+                    (float)cb.position.position.x / (float)INT_MAX,
+                    (float)cb.position.position.y / (float)INT_MAX,
+                    (float)cb.position.position.z / (float)INT_MAX
             };
-            LOG(glm::to_string(pos));
-            LOG(std::to_string(s));
-            this->DrawPlanet(graphics, pos, glm::vec3(s,s,s), (pos * 0.5f) + 0.5f);
+        LOG("Drawing planet at " << glm::to_string(pos));
+        LOG("with a size of " << std::to_string(s));
+            glm::vec3 c = glm::vec3 {
+                    (long double)cb.position.position.x /(long double)INT_MAX,
+                    (long double)cb.position.position.y /(long double)INT_MAX,
+                    (long double)cb.position.position.z /(long double)INT_MAX,
+            };
+            c *= 0.5f;
+            c += 0.5f;
+        LOG("and the color of  " << glm::to_string(c));
+        LOGENDL();
+            this->DrawPlanet(graphics, pos, glm::vec3(s,s,s), c);
         }
     }
 }

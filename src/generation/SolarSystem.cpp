@@ -39,8 +39,10 @@ SolarSystem::SolarSystem(UniversalPosition position) :
     celestialBodies.reserve(numberCelestialBodies);
 
     // TODO: create the sun at 0.
+    auto sunPos = UniversalPosition(position);
+    sunPos.position = glm::i64vec3{0, 0, 0};
     celestialBodies.emplace_back(std::string(name).append("-SUN"),
-                                 position,
+                                 sunPos,
                                  rand.Next(25, 50));
     for (int i = 1; i < numberCelestialBodies; ++i) {
         // TODO: Create all the Planet
