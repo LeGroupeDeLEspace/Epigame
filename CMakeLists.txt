@@ -16,6 +16,8 @@ add_subdirectory(lib)
 
 target_link_libraries(bonjourmonde graphRender glfw EnTT)
 
+add_subdirectory(graphDemoScene)
+
 # move shaders
 # configure_file(./lib/graphical/shaders/base.frag.spv ./shaders/frag.spv COPYONLY)
 # configure_file(./lib/graphical/shaders/base.vert.spv ./shaders/vert.spv COPYONLY)

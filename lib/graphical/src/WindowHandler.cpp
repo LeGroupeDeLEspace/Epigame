@@ -1,5 +1,6 @@
 #include "WindowHandler.hpp"
 
+
 namespace gr {
 
 WindowHandler::WindowHandler() :
