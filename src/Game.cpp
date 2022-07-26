@@ -52,7 +52,8 @@ void Game::lateUpdate(float deltaTime) {
 
 void Game::draw() {
     graphics.test();
-    sceneStateMachine.Draw(*this->windowHandler.getWindow());
+    sceneStateMachine.Draw(this->graphics);
+    this->graphics.test();
 }
 
 void Game::waitEndOfFrame(double timePassed) {

@@ -5,12 +5,13 @@
 #ifndef JEUDELESPACE_GAMESCENE_HPP
 #define JEUDELESPACE_GAMESCENE_HPP
 
+#include <entt/entt.hpp>
+#include "Graphics.hpp"
 #include "scene/Scene.hpp"
 #include "utils/Command.hpp"
 #include "utils/DataContainer.hpp"
 #include "generation/UniversalPosition.hpp"
 #include "generation/Universe.hpp"
-#include <entt/entt.hpp>
 
 class OnMove : public Command1<DataContainer *> {
 private:
@@ -31,6 +32,7 @@ private:
     OnMove onMoveCommand;
 
     bool shouldUpdate;
+    void DrawPlanet(gr::Graphics& graphics, glm::vec3 center, glm::vec3 size, glm::vec3 color) const;
 public:
     GameScene();
     void OnCreate() override;
@@ -39,9 +41,9 @@ public:
     void OnDeactivate() override;
     void Update(float deltaTime) override;
     void LateUpdate(float deltaTime) override;
-    void Draw(GLFWwindow& window) override;
+    void Draw(gr::Graphics& graphics) override;
 
-    void DrawUniverse() const;
+    void DrawUniverse(gr::Graphics& graphics) const;
 };
 
 

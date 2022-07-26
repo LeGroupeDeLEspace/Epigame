@@ -20,6 +20,7 @@ namespace gr {
 
             Buffer &newBuffer(size_t nvertex, size_t nindex = 0);
             void removeBuffer(Buffer &b);
+            void clearBuffer();
         private:
             VulkanInstance instance;
             PhysicalDevice physicalDevice;

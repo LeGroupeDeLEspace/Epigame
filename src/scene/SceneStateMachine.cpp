@@ -27,11 +27,11 @@ void SceneStateMachine::LateUpdate(float deltaTime)
         curScene->LateUpdate(deltaTime);
     }
 }
-void SceneStateMachine::Draw(GLFWwindow& window)
+void SceneStateMachine::Draw(gr::Graphics& graphics)
 {
     if(curScene)
     {
-        curScene->Draw(window);
+        curScene->Draw(graphics);
     }
 }
 
