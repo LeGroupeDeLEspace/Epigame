@@ -40,9 +40,7 @@ SolarSystem::SolarSystem(UniversalPosition position) :
 
     // TODO: create the sun at 0.
     celestialBodies.emplace_back(std::string(name).append("-SUN"),
-                                 position,
-
-                                 rand.Next(25, 50));
+                                 position,rand.Next(25, 50));
     for (int i = 1; i < numberCelestialBodies; ++i) {
         // TODO: Create all the Planet
         auto pos = UniversalPosition(position);

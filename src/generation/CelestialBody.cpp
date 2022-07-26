@@ -5,7 +5,7 @@
 #include "generation/CelestialBody.hpp"
 
 
-CelestialBody::CelestialBody(std::string name, UniversalPosition position, float size) : name(
+CelestialBody::CelestialBody(std::string name, UniversalPosition position, int size) : name(
         name), position(position), size(size) {
 }
 

@@ -12,21 +12,21 @@
 
 class Planet : public CelestialBody {
 public:
-    enum type {                   //Based on https://en.wikipedia.org/wiki/List_of_planet_types#By_composition
-        Chthonian,
-        Gas_dwarf,
-        Gas_giant,
-        Desert,
-        Ocean,
-        Ice,
-        Rocky,
-        Metal,
-        Lava,
-        Terran
+    enum Type {                   //Based on https://en.wikipedia.org/wiki/List_of_planet_types#By_composition
+        Chthonian, // colour 8
+        Gas_dwarf, // colours 7 to 12
+        Gas_giant, // colours 7 to 12
+        Desert, // colours 9, 10, 13 and 14
+        Ocean, // colours 7, 11, 12, 15
+        Ice, // colours 7 and 15
+        Rocky, // colours 8 to 10 and 13 to 15
+        Metal, // colour 16
+        Lava, // colours 8 and 9
+        Terran // colours 7, 11 and 12
     };
-    type bodyType;
+    Type bodyType;
     LehmerRandom rand;
-    Planet(std::string name, UniversalPosition position, float size);
+    Planet(std::string name, UniversalPosition position, int size);
 };
 
 #endif //JEUDELESPACE_PLANET_HPP

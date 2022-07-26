@@ -2,8 +2,8 @@
 // Created by jaro on 11/07/2022.
 //
 
-#ifndef JEUDELESPACE_PLANET_HPP
-#define JEUDELESPACE_PLANET_HPP
+#ifndef JEUDELESPACE_MOON_HPP
+#define JEUDELESPACE_MOON_HPP
 
 #include <string>
 #include "generation/UniversalPosition.hpp"
@@ -12,7 +12,7 @@
 
 class Moon : public CelestialBody {
 public:
-    enum type {                   //Based on https://en.wikipedia.org/wiki/List_of_planet_types#By_composition
+    enum type {                   //Based on https://en.wikipedia.org/wiki/List_of_MOON_types#By_composition
         Chthonian,
         Gas_dwarf,
         Gas_giant,
@@ -26,7 +26,7 @@ public:
     };
     type bodyType;
     LehmerRandom rand;
-    Moon(std::string name, UniversalPosition position, Coordinates localPosition, float size);
+    Moon(std::string name, UniversalPosition position, float size);
 };
 
-#endif //JEUDELESPACE_PLANET_HPP
+#endif //JEUDELESPACE_MOON_HPP

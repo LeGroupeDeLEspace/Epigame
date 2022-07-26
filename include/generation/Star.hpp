@@ -2,8 +2,8 @@
 // Created by jaro on 11/07/2022.
 //
 
-#ifndef JEUDELESPACE_PLANET_HPP
-#define JEUDELESPACE_PLANET_HPP
+#ifndef JEUDELESPACE_STAR_HPP
+#define JEUDELESPACE_STAR_HPP
 
 #include <string>
 #include "generation/UniversalPosition.hpp"
@@ -12,21 +12,23 @@
 
 class Star : public CelestialBody {
 public:
-    enum type {                   //Based on https://en.wikipedia.org/wiki/List_of_planet_types#By_composition
-        Chthonian,
-        Gas_dwarf,
-        Gas_giant,
-        Desert,
-        Ocean,
-        Ice,
-        Rocky,
-        Metal,
-        Lava,
-        Terran
+    enum Type {                   //Based on https://astrobackyard.com/types-of-stars/
+        brown_dwarf,
+        orange_dwarf,
+        red_dwarf,
+        white_dwarf,
+        yellow_dwarf,
+        blue_giant,
+        red_giant,
+        blue_supergiant,
+        red_supergiant,
+        black_hole,
+        t_tauri,
+        neutron,
     };
-    type bodyType;
+    Type starType;
     LehmerRandom rand;
     Star(std::string name, UniversalPosition position, float size);
 };
 
-#endif //JEUDELESPACE_PLANET_HPP
+#endif //JEUDELESPACE_STAR_HPP
