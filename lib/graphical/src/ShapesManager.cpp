@@ -6,6 +6,7 @@ namespace gr {
 ShapesManager::ShapesManager(Pipeline &pipeline) : pipeline(pipeline)
 {
     this->buffer = nullptr;
+    this->autoUpdate = false;
 }
 
 void ShapesManager::loadShapes(const std::vector<ShapeBase*> &shapes)

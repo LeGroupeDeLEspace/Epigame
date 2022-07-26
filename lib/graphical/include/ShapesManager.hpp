@@ -12,6 +12,8 @@ namespace gr {
             void loadShapes(const std::vector<ShapeBase*> &shapes);
             void clear();
             void copyDataToBuffer();
+
+            bool autoUpdate;
         private:
             void createBuffer();
 

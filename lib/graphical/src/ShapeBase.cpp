@@ -1,4 +1,6 @@
 #include <stdexcept>
+#include <iostream>
+#include <glm/gtx/string_cast.hpp>
 #include "Shapes/ShapeBase.hpp"
 
 namespace gr {
@@ -7,9 +9,14 @@ ShapeBase::ShapeBase()
 {
 }
 
-void ShapeBase::transform(const glm::tmat4x4<float> &transform)
+void ShapeBase::transform(const glm::tmat3x3<float> &transform)
 {
-    throw std::runtime_error("not implemented");
+    for (auto &it : this->geometry) {
+        glm::vec3 t = {it.pos.x, it.pos.y, 0};
+        t = transform * t;
+        it.pos = {t.x, t.y};
+        std::cout << glm::to_string(it.pos) << std::endl;
+    }
 }
 
 const std::vector<Vertex> &ShapeBase::getVertices() const

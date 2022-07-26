@@ -12,7 +12,7 @@ namespace gr {
         public:
             ShapeBase();
 
-            void transform(const glm::tmat4x4<float> &transform);
+            void transform(const glm::tmat3x3<float> &transform);
             void setColor(const glm::vec3 &color);
 
             const std::vector<Vertex> &getVertices() const;

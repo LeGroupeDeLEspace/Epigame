@@ -17,7 +17,7 @@ namespace gr {
 
             void waitForIdle();
 
-            void test();
+            void draw();
 
             Buffer &newBuffer(size_t nvertex, size_t nindex = 0);
             void removeBuffer(Buffer &b);

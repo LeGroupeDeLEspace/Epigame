@@ -16,8 +16,11 @@ Graphics::~Graphics()
 {
 }
 
-void Graphics::test()
+void Graphics::draw()
 {
+    if (this->shapesManager.autoUpdate) {
+        this->shapesManager.copyDataToBuffer();
+    }
     this->pipeline.drawFrame();
 }
 
