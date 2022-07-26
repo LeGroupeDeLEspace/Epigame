@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "ShapesManager.hpp"
 
 namespace gr {
@@ -42,7 +43,11 @@ void ShapesManager::copyDataToBuffer()
 
     for (auto it : shapes) {
         tmpVData.insert(tmpVData.end(), it.shape->getVertices().begin(), it.shape->getVertices().end());
+        size_t b = tmpIData.size();
         tmpIData.insert(tmpIData.end(), it.shape->getIndices().begin(), it.shape->getIndices().end());
+        std::for_each(tmpIData.begin() + b, tmpIData.end(), [&](uint16_t &i) {
+            i += it.vertex_offset;
+        });
     }
 
     this->buffer->copyData(tmpVData.data());
