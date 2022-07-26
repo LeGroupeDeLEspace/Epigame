@@ -6,7 +6,7 @@
 #include "utils/FNV1Hash.hpp"
 
 
-Moon::Moon(std::string name, UniversalPosition position, Coordinates localPosition, float size) : CelestialBody(name, position, localPosition, size), rand(FNV1::Hash( // Generating the SolarSystem seed
+Moon::Moon(std::string name, UniversalPosition position, float size) : CelestialBody(name, position, size), rand(FNV1::Hash( // Generating the SolarSystem seed
         FNV1::Hash( // Regenerating the parent Seed
                 position.seedUniverse,
                 position.positionGalaxy.x,

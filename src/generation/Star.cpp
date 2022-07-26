@@ -15,5 +15,44 @@ Star::Star(std::string name, UniversalPosition position, float size) : Celestial
         position.positionSolarSystem.x,
         position.positionSolarSystem.y,
         position.positionSolarSystem.z)) {
-    bodyType = type(rand.Next(0, 9));
+    starType = Type(rand.Next(0, 11));
+    switch (starType) {
+
+        case brown_dwarf:
+            color = Colour(5);
+            break;
+        case orange_dwarf:
+            color = Colour(3);
+            break;
+        case red_dwarf:
+            color = Colour(4);
+            break;
+        case white_dwarf:
+            color = Colour(1);
+            break;
+        case yellow_dwarf:
+            color = Colour(2);
+            break;
+        case blue_giant:
+            color = Colour(0);
+            break;
+        case red_giant:
+            color = Colour(4);
+            break;
+        case blue_supergiant:
+            color = Colour(0);
+            break;
+        case red_supergiant:
+            color = Colour(4);
+            break;
+        case black_hole:
+            color = Colour(6);
+            break;
+        case t_tauri:
+            color = Colour(2);
+            break;
+        case neutron:
+            color = Colour(rand.Next(0, 1));
+            break;
+    }
 }
