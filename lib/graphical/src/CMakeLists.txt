@@ -18,4 +18,5 @@ target_sources(graphRender PRIVATE
     ShapesManager.cpp
     ShapeBase.cpp
     RectangleShape.cpp
+    CircleShape.cpp
 )

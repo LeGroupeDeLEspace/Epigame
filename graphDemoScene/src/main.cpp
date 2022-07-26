@@ -4,11 +4,12 @@
 
 int main()
 {
-    gr::RectangleShape rec(glm::vec2(-0.2, -0.2), glm::vec2(1, 1));
+    gr::RectangleShape rec(glm::vec2(-0.5, -0.5), glm::vec2(0.1, 0.1));
+    gr::CircleShape cir(glm::vec2(0.5, 0.5), 0.5, 60);
     gr::Graphics graph;
     GLFWwindow *window = gr::mainWindow.getWindow();
 
-    graph.shapesManager.loadShapes({&rec});
+    graph.shapesManager.loadShapes({&cir, &rec});
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         graph.test();
