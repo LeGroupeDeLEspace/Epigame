@@ -19,11 +19,15 @@ public:
     UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem);
     UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy);
     UniversalPosition(uint32_t seedUniverse);
-    UniversalPosition();
+    UniversalPosition() = default;
+
+    UniversalPosition& operator+=(const UniversalPosition& rhs);
+    UniversalPosition& operator-=(const UniversalPosition& rhs);
 };
 
 bool operator==(const UniversalPosition& lhs, const UniversalPosition& rhs);
 bool operator!=(const UniversalPosition& lhs, const UniversalPosition& rhs);
-
+UniversalPosition operator+(const UniversalPosition& lhs, const UniversalPosition& rhs);
+UniversalPosition operator-(const UniversalPosition& lhs, const UniversalPosition& rhs);
 
 #endif //JEUDELESPACE_UNIVERSALPOSITION_HPP
