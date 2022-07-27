@@ -19,6 +19,13 @@ void ShapeBase::transform(const glm::tmat3x3<float> &transform)
     }
 }
 
+void ShapeBase::setColor(const glm::vec3 &color)
+{
+    for (auto &it : this->geometry) {
+        it.color = color;
+    }
+}
+
 const std::vector<Vertex> &ShapeBase::getVertices() const
 {
     return this->geometry;
