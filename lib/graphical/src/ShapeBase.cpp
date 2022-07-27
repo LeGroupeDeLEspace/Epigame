@@ -12,7 +12,7 @@ ShapeBase::ShapeBase()
 void ShapeBase::transform(const glm::tmat3x3<float> &transform)
 {
     for (auto &it : this->geometry) {
-        glm::vec3 t = {it.pos.x, it.pos.y, 0};
+        glm::vec3 t = {it.pos.x, it.pos.y, 1};
         t = transform * t;
         it.pos = {t.x, t.y};
         std::cout << glm::to_string(it.pos) << std::endl;
