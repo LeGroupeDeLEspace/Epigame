@@ -77,18 +77,24 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
 
+    # Creating a release tag
+    - name: Generate release tag
+      uses: amitsingh-007/next-release-tag@v1.0.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
     # Send build to artifact
     - name: Upload build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
-        name: Build-${{ matrix.os }}-${{ matrix.compiler }}
+        name: Build-${{ matrix.os }}-${{ matrix.compiler }}-${{next_release_version}}
         path: ${{github.workspace}}/build/bonjourmonde*
 
-    # Send build to release
+    # Sending build to release
     - name: Release
       uses: softprops/action-gh-release@v1
-      # if: startsWith(github.ref, 'refs/tags/') # Pushing everything as a release for now
       with:
         name: Epigame
         prerelease: true
+        tag_name: ${{next_release_version}}
         files: ${{github.workspace}}/build/bonjourmonde*
