@@ -91,6 +91,6 @@ jobs:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         automatic_release_tag: "latest"
         prerelease: true
-        title: "Epigame Build"
+        title: Epigame Build - ${{ matrix.os }} - ${{ matrix.compiler }}
         files: |
           ${{github.workspace}}/build/bonjourmonde*
