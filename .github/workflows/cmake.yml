@@ -77,8 +77,18 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
 
+    # Send build to artifact
     - name: Upload build
       uses: actions/upload-artifact@v2
       with:
         name: Build-${{ matrix.os }}-${{ matrix.compiler }}
         path: ${{github.workspace}}/build/bonjourmonde*
+
+    # Send build to release
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      # if: startsWith(github.ref, 'refs/tags/') # Pushing everything as a release for now
+      with:
+        name: Epigame
+        prerelease: true
+        files: ${{github.workspace}}/build/bonjourmonde*
