@@ -82,7 +82,9 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Build-${{ matrix.os }}-${{ matrix.compiler }}
-        path: ${{github.workspace}}/build/bonjourmonde*
+        path: |
+          ${{github.workspace}}/build/bonjourmonde.exe
+          ${{github.workspace}}/build/bonjourmonde
 
     # Sending build to release
     - name: Release Build
@@ -93,6 +95,6 @@ jobs:
         prerelease: true
         title: Epigame Build - ${{ matrix.os }} - ${{ matrix.compiler }}
         files: |
-          build/bonjourmonde.exe
+          **/bonjourmonde.exe
           build/bonjourmonde
           README.md
