@@ -89,8 +89,9 @@ jobs:
       uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "latest"
+        automatic_release_tag: latest-${{ matrix.os }}-${{ matrix.compiler }}
         prerelease: true
         title: Epigame Build - ${{ matrix.os }} - ${{ matrix.compiler }}
         files: |
-          ${{github.workspace}}/build/bonjourmonde*
+          ${{ contains(matrix.os, 'windows') && "${{github.workspace}}\build\bonjourmonde.exe" || "${{github.workspace}}/build/bonjourmonde" }}
+          README.md
