@@ -93,5 +93,5 @@ jobs:
         prerelease: true
         title: Epigame Build - ${{ matrix.os }} - ${{ matrix.compiler }}
         files: |
-          ${{ contains(matrix.os, 'windows') && "${{github.workspace}}\build\bonjourmonde.exe" || "${{github.workspace}}/build/bonjourmonde" }}
+          ${{ contains(matrix.os, 'windows') && "build\bonjourmonde.exe" || "build/bonjourmonde" }}
           README.md
