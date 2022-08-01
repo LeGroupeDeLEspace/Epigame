@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.13.0)
 
 project(graphicalRender)
 
+add_definitions(-D_USE_MATH_DEFINES)
+
 add_library(graphRender)
 target_compile_features(graphRender PUBLIC cxx_std_17)
 

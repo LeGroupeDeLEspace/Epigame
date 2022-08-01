@@ -7,7 +7,8 @@ instance(mainWindow.getWindow()),
 physicalDevice(this->instance),
 device(this->physicalDevice),
 swapChain(this->device.getDevice(), this->physicalDevice, this->instance, static_cast<uint32_t>(mainWindow.getWidth()), static_cast<uint32_t>(mainWindow.getHeight())),
-pipeline(this->instance, this->device, this->swapChain, this->physicalDevice)
+pipeline(this->instance, this->device, this->swapChain, this->physicalDevice),
+shapesManager(this->pipeline)
 {
 }
 
@@ -15,8 +16,11 @@ Graphics::~Graphics()
 {
 }
 
-void Graphics::test()
+void Graphics::draw()
 {
+    if (this->shapesManager.autoUpdate) {
+        this->shapesManager.copyDataToBuffer();
+    }
     this->pipeline.drawFrame();
 }
 
