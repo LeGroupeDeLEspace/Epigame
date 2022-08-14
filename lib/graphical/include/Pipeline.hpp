@@ -19,8 +19,11 @@ namespace gr {
 
             Buffer &newBuffer(size_t nvertex, size_t nindex = 0);
             void removeBuffer(Buffer &buffer);
+
         private:
             VkShaderModule loadShader(const std::string &path);
+
+            void createDescriptorSetLayout();
             void initFrameBuffers(const SwapChain &swapChain);
             void initCommandPool(const PhysicalDevice &physicalDevice);
             void initCommandBuffer(const SwapChain &swapChain);
@@ -37,6 +40,7 @@ namespace gr {
             VulkanInstance &instance;
 
             VkPipeline graphicsPipeline;
+            VkDescriptorSetLayout descriptorSetLayout;
             VkPipelineLayout pipelineLayout;
             RenderPass renderPass;
             std::vector<VkFramebuffer> frambuffers;

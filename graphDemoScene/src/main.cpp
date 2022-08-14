@@ -7,16 +7,16 @@
 int main()
 {
     gr::RectangleShape rec(glm::vec2(-0.5, -0.5), glm::vec2(0.1, 0.1));
-    gr::CircleShape cir(glm::vec2(-1, 0.5), 0.5, 20);
+    gr::CircleShape cir(glm::vec2(-1, 0.5), 0.5, 50);
     gr::Graphics graph;
     GLFWwindow *window = gr::mainWindow.getWindow();
     graph.shapesManager.loadShapes({&cir, &rec});
     graph.shapesManager.autoUpdate = true;
     float a = 0;
-    cir.transform(glm::translate(glm::mat3(), glm::vec2 {std::cos(a), 0}));
     std::cout << "t= " << std::cos(a) << std::endl;
 
     while (!glfwWindowShouldClose(window)) {
+        cir.transform(glm::translate(glm::mat3(1), glm::vec2 {0.001, 0}));
         glfwPollEvents();
         a += 0.1;
         graph.draw();
