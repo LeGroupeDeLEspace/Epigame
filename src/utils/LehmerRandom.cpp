@@ -35,6 +35,8 @@ int LehmerRandom::Next(int minValue, int maxValue) {
     return (this->Rand() % (maxValue - minValue)) + minValue;
 }
 
+
+
 /// Get a random number between 0 and 1.
 /// \return a number between 0 and 1.
 float LehmerRandom::NextFloat(){
@@ -54,5 +56,42 @@ float LehmerRandom::NextFloat(float maxValue) {
 /// \return a float between minValue and maxValue.
 float LehmerRandom::NextFloat(float minValue, float maxValue) {
     return (NextFloat() * (maxValue - minValue)) + minValue;
+}
+
+/// Get a random number between 0 and 1.
+/// \return a number between 0 and 1.
+double LehmerRandom::NextDouble(){
+    return (double)this->Rand() / UINT32_MAX;
+}
+
+/// Get a random double between 0 and maxValue.
+/// \param maxValue: the upperBounds for the random (include).
+/// \return a random double between 0 and maxValue.
+double LehmerRandom::NextDouble(double maxValue) {
+    return (NextDouble() * maxValue);
+}
+
+/// Get a random number between minValue and maxValue.
+/// \param minValue: The lower bound of the random (include).
+/// \param maxValue The upper bound of the random (include).
+/// \return a double between minValue and maxValue.
+double LehmerRandom::NextDouble(double minValue, double maxValue) {
+    return (NextDouble() * (maxValue - minValue)) + minValue;
+}
+
+int64_t LehmerRandom::NextLong() {
+    return NextDouble() * INT64_MAX;
+}
+
+int64_t LehmerRandom::NextLong(int64_t maxValue) {
+    return NextLong() * maxValue;
+}
+
+int64_t LehmerRandom::NextLong(int64_t minValue, int64_t maxValue) {
+    return (NextLong() * (maxValue - minValue)) + minValue;
+}
+
+bool LehmerRandom::NextBool() {
+    return NextFloat() > 0.5f;
 }
 
