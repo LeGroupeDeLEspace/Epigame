@@ -166,7 +166,12 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
 
         float s = size / 50.0;
         if(glm::dot(glm::normalize(direction), glm::normalize(p)) > 0) {
-            this->DrawPlanet(graphics, p, glm::vec3(s, s, s), celestialBody.position.position);
+            auto color = glm::vec3 {
+                std::abs((float)celestialBody.position.position.x) / (float)INT64_MAX,
+                std::abs((float)celestialBody.position.position.y) / (float)INT64_MAX,
+                std::abs((float)celestialBody.position.position.z) / (float)INT64_MAX
+            };
+            this->DrawPlanet(graphics, p, glm::vec3(s, s, s), color);
             num++;
         }
     }
@@ -177,7 +182,7 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
 
 void GameScene::DrawPlanet(gr::Graphics& graphics, glm::vec3 center, glm::vec3 size, glm::vec3 color) const {
     glm::vec2 c = glm::vec2 {center.x, center.y}; // 2D center
-    glm::vec2 hs = glm::vec2 {size.x * 0.5f, size.y * 0.5f}; // 2D size
+    glm::vec2 hs = glm::vec2 {(size.x * 0.5f) * (1/std::abs(center.z)), (size.y * 0.5f) * (1/std::abs(center.z))}; // 2D size
 
     // Vertices of the rectangle
     std::vector<gr::Vertex> vertices = {
