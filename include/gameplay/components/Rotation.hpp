@@ -8,7 +8,7 @@
 #include <glm/gtc/quaternion.hpp>
 
 struct Rotation {
-    glm::quat value;
+    glm::dquat value;
 };
 
 
