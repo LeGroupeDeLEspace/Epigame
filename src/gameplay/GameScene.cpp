@@ -13,6 +13,7 @@
 #include "gameplay/components/Color.hpp"
 #include "gameplay/components/Size.hpp"
 #include "Shapes/CircleShape.hpp"
+#include "Shapes/ShapeBase.hpp"
 #include <cmath>
 
 #define LOG(s) std::cout << s << std::endl
@@ -45,8 +46,9 @@ void GameScene::OnCreate() {
     for (auto& cb: bodies) {
         try {
             const auto body = registry.create();
-            auto lp = LocalPosition::createLocalPosition(this->universalPosition, cb.position);
-            registry.emplace<LocalPosition>(body, lp);
+//            auto lp = LocalPosition::createLocalPosition(this->universalPosition, cb.position);
+//            registry.emplace<LocalPosition>(body, lp);
+            registry.emplace<UniversalPosition>(body, cb.position);
             registry.emplace<Size>(body, cb.size);
             glm::vec3 c = glm::vec3 {
                     (long double)cb.position.position.x /(long double)INT_MAX,
@@ -82,16 +84,16 @@ void GameScene::Update(float deltaTime) {
         glm::i64vec3 mov = glm::i64vec3{(int64_t)movement.x * SPEED_MOVE, (int64_t)movement.y * SPEED_MOVE, (int64_t)movement.z * SPEED_MOVE};
         auto fullMov = UniversalPosition(0,glm::ivec3(),glm::ivec3(),mov);
         auto newPos = this->universalPosition + fullMov;
-        auto view = registry.view<LocalPosition, Size>();
-        // Checking for each entity that they are not outside of the new position
+        auto view = registry.view<UniversalPosition, Size>();
+        // Checking for each entity that they are not outside the new position
         for(auto [entity, pos, size]: view.each()) {
-            auto cbPos = pos.getGlobalPosition(this->universalPosition);
-            auto distance = cbPos - newPos;
-            if(distance.positionGalaxy != glm::ivec3() && distance.positionSolarSystem != glm::ivec3()) {
+//            auto cbPos = pos.getGlobalPosition(this->universalPosition);
+            try {
+                auto lp = LocalPosition::createLocalPosition(newPos, pos);
+            } catch (std::runtime_error& e) {
                 registry.destroy(entity);
                 continue;
             }
-            registry.replace<LocalPosition>(entity, pos.value - mov);
         }
         universalPosition = newPos;
         registry.replace<UniversalPosition>(player, this->universalPosition);
@@ -100,21 +102,22 @@ void GameScene::Update(float deltaTime) {
 
 void GameScene::LateUpdate(float deltaTime) {
     if(glm::vec3{0,0,0} != movement) {
-        auto view = registry.view<LocalPosition>();
+        auto view = registry.view<UniversalPosition, Size>();
         auto bodies = Universe::getCelestialBodies(universalPosition, VIEW_DISTANCE);
         for (auto& cb: bodies) {
             bool stop = false;
-            for (auto [entity, pos]: view.each()) {
-                if(cb.position == pos.getGlobalPosition(universalPosition)) {
+            for (auto [entity, pos, size]: view.each()) {
+                if(cb.position == pos) {
                     stop = true;
                     break;
                 }
             }
             if(stop) continue;
 
-            LocalPosition lp = LocalPosition::createLocalPosition(universalPosition, cb.position);
             const auto body = registry.create();
-            registry.emplace<LocalPosition>(body, lp);
+//            LocalPosition lp = LocalPosition::createLocalPosition(universalPosition, cb.position);
+//            registry.emplace<LocalPosition>(body, lp);
+            registry.emplace<UniversalPosition>(body, cb.position);
             registry.emplace<Size>(body, cb.size);
             glm::dvec3 c = glm::dvec3 {
                     (long double)cb.position.position.x /(long double)INT_MAX,
@@ -140,8 +143,9 @@ void GameScene::Draw(gr::Graphics& graphics) {
 }
 
 void GameScene::DrawUniverse(gr::Graphics& graphics) const {
-
-    auto view = registry.view<LocalPosition, Size, Color>();
+    graphics.shapesManager.clear();
+    auto view = registry.view<UniversalPosition, Size, Color>();
+    auto position = registry.get<UniversalPosition>(player);
 
     // To only show what's in front of us.
     auto direction = glm::dvec3{0,0,1};
@@ -154,45 +158,59 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
     // End of Multiplication
 
     int num = 0;
+    auto cbs = std::vector<gr::ShapeBase*>();
+    cbs.reserve(view.size_hint());
     for (auto [entity, pos, size, color]: view.each()) {
-
+        auto lp = LocalPosition::createLocalPosition(position, pos);
         glm::dvec3 p = glm::dvec3{
-                (long double)pos.value.x/(long double)VIEW_DISTANCE,
-                (long double)pos.value.y/(long double)VIEW_DISTANCE,
-                (long double)pos.value.z/(long double)VIEW_DISTANCE
+                (long double)lp.value.x/(long double)VIEW_DISTANCE,
+                (long double)lp.value.y/(long double)VIEW_DISTANCE,
+                (long double)lp.value.z/(long double)VIEW_DISTANCE
         };
 
         float s = size.value / 50.0;
         if(glm::dot(glm::normalize(direction), glm::normalize(p)) > 0) {
-            this->DrawPlanet(graphics, p, glm::vec3(s, s, s), color.value);
+            cbs.push_back(this->DrawPlanet(graphics, p, s, color.value));
             num++;
         }
     }
+
+    if(!cbs.empty()) {
+        graphics.shapesManager.loadShapes(cbs);
+    }
+
+    for (auto cb: cbs) {
+        delete cb;
+    }
+
     LOG("We've drawn " << std::to_string(num) << " entities.");
     LOGENDL();
     LOGENDL();
 }
 
-void GameScene::DrawPlanet(gr::Graphics& graphics, glm::vec3 center, glm::vec3 size, glm::vec3 color) const {
+gr::ShapeBase* GameScene::DrawPlanet(gr::Graphics& graphics, glm::vec3 center, float size, glm::vec3 color) const {
     glm::vec2 c = glm::vec2 {center.x, center.y}; // 2D center
-    glm::vec2 hs = glm::vec2 {(size.x * 0.5f) * (1/std::abs(center.z)), (size.y * 0.5f) * (1/std::abs(center.z))}; // 2D size
+    float hs = size * (1/std::abs(center.z)); // 2D size
+    auto* shape = new gr::CircleShape(c,hs,20);
+    shape->setColor(color);
+    return shape;
 
-    // Vertices of the rectangle
-    std::vector<gr::Vertex> vertices = {
-            {{c.x-hs.x, c.y-hs.y}, color},
-            {{c.x+hs.x, c.y - hs.y}, color},
-            {{c.x - hs.x, c.y + hs.y}, color},
-            {{c.x + hs.x, c.y + hs.y}, color},
-    };
-
-    // Indexes to make a rectangle
-    std::vector<uint16_t> index = {
-            0, 1, 2, 2, 1, 3,
-    };
-
-    gr::Buffer& buffer = graphics.newBuffer(4, 6); // for a rectangle
-    buffer.copyData(vertices.data());
-    buffer.copyIndexData(index.data());
+//    // Vertices of the rectangle
+//    std::vector<gr::Vertex> vertices = {
+//            {{c.x-hs, c.y-hs}, color},
+//            {{c.x+hs, c.y - hs}, color},
+//            {{c.x - hs, c.y + hs}, color},
+//            {{c.x + hs, c.y + hs}, color},
+//    };
+//
+//    // Indexes to make a rectangle
+//    std::vector<uint16_t> index = {
+//            0, 1, 2, 2, 1, 3,
+//    };
+//
+//    gr::Buffer& buffer = graphics.newBuffer(4, 6); // for a rectangle
+//    buffer.copyData(vertices.data());
+//    buffer.copyIndexData(index.data());
 }
 
 OnMove::OnMove(glm::vec3& movement) : movement(movement) {
