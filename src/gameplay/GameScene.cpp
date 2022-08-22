@@ -37,30 +37,31 @@ GameScene::GameScene() :
 
 void GameScene::OnCreate() {
     player = registry.create();
-    registry.emplace<UniversalPosition>(player);
+    registry.emplace<UniversalPosition>(player, this->universalPosition);
     registry.emplace<Rotation>(player, glm::dquat{0,0,0,1});
 
-//    auto ss = SolarSystem(universalPosition);
-//    auto bodies = Universe::getCelestialBodies(universalPosition, VIEW_DISTANCE);
-//    for (auto& cb: bodies) {
-//        try {
-//            const auto body = registry.create();
-//            registry.emplace<LocalPosition>(body, lp);
-//            registry.emplace<Size>(body, cb.size);
-//            glm::vec3 c = glm::vec3 {
-//                    (long double)cb.position.position.x /(long double)INT_MAX,
-//                    (long double)cb.position.position.y /(long double)INT_MAX,
-//                    (long double)cb.position.position.z /(long double)INT_MAX,
-//            };
-//
-//            c *= 0.5f;
-//            c += 0.5f;
-//            registry.emplace<Color>(body, c);
-//        } catch (std::runtime_error& e) {
-//            continue;
-//        }
-//    }
-//    shouldUpdate = true;
+    auto ss = SolarSystem(universalPosition);
+    auto bodies = Universe::getCelestialBodies(universalPosition, VIEW_DISTANCE);
+    for (auto& cb: bodies) {
+        try {
+            const auto body = registry.create();
+            auto lp = LocalPosition::createLocalPosition(this->universalPosition, cb.position);
+            registry.emplace<LocalPosition>(body, lp);
+            registry.emplace<Size>(body, cb.size);
+            glm::vec3 c = glm::vec3 {
+                    (long double)cb.position.position.x /(long double)INT_MAX,
+                    (long double)cb.position.position.y /(long double)INT_MAX,
+                    (long double)cb.position.position.z /(long double)INT_MAX,
+            };
+
+            c *= 0.5f;
+            c += 0.5f;
+            registry.emplace<Color>(body, c);
+        } catch (std::runtime_error& e) {
+            continue;
+        }
+    }
+    shouldUpdate = true;
 }
 
 void GameScene::OnDestroy() {
@@ -81,53 +82,53 @@ void GameScene::Update(float deltaTime) {
         glm::i64vec3 mov = glm::i64vec3{(int64_t)movement.x * SPEED_MOVE, (int64_t)movement.y * SPEED_MOVE, (int64_t)movement.z * SPEED_MOVE};
         auto fullMov = UniversalPosition(0,glm::ivec3(),glm::ivec3(),mov);
         auto newPos = this->universalPosition + fullMov;
-//        auto view = registry.view<UniversalPosition, Size>();
-//        for(auto [entity, pos, size]: view.each()) {
-//            auto distance = pos - newPos;
-//            if(distance.positionGalaxy != glm::ivec3() && distance.positionSolarSystem != glm::ivec3()) {
-//                registry.destroy(entity);
-//            }
-//        }
+        auto view = registry.view<LocalPosition, Size>();
+        // Checking for each entity that they are not outside of the new position
+        for(auto [entity, pos, size]: view.each()) {
+            auto cbPos = pos.getGlobalPosition(this->universalPosition);
+            auto distance = cbPos - newPos;
+            if(distance.positionGalaxy != glm::ivec3() && distance.positionSolarSystem != glm::ivec3()) {
+                registry.destroy(entity);
+                continue;
+            }
+            registry.replace<LocalPosition>(entity, pos.value - mov);
+        }
         universalPosition = newPos;
         registry.replace<UniversalPosition>(player, this->universalPosition);
     }
 }
 
 void GameScene::LateUpdate(float deltaTime) {
-//    if(glm::vec3{0,0,0} != movement) {
-//        auto view = registry.view<LocalPosition>();
-//        auto bodies = Universe::getCelestialBodies(universalPosition, VIEW_DISTANCE);
-//        for (auto& cb: bodies) {
-//            bool stop = false;
-//            for (auto [entity, pos]: view.each()) {
-//                if(cb.position == pos.getGlobalPosition(universalPosition)) {
-//                    stop = true;
-//                    break;
-//                }
-//            }
-//            if(stop) continue;
-//
-//            try {
-//                LocalPosition lp = LocalPosition::createLocalPosition(universalPosition,cb.position);
-//                const auto body = registry.create();
-//                registry.emplace<LocalPosition>(body, lp);
-//                registry.emplace<Size>(body, cb.size);
-//                glm::dvec3 c = glm::dvec3 {
-//                        (long double)cb.position.position.x /(long double)INT_MAX,
-//                        (long double)cb.position.position.y /(long double)INT_MAX,
-//                        (long double)cb.position.position.z /(long double)INT_MAX,
-//                };
-//
-//                c *= 0.5f;
-//                c += 0.5f;
-//                registry.emplace<Color>(body, c);
-//                LOGENDL();
-//            } catch (std::runtime_error& e) {
-//                continue;
-//            }
-//        }
+    if(glm::vec3{0,0,0} != movement) {
+        auto view = registry.view<LocalPosition>();
+        auto bodies = Universe::getCelestialBodies(universalPosition, VIEW_DISTANCE);
+        for (auto& cb: bodies) {
+            bool stop = false;
+            for (auto [entity, pos]: view.each()) {
+                if(cb.position == pos.getGlobalPosition(universalPosition)) {
+                    stop = true;
+                    break;
+                }
+            }
+            if(stop) continue;
+
+            LocalPosition lp = LocalPosition::createLocalPosition(universalPosition, cb.position);
+            const auto body = registry.create();
+            registry.emplace<LocalPosition>(body, lp);
+            registry.emplace<Size>(body, cb.size);
+            glm::dvec3 c = glm::dvec3 {
+                    (long double)cb.position.position.x /(long double)INT_MAX,
+                    (long double)cb.position.position.y /(long double)INT_MAX,
+                    (long double)cb.position.position.z /(long double)INT_MAX,
+            };
+
+            c *= 0.5f;
+            c += 0.5f;
+            registry.emplace<Color>(body, c);
+            LOGENDL();
+        }
 //        movement = glm::vec3();
-//    }
+    }
 }
 
 void GameScene::Draw(gr::Graphics& graphics) {
@@ -140,10 +141,9 @@ void GameScene::Draw(gr::Graphics& graphics) {
 
 void GameScene::DrawUniverse(gr::Graphics& graphics) const {
 
-//    auto view = registry.view<LocalPosition, Size, Color>();
-    auto playerPos = registry.get<UniversalPosition>(this->player);
-    auto celestialBodies = Universe::getCelestialBodies(playerPos, VIEW_DISTANCE);
+    auto view = registry.view<LocalPosition, Size, Color>();
 
+    // To only show what's in front of us.
     auto direction = glm::dvec3{0,0,1};
     auto rotation = registry.get<Rotation>(player).value;
 
@@ -154,11 +154,7 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
     // End of Multiplication
 
     int num = 0;
-//    for (auto [entity, pos, size, color]: view.each()) {
-    for (auto celestialBody: celestialBodies) {
-        auto size = celestialBody.size;
-
-        LocalPosition             pos = LocalPosition::createLocalPosition(playerPos, celestialBody.position);
+    for (auto [entity, pos, size, color]: view.each()) {
 
         glm::dvec3 p = glm::dvec3{
                 (long double)pos.value.x/(long double)VIEW_DISTANCE,
@@ -166,14 +162,9 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
                 (long double)pos.value.z/(long double)VIEW_DISTANCE
         };
 
-        float s = size / 50.0;
+        float s = size.value / 50.0;
         if(glm::dot(glm::normalize(direction), glm::normalize(p)) > 0) {
-            auto color = glm::vec3 {
-                std::abs((float)celestialBody.position.position.x) / (float)INT64_MAX,
-                std::abs((float)celestialBody.position.position.y) / (float)INT64_MAX,
-                std::abs((float)celestialBody.position.position.z) / (float)INT64_MAX
-            };
-            this->DrawPlanet(graphics, p, glm::vec3(s, s, s), color);
+            this->DrawPlanet(graphics, p, glm::vec3(s, s, s), color.value);
             num++;
         }
     }
