@@ -33,7 +33,7 @@ namespace gr {
             void initMemory(const PhysicalDevice &physicalDevice);
 
             VkBuffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usage);
-            VkDeviceMemory createMemory(VkBuffer buffer, const PhysicalDevice &PhysicalDevice);
+            VkDeviceMemory createMemory(VkBuffer buffer, const PhysicalDevice &physicalDevice);
 
             const LogicalDevice &device;
 
