@@ -5,6 +5,8 @@
 #ifndef JEUDELESPACE_GAMESCENE_HPP
 #define JEUDELESPACE_GAMESCENE_HPP
 
+#include <entt/entt.hpp>
+#include "Graphics.hpp"
 #include "scene/Scene.hpp"
 #include "utils/Command.hpp"
 #include "utils/DataContainer.hpp"
@@ -13,9 +15,9 @@
 
 class OnMove : public Command1<DataContainer *> {
 private:
-    UniversalPosition& universalPosition;
+    glm::vec3& movement;
 public:
-    explicit OnMove(UniversalPosition& universalPosition);
+    explicit OnMove(glm::vec3& movement);
     ~OnMove() override;
     void execute(DataContainer * value) override;
 };
@@ -23,19 +25,25 @@ public:
 
 class GameScene : public Scene {
 private:
-    UniversalPosition previousUniversalPosition;
+    entt::registry registry;
+    entt::entity player;
+    glm::vec3 movement;
     UniversalPosition universalPosition;
     OnMove onMoveCommand;
+
+    bool shouldUpdate;
+    gr::ShapeBase* DrawPlanet(gr::Graphics& graphics, glm::vec3 center, float size, glm::vec3 color) const;
 public:
     GameScene();
-    GameScene(UniversalPosition& universalPosition);
     void OnCreate() override;
     void OnDestroy() override;
     void OnActivate() override;
     void OnDeactivate() override;
-    void Draw(GLFWwindow& window) override;
+    void Update(float deltaTime) override;
+    void LateUpdate(float deltaTime) override;
+    void Draw(gr::Graphics& graphics) override;
 
-    void DrawUniverse() const;
+    void DrawUniverse(gr::Graphics& graphics) const;
 };
 
 

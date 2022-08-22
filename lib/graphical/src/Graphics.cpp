@@ -38,4 +38,8 @@ void Graphics::removeBuffer(Buffer &b)
     this->pipeline.removeBuffer(b);
 }
 
+void Graphics::clearBuffer() {
+    this->pipeline.clearBuffer();
+}
+
 }

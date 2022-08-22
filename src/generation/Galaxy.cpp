@@ -29,9 +29,9 @@ std::string Galaxy::getName() const{
 }
 
 SolarSystem Galaxy::getSolarSystem(glm::ivec3 position) {
-    return SolarSystem(rand.initialSeed, position.x, position.y, position.z, name);
+    return SolarSystem(rand.initialSeed, position.x, position.y, position.z);
 }
 
 SolarSystem Galaxy::getSolarSystem(int x, int y, int z) {
-    return SolarSystem(rand.initialSeed, x, y, z, name);
+    return SolarSystem(rand.initialSeed, x, y, z);
 }

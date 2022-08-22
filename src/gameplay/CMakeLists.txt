@@ -5,3 +5,4 @@ target_sources(bonjourmonde PRIVATE
 )
 
 add_subdirectory(characterController)
+add_subdirectory(components)

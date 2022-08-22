@@ -6,6 +6,7 @@
 #define JEUDELESPACE_SCENE_HPP
 
 #include <GLFW/glfw3.h>
+#include "Graphics.hpp"
 
 class Scene {
 public:
@@ -24,7 +25,7 @@ public:
     virtual void ProcessInput() {};
     virtual void Update(float deltaTime) {};
     virtual void LateUpdate(float deltaTime) {};
-    virtual void Draw(GLFWwindow& window) {};
+    virtual void Draw(gr::Graphics& graphics) {};
 };
 
 

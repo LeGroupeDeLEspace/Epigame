@@ -21,9 +21,19 @@ public:
     int Next(int maxValue);
     int Next(int minValue, int maxValue);
 
+    int64_t NextLong();
+    int64_t NextLong(int64_t maxValue);
+    int64_t NextLong(int64_t minValue, int64_t maxValue);
+
     float NextFloat();
     float NextFloat(float maxValue);
     float NextFloat(float minValue, float maxValue);
+
+    double NextDouble();
+    double NextDouble(double maxValue);
+    double NextDouble(double minValue, double maxValue);
+
+    bool NextBool();
 };
 
 #endif //JEUDELESPACE_LEHMERRANDOM_HPP

@@ -59,6 +59,7 @@ void ShapesManager::clear()
 {
     this->pipeline.removeBuffer(*this->buffer);
     this->buffer = nullptr;
+    this->shapes.clear();
 }
 
 }

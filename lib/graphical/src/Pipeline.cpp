@@ -483,4 +483,9 @@ void Pipeline::removeBuffer(Buffer &b)
     // }));
 }
 
+void Pipeline::clearBuffer()
+{
+    this->buffers2d.clear();
+}
+
 }

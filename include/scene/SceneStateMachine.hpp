@@ -9,6 +9,7 @@
 #include <memory>
 #include <unordered_map>
 #include "GLFW/glfw3.h"
+#include "Graphics.hpp"
 #include "Scene.hpp"
 class SceneStateMachine {
 public:
@@ -19,7 +20,7 @@ public:
     void ProcessInput();
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
-    void Draw(GLFWwindow& window);
+    void Draw(gr::Graphics& graphics);
 // Adds a scene to the state machine and returns the id of that scene.
     unsigned int Add(std::shared_ptr<Scene> scene);
 // Transitions to scene with specified id.

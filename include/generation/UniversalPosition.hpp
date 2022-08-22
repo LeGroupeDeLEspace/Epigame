@@ -6,6 +6,7 @@
 #define JEUDELESPACE_UNIVERSALPOSITION_HPP
 
 #include "glm/vec3.hpp"
+#include <string>
 
 class UniversalPosition {
 private:
@@ -13,15 +14,23 @@ public:
     uint32_t seedUniverse;
     glm::ivec3 positionGalaxy;
     glm::ivec3 positionSolarSystem;
+    glm::i64vec3 position;
 
+    UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem, glm::i64vec3 position);
     UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem);
     UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy);
     UniversalPosition(uint32_t seedUniverse);
-    UniversalPosition();
+    UniversalPosition() = default;
+
+    UniversalPosition& operator+=(const UniversalPosition& rhs);
+    UniversalPosition& operator-=(const UniversalPosition& rhs);
+
+    std::string to_string();
 };
 
 bool operator==(const UniversalPosition& lhs, const UniversalPosition& rhs);
 bool operator!=(const UniversalPosition& lhs, const UniversalPosition& rhs);
-
+UniversalPosition operator+(const UniversalPosition& lhs, const UniversalPosition& rhs);
+UniversalPosition operator-(const UniversalPosition& lhs, const UniversalPosition& rhs);
 
 #endif //JEUDELESPACE_UNIVERSALPOSITION_HPP
