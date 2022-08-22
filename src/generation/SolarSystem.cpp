@@ -43,7 +43,8 @@ SolarSystem::SolarSystem(UniversalPosition position) :
     sunPos.position = glm::i64vec3{0, 0, 0};
     celestialBodies.emplace_back(std::string(name).append("-SUN"),
                                  sunPos,
-                                 rand.Next(25, 50));
+                                 rand.Next(25, 50),
+                                 glm::vec3{1,1,1});
     for (int i = 1; i < numberCelestialBodies; ++i) {
         // TODO: Create all the Planet
         auto pos = UniversalPosition(position);
@@ -53,7 +54,8 @@ SolarSystem::SolarSystem(UniversalPosition position) :
                 rand.NextLong() * (rand.NextBool() ? -1 : 1));
         celestialBodies.emplace_back(std::string(name).append("-PLANET-").append(std::to_string(i)),
                                      pos,
-                                     rand.Next(5, 20));
+                                     rand.Next(5, 20),
+                                     glm::vec3{rand.NextFloat(),rand.NextFloat(),rand.NextFloat()});
     }
 
 }

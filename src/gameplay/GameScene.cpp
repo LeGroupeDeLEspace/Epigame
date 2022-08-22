@@ -49,16 +49,8 @@ void GameScene::OnCreate() {
 //            auto lp = LocalPosition::createLocalPosition(this->universalPosition, cb.position);
 //            registry.emplace<LocalPosition>(body, lp);
             registry.emplace<UniversalPosition>(body, cb.position);
-            registry.emplace<Size>(body, cb.size);
-            glm::vec3 c = glm::vec3 {
-                    (long double)cb.position.position.x /(long double)INT_MAX,
-                    (long double)cb.position.position.y /(long double)INT_MAX,
-                    (long double)cb.position.position.z /(long double)INT_MAX,
-            };
-
-            c *= 0.5f;
-            c += 0.5f;
-            registry.emplace<Color>(body, c);
+            registry.emplace<Size>(body, static_cast<float>(cb.size));
+            registry.emplace<Color>(body, cb.color);
         } catch (std::runtime_error& e) {
             continue;
         }
@@ -118,16 +110,8 @@ void GameScene::LateUpdate(float deltaTime) {
 //            LocalPosition lp = LocalPosition::createLocalPosition(universalPosition, cb.position);
 //            registry.emplace<LocalPosition>(body, lp);
             registry.emplace<UniversalPosition>(body, cb.position);
-            registry.emplace<Size>(body, cb.size);
-            glm::dvec3 c = glm::dvec3 {
-                    (long double)cb.position.position.x /(long double)INT_MAX,
-                    (long double)cb.position.position.y /(long double)INT_MAX,
-                    (long double)cb.position.position.z /(long double)INT_MAX,
-            };
-
-            c *= 0.5f;
-            c += 0.5f;
-            registry.emplace<Color>(body, c);
+            registry.emplace<Size>(body, static_cast<float>(cb.size));
+            registry.emplace<Color>(body, cb.color);
             LOGENDL();
         }
 //        movement = glm::vec3();
@@ -168,7 +152,7 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
                 (long double)lp.value.z/(long double)VIEW_DISTANCE
         };
 
-        float s = size.value / 50.0;
+        float s = size.value / 50.0f;
         if(glm::dot(glm::normalize(direction), glm::normalize(p)) > 0) {
             cbs.push_back(this->DrawPlanet(graphics, p, s, color.value));
             num++;
@@ -194,23 +178,6 @@ gr::ShapeBase* GameScene::DrawPlanet(gr::Graphics& graphics, glm::vec3 center, f
     auto* shape = new gr::CircleShape(c,hs,20);
     shape->setColor(color);
     return shape;
-
-//    // Vertices of the rectangle
-//    std::vector<gr::Vertex> vertices = {
-//            {{c.x-hs, c.y-hs}, color},
-//            {{c.x+hs, c.y - hs}, color},
-//            {{c.x - hs, c.y + hs}, color},
-//            {{c.x + hs, c.y + hs}, color},
-//    };
-//
-//    // Indexes to make a rectangle
-//    std::vector<uint16_t> index = {
-//            0, 1, 2, 2, 1, 3,
-//    };
-//
-//    gr::Buffer& buffer = graphics.newBuffer(4, 6); // for a rectangle
-//    buffer.copyData(vertices.data());
-//    buffer.copyIndexData(index.data());
 }
 
 OnMove::OnMove(glm::vec3& movement) : movement(movement) {
