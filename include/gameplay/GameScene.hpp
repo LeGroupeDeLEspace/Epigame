@@ -32,7 +32,7 @@ private:
     OnMove onMoveCommand;
 
     bool shouldUpdate;
-    void DrawPlanet(gr::Graphics& graphics, glm::vec3 center, glm::vec3 size, glm::vec3 color) const;
+    gr::ShapeBase* DrawPlanet(gr::Graphics& graphics, glm::vec3 center, float size, glm::vec3 color) const;
 public:
     GameScene();
     void OnCreate() override;

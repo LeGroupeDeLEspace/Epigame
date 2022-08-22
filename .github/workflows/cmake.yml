@@ -76,3 +76,25 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{env.BUILD_TYPE}}
+
+    # Send build to artifact
+    - name: Upload build
+      uses: actions/upload-artifact@v3
+      with:
+        name: Build-${{ matrix.os }}-${{ matrix.compiler }}
+        path: |
+          ${{github.workspace}}/build/bonjourmonde.exe
+          ${{github.workspace}}/build/bonjourmonde
+
+    # Sending build to release
+    - name: Release Build
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: latest-${{ matrix.os }}-${{ matrix.compiler }}
+        prerelease: true
+        title: Epigame Build - ${{ matrix.os }} - ${{ matrix.compiler }}
+        files: |
+          **/bonjourmonde.exe
+          build/bonjourmonde
+          README.md

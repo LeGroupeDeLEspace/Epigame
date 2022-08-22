@@ -6,6 +6,7 @@
 #define JEUDELESPACE_UNIVERSALPOSITION_HPP
 
 #include "glm/vec3.hpp"
+#include <string>
 
 class UniversalPosition {
 private:
@@ -23,6 +24,8 @@ public:
 
     UniversalPosition& operator+=(const UniversalPosition& rhs);
     UniversalPosition& operator-=(const UniversalPosition& rhs);
+
+    std::string to_string();
 };
 
 bool operator==(const UniversalPosition& lhs, const UniversalPosition& rhs);

@@ -3,6 +3,7 @@
 //
 
 #include "generation/UniversalPosition.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 UniversalPosition::UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem, glm::i64vec3 position) : seedUniverse(seedUniverse), positionGalaxy(galaxy), positionSolarSystem(solarSystem), position(position) {}
 UniversalPosition::UniversalPosition(uint32_t seedUniverse, glm::ivec3 galaxy, glm::ivec3 solarSystem) : seedUniverse(seedUniverse), positionGalaxy(galaxy), positionSolarSystem(solarSystem) {}
@@ -62,4 +63,13 @@ UniversalPosition& UniversalPosition::operator+=(const UniversalPosition &rhs) {
 UniversalPosition& UniversalPosition::operator-=(const UniversalPosition &rhs) {
     *this = *this - rhs;
     return *this;
+}
+
+std::string UniversalPosition::to_string() {
+    return std::string("{")
+        .append("seedUniverse: ").append(std::to_string(this->seedUniverse)).append(", ")
+        .append("positionGalaxy: ").append(glm::to_string(this->positionGalaxy)).append(", ")
+        .append("positionSolarSystem: ").append(glm::to_string(this->positionSolarSystem)).append(", ")
+        .append("position: ").append(glm::to_string(this->position)).append(", ")
+        .append("}");
 }
