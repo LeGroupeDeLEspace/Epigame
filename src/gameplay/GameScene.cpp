@@ -31,7 +31,7 @@
 // Ou juste un celestial body avec plus de paramètres... plus logique aussi.
 
 GameScene::GameScene() :
-        universalPosition(50, glm::ivec3(), glm::ivec3(), glm::i64vec3()),
+        universalPosition(50),
         onMoveCommand(this->movement),
         shouldUpdate(false) {}
 
@@ -157,7 +157,9 @@ void GameScene::DrawUniverse(gr::Graphics& graphics) const {
 //    for (auto [entity, pos, size, color]: view.each()) {
     for (auto celestialBody: celestialBodies) {
         auto size = celestialBody.size;
-        auto pos = LocalPosition::createLocalPosition(playerPos, celestialBody.position);
+
+        LocalPosition             pos = LocalPosition::createLocalPosition(playerPos, celestialBody.position);
+
         glm::dvec3 p = glm::dvec3{
                 (long double)pos.value.x/(long double)VIEW_DISTANCE,
                 (long double)pos.value.y/(long double)VIEW_DISTANCE,
