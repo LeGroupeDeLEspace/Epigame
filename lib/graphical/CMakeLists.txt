@@ -19,10 +19,18 @@ target_link_libraries(graphRender PUBLIC systemUtils glfw glm ${Vulkan_LIBRARIES
 
 # compile shaders
 
-# find_program(glslc_executable NAMES glslc HINTS Vulkan::glslc)
+find_program(glslc_executable NAMES glslc HINTS Vulkan::glslc)
 
-# set(SHADER_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
-# set(SHADER_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+set(SHADER_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
+set(SHADER_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+
+file(MAKE_DIRECTORY ${SHADER_SOURCE_DIR})
+file(MAKE_DIRECTORY ${SHADER_BINARY_DIR})
+
+file(TOUCH "${SHADER_BINARY_DIR}/base.frag.spv" "${SHADER_BINARY_DIR}/base.vert.spv")
+
+execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.frag" -o "${SHADER_BINARY_DIR}/base.frag.spv")
+execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.vert" -o "${SHADER_BINARY_DIR}/base.vert.spv")
 
 # file(GLOB SHADERS
 #   ${SHADER_SOURCE_DIR}/*.vert

@@ -19,5 +19,5 @@ target_link_libraries(bonjourmonde graphRender glfw EnTT)
 add_subdirectory(graphDemoScene)
 
 # move shaders
-# configure_file(./lib/graphical/shaders/base.frag.spv ./shaders/frag.spv COPYONLY)
-# configure_file(./lib/graphical/shaders/base.vert.spv ./shaders/vert.spv COPYONLY)
+ configure_file(${CMAKE_CURRENT_BINARY_DIR}/lib/graphical/shaders/base.frag.spv ${CMAKE_CURRENT_BINARY_DIR}/shaders/base.frag.spv COPYONLY)
+ configure_file(${CMAKE_CURRENT_BINARY_DIR}/lib/graphical/shaders/base.vert.spv ${CMAKE_CURRENT_BINARY_DIR}/shaders/base.vert.spv COPYONLY)

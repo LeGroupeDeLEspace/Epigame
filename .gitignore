@@ -30,6 +30,9 @@
 *.a
 *.lib
 
+# Compiled Shaders
+*.spv
+
 # End of https://www.toptal.com/developers/gitignore/api/c++
 
 #Ignores build folders
