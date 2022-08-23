@@ -27,8 +27,8 @@ set(SHADER_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/shaders)
 file(MAKE_DIRECTORY ${SHADER_SOURCE_DIR})
 file(MAKE_DIRECTORY ${SHADER_BINARY_DIR})
 
-execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.frag" -o "${SHADER_SOURCE_DIR}/base.frag.spv")
-execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.vert" -o "${SHADER_SOURCE_DIR}/base.vert.spv")
+file(TOUCH "${SHADER_BINARY_DIR}/base.frag.spv" "${SHADER_BINARY_DIR}/base.vert.spv")
+
 execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.frag" -o "${SHADER_BINARY_DIR}/base.frag.spv")
 execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.vert" -o "${SHADER_BINARY_DIR}/base.vert.spv")
 
