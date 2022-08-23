@@ -58,7 +58,7 @@ execute_process(COMMAND ${glslc_executable} "${SHADER_SOURCE_DIR}/base.vert" -o 
 #   list(APPEND SPV_SHADERS ${SHADER_BINARY_DIR}/${FILENAME}.spv)
 # endforeach()
 
-# add_custom_target(shaders ALL DEPENDS ${SPV_SHADERS})
+ add_custom_target(shaders ALL DEPENDS ${SPV_SHADERS})
 
 # includes shaders directory to lib
 # target_include_directories(graphRender PUBLIC ${SHADER_BINARY_DIR})

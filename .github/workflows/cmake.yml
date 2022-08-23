@@ -85,6 +85,7 @@ jobs:
         path: |
           ${{github.workspace}}/build/bonjourmonde.exe
           ${{github.workspace}}/build/bonjourmonde
+          ${{github.workspace}}/build/shaders/
 
     # Sending build to release
     - name: Release Build
@@ -98,3 +99,4 @@ jobs:
           **/bonjourmonde.exe
           build/bonjourmonde
           README.md
+          build/shaders/
